@@ -115,6 +115,7 @@ jobs:
             docker compose pull
             docker compose up -d ${{ github.event.client_payload.service }} --remove-orphans
             docker image prune -f
+            docker system prune -a
             EOF
 
 
