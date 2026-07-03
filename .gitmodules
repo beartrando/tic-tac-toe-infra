@@ -1,27 +1,27 @@
 [submodule "services/ai"]
 	path = services/ai
-	url = git@github.com:temenb/ai.git
+	url = git@github.com:beartrando/ai.git
 [submodule "services/auth"]
 	path = services/auth
-	url = git@github.com:temenb/auth.git
+	url = git@github.com:beartrando/auth.git
 [submodule "services/battle"]
         path = services/battle
-        url = git@github.com:temenb/battle.git
+        url = git@github.com:beartrando/battle.git
 [submodule "services/engine"]
         path = services/engine
-        url = git@github.com:temenb/engine.git
+        url = git@github.com:beartrando/engine.git
 [submodule "services/front"]
         path = services/front
-        url = git@github.com:temenb/front.git
+        url = git@github.com:beartrando/front.git
 [submodule "services/gateway"]
         path = services/gateway
-        url = git@github.com:temenb/gateway.git
+        url = git@github.com:beartrando/gateway.git
 [submodule "services/orchestration"]
         path = services/orchestration
-        url = git@github.com:temenb/orchestration.git
+        url = git@github.com:beartrando/orchestration.git
 [submodule "services/profile"]
 	path = services/profile
-	url = git@github.com:temenb/profile.git
+	url = git@github.com:beartrando/profile.git
 [submodule "services/streaming"]
         path = services/streaming
-        url = git@github.com:temenb/streaming.git
+        url = git@github.com:beartrando/streaming.git
