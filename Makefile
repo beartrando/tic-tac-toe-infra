@@ -81,7 +81,7 @@ migrate:
 
 
 prod-migrate:
-	for s in $(PRISMA_SERVICES); do \
+	for service in $(PRISMA_SERVICES); do \
 		echo "▶️  Running migrations for $$s..."; \
 		docker run --rm --env-file ./services/.env.$(service) --network game_backend ghcr.io/temenb/$(service)/predeploy:dev;\
 	done \
