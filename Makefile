@@ -87,8 +87,8 @@ prod-migrate:
             --env-file ./services/$$service/.env \
             --network game_backend \
             ghcr.io/temenb/$$service/predeploy:dev; \
-    done \
-	@if [ "$(bip)" != "no" ]; then \
+    done
+    @if [ "$(bip)" != "no" ]; then \
 		$(MAKE) bip; \
 	fi
 
