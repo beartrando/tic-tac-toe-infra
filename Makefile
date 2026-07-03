@@ -83,11 +83,11 @@ migrate:
 prod-migrate:
 	for service in $(PRISMA_SERVICES); do \
         echo "▶️  Running migrations for $$service..."; \
-        docker run --rm \
-            --env-file ./services/$$service/.env \
-            --network game_backend \
-            ghcr.io/temenb/$$service/predeploy:dev; \
-    done
+#        docker run --rm \
+#            --env-file ./services/$$service/.env \
+#            --network game_backend \
+#            ghcr.io/temenb/$$service/predeploy:dev; \
+    done \
     @if [ "$(bip)" != "no" ]; then \
 		$(MAKE) bip; \
 	fi
