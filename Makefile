@@ -83,10 +83,10 @@ migrate:
 prod-migrate:
 	for service in $(PRISMA_SERVICES); do \
         echo "▶️  Running migrations for $$service..."; \
-#        docker run --rm \
-#            --env-file ./services/$$service/.env \
-#            --network game_backend \
-#            ghcr.io/temenb/$$service/predeploy:dev; \
+        docker run --rm \
+            --env-file ./services/$$service/.env \
+            --network game_backend \
+            ghcr.io/temenb/$$service/predeploy:dev; \
     done
 
 prisma-generate:
