@@ -10,18 +10,18 @@ export class PgBossManager {
 
   private workers: Array<() => Promise<void>> = [];
 
-  constructor() {
-    logger.log(__filename);
-
-    // Таймер проверки состояния PgBoss
-    setInterval(() => {
-      if (this._boss) {
-        console.log("✅ PgBoss instance exists");
-      } else {
-        console.log("❌ PgBoss is null");
-      }
-    }, 1000);
-  }
+  // constructor() {
+  //   logger.log(__filename);
+  //
+  //   // Таймер проверки состояния PgBoss
+  //   setInterval(() => {
+  //     if (this._boss) {
+  //       console.log("✅ PgBoss instance exists");
+  //     } else {
+  //       console.log("❌ PgBoss is null");
+  //     }
+  //   }, 1000);
+  // }
 
   setBoss(boss: PgBoss) {
     logger.log('setPgboss');
