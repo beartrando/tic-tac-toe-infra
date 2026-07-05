@@ -1,6 +1,6 @@
 services:
   gateway:
-    container_name: game-gateway
+    container_name: ttt-gateway
     image: ghcr.io/temenb/gateway/service:${GATEWAY_VERSION}
     restart: always
     env_file:
@@ -11,7 +11,7 @@ services:
       - backend
 
   auth:
-    container_name: game-auth
+    container_name: ttt-auth
     image: ghcr.io/temenb/auth/service:${AUTH_VERSION}
     restart: always
     env_file:
@@ -27,7 +27,7 @@ services:
       - backend
 
   orchestration:
-    container_name: game-orchestration
+    container_name: ttt-orchestration
     image: ghcr.io/temenb/orchestration/service:${ORCHESTRATION_VERSION}
     restart: always
     env_file:
@@ -41,7 +41,7 @@ services:
       - backend
 
   ai:
-    container_name: game-ai
+    container_name: ttt-ai
     image: ghcr.io/temenb/ai/service:${AI_VERSION}
     restart: always
     env_file:
@@ -53,7 +53,7 @@ services:
       - backend
 
   battle:
-    container_name: game-battle
+    container_name: ttt-battle
     image: ghcr.io/temenb/battle/service:${BATTLE_VERSION}
     restart: always
     env_file:
@@ -67,7 +67,7 @@ services:
       - backend
 
   streaming:
-    container_name: game-streaming
+    container_name: ttt-streaming
     image: ghcr.io/temenb/streaming/service:${STREAMING_VERSION}
     restart: always
     env_file:
@@ -78,7 +78,7 @@ services:
       - backend
 
   profile:
-    container_name: game-profile
+    container_name: ttt-profile
     image: ghcr.io/temenb/profile/service:${PROFILE_VERSION}
     restart: always
     env_file:
@@ -92,7 +92,7 @@ services:
       - backend
 
   engine:
-    container_name: game-engine
+    container_name: ttt-engine
     image: ghcr.io/temenb/engine/service:${ENGINE_VERSION}
     restart: always
     env_file:
@@ -109,7 +109,7 @@ services:
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
-    container_name: game-kafka-ui
+    container_name: ttt-kafka-ui
     ports:
       - "8081:8080"
     environment:
@@ -127,7 +127,7 @@ services:
 
   kafka:
     image: apache/kafka:4.1.1
-    container_name: game-kafka
+    container_name: ttt-kafka
     ports:
       - "9092:9092"
     environment:
@@ -156,17 +156,16 @@ services:
 
   postgres:
     image: postgres:17.6
-    container_name: game-postgres
+    container_name: ttt-postgres
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
       POSTGRES_INITDB_ARGS: "--auth-host=md5"
-    ports:
-      - "5432:5432"
     volumes:
       - ./services/postgres/data:/var/lib/postgresql/data
+#      - ./services/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
       - backend
     healthcheck:
@@ -178,7 +177,7 @@ services:
 
   pgbouncer:
     image: edoburu/pgbouncer
-    container_name: game-pgbouncer
+    container_name: ttt-pgbouncer
     volumes:
       - ./services/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
       - ./services/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
@@ -199,7 +198,7 @@ services:
 
   redis:
     image: redis:7.2
-    container_name: game-redis
+    container_name: ttt-redis
     networks:
       - backend
     restart: always
@@ -211,14 +210,14 @@ services:
 
 #  mongo:
 #    image: mongo:8
-#    container_name: game-mongo
+#    container_name: ttt-mongo
 #    restart: always
 #    ports:
 #      - "27017:27017"
 #    environment:
 #      MONGO_INITDB_ROOT_USERNAME: mongo
 #      MONGO_INITDB_ROOT_PASSWORD: mongo
-#      MONGO_INITDB_DATABASE: game
+#      MONGO_INITDB_DATABASE: ttt
 #    volumes:
 #      - mongo_data:/data/db
 #    networks:
@@ -232,7 +231,7 @@ services:
 #
 #  mailpit:
 #    image: axllent/mailpit
-#    container_name: game-mailpit
+#    container_name: ttt-mailpit
 #    ports:
 #      - 8025:8025
 #      - 1025:1025
