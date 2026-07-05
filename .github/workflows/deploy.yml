@@ -110,7 +110,7 @@ jobs:
 
             docker run \
               --rm --env-file ./services/.env.${{ github.event.client_payload.service }} \
-              --network game_backend \
+              --network tic-tac-toe_backend \
               ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}
 
             docker compose pull
