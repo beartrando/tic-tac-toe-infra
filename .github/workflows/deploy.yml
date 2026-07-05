@@ -40,8 +40,7 @@ jobs:
 
       - name: Checkout service submodule branch
         run: |
-          ls services/
-          cd services/tic-tac-toe-${{ github.event.client_payload.service }}
+          cd services/${{ github.event.client_payload.service }}
           git fetch origin ${{ github.event.client_payload.branch }}
           git checkout ${{ github.event.client_payload.branch }}
           git pull origin ${{ github.event.client_payload.branch }}
