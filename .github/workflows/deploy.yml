@@ -111,7 +111,7 @@ jobs:
             docker run \
               --rm --env-file ./services/.env.${{ github.event.client_payload.service }} \
               --network game_backend \
-              ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}
+              ghcr.io/${{ github.event.client_payload.repo }}/predeploy:dev
 
             docker compose pull
             docker compose up -d ${{ github.event.client_payload.service }} --remove-orphans
