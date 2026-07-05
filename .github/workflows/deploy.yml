@@ -31,12 +31,12 @@ jobs:
           echo "Version: ${{ github.event.client_payload.version }}"
           echo "Sha: ${{ github.event.client_payload.sha }}"
 
-#      - name: Checkout monorepo
-#        uses: actions/checkout@v4
-#        with:
-#          submodules: true
-#          fetch-depth: 0
-#
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
 #      - name: Checkout service submodule branch
 #        run: |
 #          cd services/${{ github.event.client_payload.service }}
