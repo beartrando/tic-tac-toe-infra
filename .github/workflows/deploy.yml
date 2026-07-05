@@ -45,49 +45,55 @@ jobs:
           git checkout ${{ github.event.client_payload.branch }}
           git pull origin ${{ github.event.client_payload.branch }}
 
+      # 🔑 Добавляем buildx и cache
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.event.client_payload.service }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ github.event.client_payload.service }}-
+
       - name: Build Docker image
         run: |
-          docker build \
+          docker buildx build \
             --target prod \
+            --cache-from type=local,src=/tmp/.buildx-cache \
+            --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max \
             -t $REGISTRY/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
             -f services/${{ github.event.client_payload.service }}/Dockerfile .
 
-          docker tag ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-          docker tag ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/service:latest
+          docker tag $REGISTRY/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
+            $REGISTRY/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
 
-          docker tag ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.sha }}
+          docker tag $REGISTRY/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
+            $REGISTRY/${{ github.event.client_payload.repo }}/service:latest
 
-          docker build \
+          docker tag $REGISTRY/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
+            $REGISTRY/${{ github.event.client_payload.repo }}/service:${{ github.sha }}
+
+          docker buildx build \
             --target predeploy \
+            --cache-from type=local,src=/tmp/.buildx-cache \
+            --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max \
             -t $REGISTRY/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
             -f services/${{ github.event.client_payload.service }}/Dockerfile .
 
-          docker tag ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.branch }}
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-          docker tag ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/predeploy:latest
+          docker tag $REGISTRY/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
+            $REGISTRY/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.branch }}
 
-          docker tag ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.sha }}
+          docker tag $REGISTRY/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
+            $REGISTRY/${{ github.event.client_payload.repo }}/predeploy:latest
 
-
-      - name: Push image
-        run: |
-          echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.sha }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:latest
-
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.branch }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.sha }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:latest
+          docker tag $REGISTRY/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
+            $REGISTRY/${{ github.event.client_payload.repo }}/predeploy:${{ github.sha }}
 
 
   deploy:
