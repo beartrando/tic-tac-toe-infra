@@ -36,6 +36,7 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
+          token: ${{ secrets.GH_PAT }}
 
 #      - name: Checkout service submodule branch
 #        run: |
