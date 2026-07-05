@@ -34,13 +34,14 @@ jobs:
       - name: Checkout monorepo
         uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: recursive
           fetch-depth: 0
           token: ${{ secrets.GH_PAT }}
 
       - name: Checkout service submodule branch
         run: |
-          cd services/${{ github.event.client_payload.service }}
+          ls services/
+          cd services/tic-tac-toe-${{ github.event.client_payload.service }}
           git fetch origin ${{ github.event.client_payload.branch }}
           git checkout ${{ github.event.client_payload.branch }}
           git pull origin ${{ github.event.client_payload.branch }}
