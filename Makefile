@@ -247,7 +247,7 @@ healthloop:
 	@echo "▶ Starting health loop..."
 	@while true; do \
         now=$$(date '+%Y-%m-%d %H:%M:%S'); \
-        response=$$(curl -s http://192.168.31.186:9090/health); \
+        response=$$(curl -s http://31.222.235.64:9090/health); \
         if echo $$response | grep -q '"healthy":true'; then \
             echo "$$now ✅ Services healthy"; \
         else \
