@@ -1,5 +1,6 @@
 include make/parameters.mk
 include make/kafka.mk
+include make/front.mk
 include make/terminal.mk
 
 NODE_BIN=./node_modules/.bin
