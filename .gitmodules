@@ -25,3 +25,6 @@
 [submodule "services/streaming"]
         path = services/streaming
         url = git@github.com:beartrando/tic-tac-toe-streaming.git
+[submodule "proto"]
+        path = proto
+        url = git@github.com:beartrando/tic-tac-toe-proto.git
