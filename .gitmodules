@@ -1,9 +1,15 @@
+[submodule "services/auth"]
+	path = services/auth
+	url = git@github.com:beartrando/auth.git
+[submodule "services/gateway"]
+        path = services/gateway
+        url = git@github.com:beartrando/gateway.git
+[submodule "services/profile"]
+	path = services/profile
+	url = git@github.com:beartrando/profile.git
 [submodule "services/ai"]
 	path = services/ai
 	url = git@github.com:beartrando/tic-tac-toe-ai.git
-[submodule "services/auth"]
-	path = services/auth
-	url = git@github.com:beartrando/tic-tac-toe-auth.git
 [submodule "services/battle"]
         path = services/battle
         url = git@github.com:beartrando/tic-tac-toe-battle.git
@@ -13,15 +19,9 @@
 [submodule "services/front"]
         path = services/front
         url = git@github.com:beartrando/tic-tac-toe-front.git
-[submodule "services/gateway"]
-        path = services/gateway
-        url = git@github.com:beartrando/tic-tac-toe-gateway.git
 [submodule "services/orchestration"]
         path = services/orchestration
         url = git@github.com:beartrando/tic-tac-toe-orchestration.git
-[submodule "services/profile"]
-	path = services/profile
-	url = git@github.com:beartrando/tic-tac-toe-profile.git
 [submodule "services/streaming"]
         path = services/streaming
         url = git@github.com:beartrando/tic-tac-toe-streaming.git
