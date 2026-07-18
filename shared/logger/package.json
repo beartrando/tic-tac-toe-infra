@@ -5,7 +5,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "dev": "tsc --watch"
+    "dev": "tsc -w -p tsconfig.json"
   },
   "exports": {
     ".": {

@@ -49,6 +49,7 @@ jobs:
         run: |
           docker build \
             --target prod \
+            --build-arg VERSION=${{ github.event.client_payload.version }} \
             -t $REGISTRY/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
             -f services/${{ github.event.client_payload.service }}/Dockerfile .
 
@@ -63,6 +64,7 @@ jobs:
 
           docker build \
             --target predeploy \
+            --build-arg VERSION=${{ github.event.client_payload.version }} \
             -t $REGISTRY/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
             -f services/${{ github.event.client_payload.service }}/Dockerfile .
 
@@ -118,4 +120,4 @@ jobs:
             docker image prune -f
             docker system prune -a
             EOF
-    
+
