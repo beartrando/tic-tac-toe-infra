@@ -4,7 +4,7 @@ package common.health;
 import "common/empty.proto";
 
 service Health {
-  rpc Health (common.empty.Empty) returns (HealthReport);
+  rpc Check (common.empty.Empty) returns (HealthReport);
   rpc Status (common.empty.Empty) returns (StatusInfo);
   rpc Livez (common.empty.Empty) returns (LiveStatus);
   rpc Readyz (common.empty.Empty) returns (ReadyStatus);
