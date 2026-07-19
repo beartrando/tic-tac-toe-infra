@@ -1,6 +1,5 @@
 syntax = "proto3";
 
-import "common/health.proto";
 import "common/empty.proto";
 import "common/error.proto";
 import "common/ping.proto";
@@ -9,11 +8,6 @@ import "battle.proto";
 package engine;
 
 service Engine {
-  rpc Health (common.empty.Empty) returns (common.health.HealthReport);
-  rpc Status (common.empty.Empty) returns (common.health.StatusInfo);
-  rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
-  rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
-
   rpc BattleChannel (stream BattleStreamRequest) returns (stream BattleStreamResponse);
 }
 

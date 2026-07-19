@@ -3,7 +3,8 @@ services:
     build:
       context: .
       dockerfile: services/gateway/Dockerfile
-    container_name: game-gateway
+      target: dev
+    container_name: ttt-gateway
     env_file:
       - services/gateway/.env
     ports:
@@ -28,7 +29,8 @@ services:
     build:
       context: .
       dockerfile: services/auth/Dockerfile
-    container_name: game-auth
+      target: dev
+    container_name: ttt-auth
     env_file:
       - services/auth/.env
     environment:
@@ -58,7 +60,8 @@ services:
     build:
       context: .
       dockerfile: services/orchestration/Dockerfile
-    container_name: game-orchestration
+      target: dev
+    container_name: ttt-orchestration
     env_file:
       - services/orchestration/.env
     volumes:
@@ -86,7 +89,8 @@ services:
     build:
       context: .
       dockerfile: services/ai/Dockerfile
-    container_name: game-ai
+      target: dev
+    container_name: ttt-ai
     env_file:
       - services/ai/.env
     volumes:
@@ -112,7 +116,8 @@ services:
     build:
       context: .
       dockerfile: services/battle/Dockerfile
-    container_name: game-battle
+      target: dev
+    container_name: ttt-battle
     env_file:
       - services/battle/.env
     volumes:
@@ -140,7 +145,8 @@ services:
     build:
       context: .
       dockerfile: services/streaming/Dockerfile
-    container_name: game-streaming
+      target: dev
+    container_name: ttt-streaming
     env_file:
       - services/streaming/.env
     ports:
@@ -165,7 +171,8 @@ services:
     build:
       context: .
       dockerfile: services/profile/Dockerfile
-    container_name: game-profile
+      target: dev
+    container_name: ttt-profile
     env_file:
       - services/profile/.env
     volumes:
@@ -193,7 +200,8 @@ services:
     build:
       context: .
       dockerfile: services/engine/Dockerfile
-    container_name: game-engine
+      target: dev
+    container_name: ttt-engine
     env_file:
       - services/engine/.env
     volumes:
@@ -221,7 +229,7 @@ services:
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
-    container_name: game-kafka-ui
+    container_name: ttt-kafka-ui
     ports:
       - "8081:8080"
     environment:
@@ -230,7 +238,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep '\"status\":\"UP\"' || exit 1"]
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep '\"status\":\"UP\"' || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -239,7 +247,7 @@ services:
 
   kafka:
     image: apache/kafka:4.1.1
-    container_name: game-kafka
+    container_name: ttt-kafka
     ports:
       - "9092:9092"
     environment:
@@ -260,7 +268,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1 || exit 1"]
+      test: [ "CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1 || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -268,7 +276,7 @@ services:
 
   postgres:
     image: postgres:17.6
-    container_name: game-postgres
+    container_name: ttt-postgres
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -279,11 +287,10 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-#      - ./services/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 3s
       retries: 5
@@ -303,7 +310,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -h postgres -p 5432"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -h postgres -p 5432" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -317,31 +324,12 @@ services:
       - backend
     restart: always
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
 
-#  mongo:
-#    image: mongo:8
-#    container_name: ttt-mongo
-#    restart: always
-#    ports:
-#      - "27017:27017"
-#    environment:
-#      MONGO_INITDB_ROOT_USERNAME: mongo
-#      MONGO_INITDB_ROOT_PASSWORD: mongo
-#      MONGO_INITDB_DATABASE: ttt
-#    volumes:
-#      - mongo_data:/data/db
-#    networks:
-#      - backend
-#    healthcheck:
-#      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
-#      start_period: 10s
+
 
 volumes:
   postgres_data:

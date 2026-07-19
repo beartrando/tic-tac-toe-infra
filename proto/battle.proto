@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-import "common/health.proto";
-import "common/empty.proto";
 import "auth.proto";
 import "profile.proto";
 //import "google/protobuf/timestamp.proto";
@@ -9,11 +7,6 @@ import "profile.proto";
 package battle;
 
 service Battle {
-  rpc Health (common.empty.Empty) returns (common.health.HealthReport);
-  rpc Status (common.empty.Empty) returns (common.health.StatusInfo);
-  rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
-  rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
-
   rpc GetBattleByUser (auth.UserIdRequest) returns (BattleObject);
   rpc GetBattle (BattleIdRequest) returns (BattleObject);
   rpc UpsertBattle (profile.ProfileIdRequest) returns (BattleObject);

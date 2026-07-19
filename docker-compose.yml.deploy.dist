@@ -1,7 +1,7 @@
 services:
   gateway:
     container_name: ttt-gateway
-    image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION}
+    image: ghcr.io/beartrando/gateway/service:${GATEWAY_VERSION}
     restart: always
     env_file:
       - ./services/.env.gateway

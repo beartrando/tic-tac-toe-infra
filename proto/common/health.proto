@@ -1,17 +1,22 @@
 syntax = "proto3";
 
 package common.health;
+import "common/empty.proto";
 
-message HealthReport {
-  map<string, string> components = 1;
-  bool healthy = 2;
+service Health {
+  rpc Health (common.empty.Empty) returns (HealthReport);
+  rpc Status (common.empty.Empty) returns (StatusInfo);
+  rpc Livez (common.empty.Empty) returns (LiveStatus);
+  rpc Readyz (common.empty.Empty) returns (ReadyStatus);
 }
 
-//message HealthReport {
-////  string service = 1;   // имя сервиса
-//  string status = 2;    // состояние: "SERVING", "NOT_SERVING"
+message HealthReport {
+//  string service = 1;   // имя сервиса
+  map<string, string> components = 2;
+  bool healthy = 3;
 //  int64 timestamp = 4;  // время отчёта (unix time)
-//}
+
+}
 
 message StatusInfo {
   string name = 1;
