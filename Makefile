@@ -298,4 +298,7 @@ artifacts-drop:
 	find . -name "dist" -type d -prune -exec rm -rf '{}' +
 	find . -name "tsconfig.tsbuildinfo" -type f -delete
 
-
+build:
+	@for service in $(NODE_SERVICES); do \
+		BUILDKIT_PROGRESS=plain docker compose build "$$service" || exit 1; \
+	done

@@ -1,15 +1,16 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
 import "common/empty.proto";
 import "auth.proto";
 
 package profile;
 
 service Profile {
-  rpc GetMy (common.empty.Empty) returns (ProfileObject);
-  rpc GetProfileByUser (auth.UserIdRequest) returns (ProfileObject);
-  rpc GetProfile (profile.ProfileIdRequest) returns (ProfileObject);
-  rpc UpsertProfile (auth.UserIdRequest) returns (ProfileObject);
+  rpc GetMe (common.empty.Empty) returns (ProfileObject);
+  rpc GetByUser (auth.UserIdRequest) returns (ProfileObject);
+  rpc Get (profile.ProfileIdRequest) returns (ProfileObject);
+  rpc Upsert (auth.UserIdRequest) returns (ProfileObject);
 }
 
 message ProfileIdRequest {
@@ -17,12 +18,12 @@ message ProfileIdRequest {
 }
 
 message ProfileObject {
-  string id         = 1;
-  string user_id    = 2;
-  string nickname   = 3;
-  int64  level      = 4;
-  int64  rating     = 5;
-  int64  experience = 6;
-  int64  createdAt  = 7;
-  int64  updatedAt  = 8;
+  string                    id         = 1;
+  string                    user_id    = 2;
+  string                    nickname   = 3;
+  int64                     level      = 4;
+  int64                     rating     = 5;
+  int64                     experience = 6;
+  google.protobuf.Timestamp createdAt  = 7;
+  google.protobuf.Timestamp updatedAt  = 8;
 }

@@ -1,29 +1,38 @@
 syntax = "proto3";
 
 package common.health;
+
 import "common/empty.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
 
 service Health {
   rpc Check (common.empty.Empty) returns (HealthReport);
-  rpc Status (common.empty.Empty) returns (StatusInfo);
+  rpc Status (common.empty.Empty) returns (ServiceStatus);
   rpc Livez (common.empty.Empty) returns (LiveStatus);
   rpc Readyz (common.empty.Empty) returns (ReadyStatus);
 }
 
 message HealthReport {
-//  string service = 1;   // имя сервиса
-  map<string, string> components = 2;
-  bool healthy = 3;
-//  int64 timestamp = 4;  // время отчёта (unix time)
-
+  string                    service    = 1;
+  HealthStatus              status     = 2;
+  map<string, HealthStatus> components = 3;
+  google.protobuf.Timestamp timestamp  = 4;
 }
 
-message StatusInfo {
-  string name = 1;
-  string version = 2;
-  double uptime = 4;
-  string env = 5;
-  string timestamp = 6;
+enum HealthStatus {
+  HEALTH_STATUS_UNSPECIFIED = 0;
+  HEALTH_STATUS_OK          = 1;
+  HEALTH_STATUS_FAIL        = 2;
+}
+
+message ServiceStatus {
+  string                    name           = 1;
+  string                    version        = 2;
+  google.protobuf.Duration  uptime_seconds = 4;
+  string                    env            = 5;
+  google.protobuf.Timestamp timestamp      = 6;
 }
 
 message LiveStatus {

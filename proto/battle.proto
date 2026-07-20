@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
 import "auth.proto";
 import "profile.proto";
 //import "google/protobuf/timestamp.proto";
@@ -7,11 +8,11 @@ import "profile.proto";
 package battle;
 
 service Battle {
-  rpc GetBattleByUser (auth.UserIdRequest) returns (BattleObject);
-  rpc GetBattle (BattleIdRequest) returns (BattleObject);
-  rpc UpsertBattle (profile.ProfileIdRequest) returns (BattleObject);
-  rpc JoinBattle (StartBattleRequest) returns (BattleObject);
-  rpc LeaveBattle (BattleLeaveRequest) returns (BattleObject);
+  rpc GetActiveByUser (auth.UserIdRequest) returns (BattleObject);
+  rpc Get (BattleIdRequest) returns (BattleObject);
+  rpc Upsert (profile.ProfileIdRequest) returns (BattleObject);
+  rpc Join (StartBattleRequest) returns (BattleObject);
+  rpc Leave (BattleLeaveRequest) returns (BattleObject);
 }
 
 message BattleIdRequest {
@@ -45,13 +46,14 @@ enum BattleStatus {
 }
 
 message BattleObject {
-  string                   id         = 1;
-  repeated BattleCellValue cells      = 2;
-  repeated string          players    = 3;
-  BattleStatus             status     = 4;
-  string                   winner     = 5;
-  int64                    createdAt  = 6;
-  int64                    updatedAt  = 7;
+  string                    id         = 1;
+  repeated BattleCellValue  cells      = 2;
+  repeated string           players    = 3;
+  BattleStatus              status     = 4;
+  string                    winner     = 5;
+  google.protobuf.Timestamp lastMoveAt = 6;
+  google.protobuf.Timestamp createdAt  = 7;
+  google.protobuf.Timestamp updatedAt  = 8;
 }
 
 

@@ -1,7 +1,8 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
 package common.ping;
 
 message Ping {
-  int64 timestamp = 1;
+  google.protobuf.Timestamp timestamp = 1;
 }

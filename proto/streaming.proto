@@ -8,9 +8,6 @@ import "battle.proto";
 
 package streaming;
 
-service Streaming {
-}
-
 message BattleStreamRequest {
   oneof event {
     StartBattleRequest    start     = 1;

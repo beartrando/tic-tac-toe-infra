@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
 import "common/empty.proto";
 
 package auth;
@@ -12,8 +13,8 @@ service Auth {
   rpc ForgotPassword (ForgotPasswordRequest) returns (common.empty.Empty);
   rpc ResetPassword (ResetPasswordRequest) returns (AuthObject);
   rpc AnonymousSignIn (AnonymousSignInRequest) returns (AuthObject);
-  rpc GetUser (UserIdRequest) returns (UserObject);
-  rpc GetMy (common.empty.Empty) returns (UserObject);
+  rpc Get (UserIdRequest) returns (UserObject);
+  rpc GetMe (common.empty.Empty) returns (UserObject);
 }
 
 message RegisterRequest {
@@ -22,10 +23,10 @@ message RegisterRequest {
 }
 
 message UserObject {
-  string id         = 1;
-  string email      = 2;
-  int64  createdAt  = 3;
-  int64  updatedAt  = 4;
+  string                     id         = 1;
+  string                     email      = 2;
+  google.protobuf.Timestamp  createdAt  = 3;
+  google.protobuf.Timestamp  updatedAt  = 4;
 }
 
 message UserIdRequest {
