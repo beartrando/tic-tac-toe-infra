@@ -7,9 +7,9 @@ import { ConsumerConfig, KafkaConfig } from './types';
 const sleep = (ms: number) =>
     new Promise(resolve => setTimeout(resolve, ms));
 
-export async function createConsumer(
+export async function createConsumer<T>(
     config: KafkaConfig,
-    consumerConfig: ConsumerConfig,
+    consumerConfig: ConsumerConfig<T>,
 ): Promise<Consumer> {
     const kafka = getKafkaInstance(config);
 
@@ -55,6 +55,9 @@ export async function createConsumer(
         }
     }
 
+
+    logger.info(`Consumer started: ${consumerConfig.topic}`);
+
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
             if (!message.value) {
@@ -62,7 +65,7 @@ export async function createConsumer(
             }
 
             try {
-                const payload = JSON.parse(message.value.toString());
+                const payload = JSON.parse(message.value.toString()) as T;
 
                 await consumerConfig.handler(
                     topic,
@@ -77,10 +80,6 @@ export async function createConsumer(
             }
         },
     });
-
-    logger.info(
-        `Connecting consumer "${consumerConfig.topic}"`,
-    );
 
     return consumer;
 }

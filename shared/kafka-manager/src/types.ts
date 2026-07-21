@@ -13,4 +13,4 @@ export type ConsumerConfig<T = unknown> = {
     ) => Promise<void>;
 };
 
-export type ProducerMessage = Record<string, unknown>;
+// export type ProducerMessage = Record<string, unknown>;
