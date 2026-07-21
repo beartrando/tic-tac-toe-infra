@@ -1,6 +1,8 @@
 import { Kafka } from 'kafkajs';
 import logger from '../../logger';
 
+const initializedTopics = new Set<string>();
+
 const sleep = (ms: number) =>
     new Promise(resolve => setTimeout(resolve, ms));
 
@@ -19,11 +21,17 @@ export async function withAdmin<T>(
     }
 }
 
+const initializingTopics = new Map<string, Promise<void>>();
+
 export async function ensureTopic(
     kafka: Kafka,
     topic: string,
     partitions = 1,
 ): Promise<void> {
+    if (initializedTopics.has(topic)) {
+        return;
+    }
+
     await withAdmin(kafka, async admin => {
         const topics = await admin.listTopics();
 
@@ -43,6 +51,8 @@ export async function ensureTopic(
         }
 
         await waitForLeader(admin, topic);
+
+        initializedTopics.add(topic);
     });
 }
 
@@ -65,7 +75,7 @@ export async function waitForLeader(
             return;
         }
 
-        await sleep(1000);
+        await sleep(Math.min(1000 * (i + 1), 3000));
     }
 
     throw new Error(
