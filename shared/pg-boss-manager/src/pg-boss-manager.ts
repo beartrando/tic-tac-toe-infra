@@ -1,12 +1,16 @@
 import PgBoss from 'pg-boss';
+
 import logger from '../../logger';
 
 import {
-  InternalWorkerRegistration,
   PgBossConfig,
 } from './types';
 
 import { sleep } from './utils';
+
+import { WorkerManager } from './worker-manager';
+import { ProducerManager } from './publisher';
+import { KafkaBridge } from './kafka-bridge';
 
 export class PgBossManager {
 
@@ -14,15 +18,22 @@ export class PgBossManager {
 
   private config!: PgBossConfig;
 
-  private readonly workers: InternalWorkerRegistration[] = [];
-
   private running = false;
 
   private readonly reconnectDelay = 3000;
 
-  /**
-   * START
-   */
+  public readonly workers: WorkerManager;
+
+  public readonly producer: ProducerManager;
+
+  public readonly kafka: KafkaBridge;
+
+  constructor() {
+    this.workers = new WorkerManager(this);
+    this.producer = new ProducerManager(this);
+    this.kafka = new KafkaBridge(this);
+  }
+
   public async start(
       config: PgBossConfig,
   ): Promise<void> {
@@ -31,7 +42,9 @@ export class PgBossManager {
     this.running = true;
 
     while (this.running) {
+
       try {
+
         await this.connect();
 
         while (this.running && this.boss) {
@@ -39,6 +52,7 @@ export class PgBossManager {
         }
 
       } catch (err) {
+
         logger.error(
             { err },
             'PgBoss crashed',
@@ -59,9 +73,6 @@ export class PgBossManager {
     }
   }
 
-  /**
-   * STOP
-   */
   public async stop(): Promise<void> {
 
     this.running = false;
@@ -69,9 +80,6 @@ export class PgBossManager {
     await this.cleanup();
   }
 
-  /**
-   * CONNECT
-   */
   private async connect(): Promise<void> {
 
     logger.info('Connecting PgBoss...');
@@ -91,7 +99,7 @@ export class PgBossManager {
 
     logger.info('✅ PgBoss connected');
 
-    await this.restoreWorkers();
+    await this.workers.restore();
 
     boss.on('error', async err => {
 
@@ -104,9 +112,6 @@ export class PgBossManager {
     });
   }
 
-  /**
-   * CLEANUP
-   */
   private async cleanup(): Promise<void> {
 
     if (!this.boss) {
@@ -127,37 +132,12 @@ export class PgBossManager {
     logger.warn('PgBoss disconnected');
   }
 
-  /**
-   * RESTORE WORKERS
-   */
-  private async restoreWorkers(): Promise<void> {
-
-    logger.info(
-        `Restore ${this.workers.length} workers`,
-    );
-
-    for (const worker of this.workers) {
-      try {
-        await worker.register();
-      } catch (err) {
-        logger.error(
-            {
-              topic: worker.topic,
-              err,
-            },
-            'Failed to restore worker',
-        );
-      }
-    }
-  }
-
-  /**
-   * CURRENT INSTANCE
-   */
-  protected getBoss(): PgBoss {
+  public getBoss(): PgBoss {
 
     if (!this.boss) {
-      throw new Error('PgBoss is not connected');
+      throw new Error(
+          'PgBoss is not connected',
+      );
     }
 
     return this.boss;
