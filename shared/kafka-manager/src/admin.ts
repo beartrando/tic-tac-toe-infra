@@ -1,8 +1,6 @@
 import { Kafka } from 'kafkajs';
 import logger from '../../logger';
 
-const initializedTopics = new Set<string>();
-
 const sleep = (ms: number) =>
     new Promise(resolve => setTimeout(resolve, ms));
 
@@ -28,32 +26,40 @@ export async function ensureTopic(
     topic: string,
     partitions = 1,
 ): Promise<void> {
-    if (initializedTopics.has(topic)) {
-        return;
+    const existing = initializingTopics.get(topic);
+
+    if (existing) {
+        return existing;
     }
 
-    await withAdmin(kafka, async admin => {
-        const topics = await admin.listTopics();
+    const promise = (async () => {
+        await withAdmin(kafka, async admin => {
+            const topics = await admin.listTopics();///@TODO если будет 1000 топиков, listTopics() начнет становиться дорогой операцией. Можно определять существование по результату fetchTopicMetadata(). Это масштабируется лучше.
 
-        if (!topics.includes(topic)) {
-            logger.info(`Creating Kafka topic "${topic}"`);
+            if (!topics.includes(topic)) {
+                logger.info(`Creating Kafka topic "${topic}"`);
 
-            await admin.createTopics({
-                waitForLeaders: true,
-                topics: [
-                    {
+                await admin.createTopics({
+                    waitForLeaders: true,
+                    topics: [{
                         topic,
                         numPartitions: partitions,
                         replicationFactor: 1,
-                    },
-                ],
-            });
-        }
+                    }],
+                });
+            }
 
-        await waitForLeader(admin, topic);
+            await waitForLeader(admin, topic);
+        });
+    })();
 
-        initializedTopics.add(topic);
-    });
+    initializingTopics.set(topic, promise);
+
+    try {
+        await promise;
+    } finally {
+        initializingTopics.delete(topic);
+    }
 }
 
 export async function waitForLeader(
@@ -75,7 +81,8 @@ export async function waitForLeader(
             return;
         }
 
-        await sleep(Math.min(1000 * (i + 1), 3000));
+        const delay = Math.min((i + 1) * 1000, 3000);
+        await sleep(delay);
     }
 
     throw new Error(
