@@ -1,171 +1,251 @@
 import logger from '../../logger';
-import {createProducer, KafkaConfig} from '../../kafka-manager';
-import {Job, PgBoss} from 'pg-boss';
-import {PgBossConfig} from './types';
-
+import { createProducer, KafkaConfig } from '../../kafka-manager';
+import { Job, PgBoss } from 'pg-boss';
+import { PgBossConfig } from './types';
 
 export class PgBossManager {
 
-  private _boss: PgBoss | null = null;
+  private bossInstance: PgBoss | null = null;
 
-  private workers: Array<() => Promise<void>> = [];
+  private registrations: Array<() => Promise<void>> = [];
 
-  // constructor() {
-  //   logger.log(__filename);
-  //
-  //   // Таймер проверки состояния PgBoss
-  //   setInterval(() => {
-  //     if (this._boss) {
-  //       console.log("✅ PgBoss instance exists");
-  //     } else {
-  //       console.log("❌ PgBoss is null");
-  //     }
-  //   }, 1000);
-  // }
+  private config!: PgBossConfig;
 
-  setBoss(boss: PgBoss) {
-    logger.log('setPgboss');
-    this._boss = boss;
+  private running = false;
+
+  private reconnectDelay = 3000;
+
+  /**
+   * START
+   */
+  async start(config: PgBossConfig) {
+    this.config = config;
+    this.running = true;
+
+    while (this.running) {
+      try {
+        await this.connect();
+
+        while (this.running && this.bossInstance) {
+          await this.sleep(1000);
+        }
+
+      } catch (e) {
+        logger.error('PgBoss crashed', e);
+      }
+
+      await this.cleanup();
+
+      if (!this.running) {
+        break;
+      }
+
+      logger.warn(`Reconnect PgBoss in ${this.reconnectDelay} ms`);
+
+      await this.sleep(this.reconnectDelay);
+    }
   }
 
-  initBoss = (
-    config: PgBossConfig,
-    cb: () => void
-  ): Promise<PgBoss> => {
+  /**
+   * STOP
+   */
+  async stop() {
+    this.running = false;
+    await this.cleanup();
+  }
 
-    return (async () => {
-      const boss = new PgBoss({
-        connectionString: process.env.DATABASE_URL,
-        max: config.max ?? 5,
-        maintenanceIntervalSeconds: config.maintenanceIntervalSeconds ?? 60,
-        application_name: config.applicationName ?? 'pgboss',
-      });
+  /**
+   * CONNECT
+   */
+  private async connect() {
 
-      await boss.start();
+    logger.info('Connecting PgBoss...');
 
-      this.setBoss(boss);
+    const boss = new PgBoss({
+      connectionString: process.env.DATABASE_URL,
+      max: this.config.max ?? 5,
+      maintenanceIntervalSeconds:
+          this.config.maintenanceIntervalSeconds ?? 60,
+      application_name:
+          this.config.applicationName ?? 'pgboss',
+    });
 
-      logger.info('✅ PgBoss connected');
+    await boss.start();
 
-      cb();
+    this.bossInstance = boss;
 
-      return boss;
-    })();
+    logger.info('✅ PgBoss connected');
 
-  };
+    await this.restoreWorkers();
 
-  boss = async (): Promise<PgBoss> => {
-    if (!this._boss) {
-      throw new Error('PgBoss not initialized');
+    boss.on('error', async (err) => {
+      logger.error('PgBoss error', err);
+
+      await this.cleanup();
+    });
+
+  }
+
+  /**
+   * CLEANUP
+   */
+  private async cleanup() {
+
+    if (!this.bossInstance) {
+      return;
     }
-    return this._boss;
-  };
-
-
-  stopBoss = async () => {
-    logger.info('Stop Boss !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    if (!this._boss) return;
 
     try {
-      await this._boss.stop();
-      logger.info('🛑 PgBoss stopped');
+      await this.bossInstance.stop();
     } catch (e) {
-      logger.error('PgBoss stop error', e);
-    } finally {
-      this._boss = null;
-      // workersStarted = false;
+      logger.error(e);
     }
+
+    this.bossInstance = null;
+
+    logger.warn('PgBoss disconnected');
+  }
+
+  /**
+   * RESTORE
+   */
+  private async restoreWorkers() {
+
+    logger.info(
+        `Restore ${this.registrations.length} workers`
+    );
+
+    for (const register of this.registrations) {
+      try {
+        await register();
+      } catch (e) {
+        logger.error(e);
+      }
+    }
+
+  }
+
+  /**
+   * CURRENT BOSS
+   */
+  private getBoss(): PgBoss {
+
+    if (!this.bossInstance) {
+      throw new Error('PgBoss not connected');
+    }
+
+    return this.bossInstance;
   }
 
   /**
    * GENERIC WORKER
    */
-  startWorker = async (
-    topic: string,
-    handler: (jobs: Job[]) => Promise<void>
-  ) => {
+  async startWorker(
+      topic: string,
+      handler: (jobs: Job[]) => Promise<void>
+  ) {
+
     const register = async () => {
-      const boss = await this.boss();
+
+      const boss = this.getBoss();
 
       await boss.createQueue(topic);
 
       await boss.work(topic, handler);
 
-      logger.info(`📦 Worker started: ${topic}`);
+      logger.info(`Worker started: ${topic}`);
     };
 
-    this.workers.push(register);
+    this.registrations.push(register);
 
-    if (this._boss) {
+    if (this.bossInstance) {
       await register();
     }
   }
 
   /**
-   * KAFKA WORKER (batch-safe)
+   * KAFKA WORKER
    */
-  startKafkaWorker = async (
-    kafkaConfig: KafkaConfig,
-    topic: string
-  ) => {
+  async startKafkaWorker(
+      kafkaConfig: KafkaConfig,
+      topic: string
+  ) {
+
     const register = async () => {
+
       const producer = await createProducer(kafkaConfig);
-      const b = await this.boss();
 
-      await b.createQueue(topic);
+      const boss = this.getBoss();
 
-      await b.work(
-        topic,
-        {batchSize: 10},
-        async (jobs: Job<unknown>[]) => {
-          for (const j of jobs) {
-            await producer.send(j.name, j.data);
+      await boss.createQueue(topic);
+
+      await boss.work(
+          topic,
+          { batchSize: 10 },
+          async (jobs: Job[]) => {
+
+            for (const job of jobs) {
+              await producer.send(job.name, job.data);
+            }
+
+            return true;
           }
-          return true;
-        }
       );
 
       logger.info(`Kafka worker started: ${topic}`);
     };
 
-    this.workers.push(register);
+    this.registrations.push(register);
 
-    if (this._boss) {
+    if (this.bossInstance) {
       await register();
     }
+
   }
 
-  enqueueEvent = async (topic: string, data: object): Promise<number | null> => {
-    const jobName = topic;
-    // logger.log('here ' + jobName);
-    // logger.log(boss.toString());
-    const bossObj = await pgBossManager.boss();
-    // logger.log(bossObj);
-    const jobId = await bossObj.send(jobName, data);
+  /**
+   * SEND EVENT
+   */
+  async enqueueEvent(
+      topic: string,
+      data: object
+  ): Promise<number> {
 
-    if (!jobId) {
-      throw new Error(`Failed to enqueue event: topic`);
+    const id = await this.getBoss().send(topic, data);
+
+    if (!id) {
+      throw new Error(`Failed enqueue ${topic}`);
     }
 
-    return Number(jobId);
-
+    return Number(id);
   }
 
-  enqueueEventTx = async (
-    topic: string,
-    data: object,
-    tx: any
-  ): Promise<number | null> => {
-    const jobName = topic;
-    // logger.log('enqueueEventTx ' + jobName);
-    return await tx.$executeRawUnsafe(`
-        insert into pgboss.job (name, data)
-        values ($1, $2::jsonb) returning id
-    `, jobName, JSON.stringify(data));
+  /**
+   * SEND EVENT TX
+   */
+  async enqueueEventTx(
+      topic: string,
+      data: object,
+      tx: any
+  ) {
+
+    return tx.$executeRawUnsafe(
+        `
+            insert into pgboss.job(name,data)
+            values ($1,$2::jsonb)
+            returning id
+            `,
+        topic,
+        JSON.stringify(data)
+    );
   }
+
+  private sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
 }
 
 const pgBossManager = new PgBossManager();
 
 export default pgBossManager;
-
