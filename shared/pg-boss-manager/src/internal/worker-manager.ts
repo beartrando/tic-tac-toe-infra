@@ -10,82 +10,59 @@ import {
 } from './interfaces';
 
 import {
-    InternalWorkerRegistration,
     InternalBatchWorkerRegistration,
+    InternalWorkerRegistration,
 } from './types';
-
 
 export class WorkerManager {
 
-    private readonly workers:
-        InternalWorkerRegistration[] = [];
+    private readonly workers: InternalWorkerRegistration[] = [];
 
-    private readonly batchWorkers:
-        InternalBatchWorkerRegistration[] = [];
-
+    private readonly batchWorkers: InternalBatchWorkerRegistration[] = [];
 
     constructor(
         private readonly bossProvider: BossProvider,
     ) {}
 
-
     /**
-     * Register simple worker.
+     * Register worker.
+     *
+     * Worker will be attached to PgBoss
+     * automatically after every reconnect.
      */
-    public async startWorker<T>(
+    public registerWorker<T>(
         topic: string,
         handler: WorkerHandler<T>,
-    ): Promise<void> {
+    ): void {
 
-        const registration: InternalWorkerRegistration = {
+        this.workers.push({
             topic,
             handler: async data => {
                 await handler(data as T);
             },
-        };
-
-
-        this.workers.push(
-            registration,
-        );
-
-
-        await this.registerWorker(
-            registration,
-        );
+        });
     }
-
 
     /**
      * Register batch worker.
+     *
+     * Worker will be attached to PgBoss
+     * automatically after every reconnect.
      */
-    public async startBatchWorker<T>(
+    public registerBatchWorker<T>(
         topic: string,
         batchSize: number,
         handler: BatchWorkerHandler<T>,
-    ): Promise<void> {
+    ): void {
 
-        const registration: InternalBatchWorkerRegistration = {
+        this.batchWorkers.push({
             topic,
             batchSize,
             handler: async data => {
-                await handler(
-                    data as T[],
-                );
+                await handler(data as T[]);
             },
-        };
-
-
-        this.batchWorkers.push(
-            registration,
-        );
-
-
-        await this.registerBatchWorker(
-            registration,
-        );
+        });
     }
-
 
     /**
      * Restore all workers after reconnect.
@@ -97,33 +74,36 @@ export class WorkerManager {
         await this.restoreBatchWorkers();
     }
 
-
+    /**
+     * Restore regular workers.
+     */
     private async restoreWorkers(): Promise<void> {
 
         for (const worker of this.workers) {
 
-            await this.registerWorker(
+            await this.attachWorker(
                 worker,
             );
         }
     }
 
-
+    /**
+     * Restore batch workers.
+     */
     private async restoreBatchWorkers(): Promise<void> {
 
         for (const worker of this.batchWorkers) {
 
-            await this.registerBatchWorker(
+            await this.attachBatchWorker(
                 worker,
             );
         }
     }
 
-
     /**
-     * Register simple worker inside PgBoss.
+     * Attach worker to current PgBoss instance.
      */
-    private async registerWorker(
+    private async attachWorker(
         registration: InternalWorkerRegistration,
     ): Promise<void> {
 
@@ -144,9 +124,9 @@ export class WorkerManager {
     }
 
     /**
-     * Register batch worker inside PgBoss.
+     * Attach batch worker to current PgBoss instance.
      */
-    private async registerBatchWorker(
+    private async attachBatchWorker(
         registration: InternalBatchWorkerRegistration,
     ): Promise<void> {
 
@@ -155,8 +135,7 @@ export class WorkerManager {
         await boss.work(
             registration.topic,
             {
-                batchSize:
-                registration.batchSize,
+                batchSize: registration.batchSize,
             },
             async (jobs: Job<unknown>[]) => {
 

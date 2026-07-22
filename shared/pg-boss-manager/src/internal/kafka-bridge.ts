@@ -35,7 +35,7 @@ export class KafkaBridge {
         );
 
 
-        await this.workers.startBatchWorker(
+        await this.workers.registerBatchWorker(
             topic,
             10,
             async jobs => {
