@@ -1,14 +1,13 @@
 import {
     BossProvider,
 } from './interfaces';
-
+import { Prisma } from '@prisma/client';
 
 export class QueueManager {
 
     constructor(
         private readonly bossProvider: BossProvider,
     ) {}
-
 
     /**
      * Enqueue job.
@@ -17,27 +16,18 @@ export class QueueManager {
         topic: string,
         data: T,
     ): Promise<number> {
-
         const boss = this.bossProvider.getBoss();
-
-
         const id = await boss.send(
             topic,
             data,
         );
-
-
         if (!id) {
-
             throw new Error(
                 `Failed enqueue job: ${topic}`,
             );
         }
-
-
         return Number(id);
     }
-
 
     /**
      * Enqueue job inside database transaction.
@@ -48,15 +38,8 @@ export class QueueManager {
     public async enqueueTx<T extends object>(
         topic: string,
         data: T,
-        tx: {
-            $queryRawUnsafe: <R>(
-                query: TemplateStringsArray | string,
-                ...values: unknown[]
-            ) => Promise<R>;
-        },
+        tx: Pick<Prisma.TransactionClient, '$queryRawUnsafe'>,
     ): Promise<number> {
-
-
         const result = await tx.$queryRawUnsafe<
             { id: string }[]
         >(
@@ -68,14 +51,11 @@ export class QueueManager {
             topic,
             JSON.stringify(data),
         );
-
-
         if (!result.length) {
             throw new Error(
                 `Failed enqueue job: ${topic}`,
             );
         }
-
 
         return Number(result[0].id);
     }
