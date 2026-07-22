@@ -16,7 +16,8 @@ export class QueueManager {
         topic: string,
         data: T,
     ): Promise<number> {
-        const boss = this.bossProvider.getBoss();
+        const boss = await this.bossProvider.waitUntilReady();
+
         const id = await boss.send(
             topic,
             data,

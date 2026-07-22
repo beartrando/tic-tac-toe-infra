@@ -28,21 +28,20 @@ export class PgBossManager implements BossProvider {
 
     public readonly kafka: KafkaBridge;
 
-    private ready = false;
+    private readyPromise!: Promise<void>;
 
-    private readyResolver!: () => void;
-
-    private readonly readyPromise = new Promise<void>(
-        resolve => {
+    private createReadyPromise(): void {
+        this.readyPromise = new Promise<void>(resolve => {
             this.readyResolver = resolve;
-        },
-    );
+        });
+    }
 
-    public async waitUntilReady(): Promise<void> {
-        return this.readyPromise;
+    public tryGetBoss(): PgBoss | null {
+        return this.boss;
     }
 
     constructor() {
+        this.createReadyPromise();
 
         this.workers = new WorkerManager(this);
 
@@ -53,6 +52,11 @@ export class PgBossManager implements BossProvider {
         );
     }
 
+    public async waitUntilReady(): Promise<PgBoss> {
+        await this.readyPromise;
+
+        return this.getBoss();
+    }
 
     /**
      * Start PgBoss lifecycle.
@@ -75,11 +79,6 @@ export class PgBossManager implements BossProvider {
             try {
 
                 await this.connect();
-
-                if (!this.ready) {
-                    this.ready = true;
-                    this.readyResolver?.();
-                }
 
                 while (
                     this.running &&

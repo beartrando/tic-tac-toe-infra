@@ -17,3 +17,9 @@ export interface SqlExecutor {
         ...values: unknown[]
     ): Promise<T>;
 }
+
+export interface BossProvider {
+    getBoss(): PgBoss;
+    tryGetBoss(): PgBoss | null;
+    waitUntilReady(): Promise<PgBoss>;
+}
