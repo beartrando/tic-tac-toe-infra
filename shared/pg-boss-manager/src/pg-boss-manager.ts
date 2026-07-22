@@ -28,6 +28,19 @@ export class PgBossManager implements BossProvider {
 
     public readonly kafka: KafkaBridge;
 
+    private ready = false;
+
+    private readyResolver!: () => void;
+
+    private readonly readyPromise = new Promise<void>(
+        resolve => {
+            this.readyResolver = resolve;
+        },
+    );
+
+    public async waitUntilReady(): Promise<void> {
+        return this.readyPromise;
+    }
 
     constructor() {
 
@@ -57,13 +70,16 @@ export class PgBossManager implements BossProvider {
         this.config = config;
         this.running = true;
 
-
         while (this.running) {
 
             try {
 
                 await this.connect();
 
+                if (!this.ready) {
+                    this.ready = true;
+                    this.readyResolver?.();
+                }
 
                 while (
                     this.running &&
@@ -72,35 +88,30 @@ export class PgBossManager implements BossProvider {
                     await sleep(1000);
                 }
 
-
             } catch (err) {
 
                 logger.error(
                     { err },
                     'PgBoss crashed',
                 );
+
             }
 
-
             await this.cleanup();
-
 
             if (!this.running) {
                 break;
             }
 
-
             logger.warn(
                 `Reconnect PgBoss in ${this.reconnectDelay} ms`,
             );
-
 
             await sleep(
                 this.reconnectDelay,
             );
         }
     }
-
 
     /**
      * Stop PgBoss lifecycle.
