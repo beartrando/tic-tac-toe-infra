@@ -14,6 +14,8 @@ import {
     InternalWorkerRegistration,
 } from './types';
 
+import logger from "@shared/logger";
+
 export class WorkerManager {
 
     private readonly workers: InternalWorkerRegistration[] = [];
