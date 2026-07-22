@@ -1,5 +1,5 @@
 import { Consumer, KafkaJSProtocolError } from 'kafkajs';
-import logger from '../../logger';
+import logger from '@shared/logger';
 import { ensureTopic } from './admin';
 import { getKafkaInstance } from './register';
 import { ConsumerConfig, KafkaConfig } from './types';

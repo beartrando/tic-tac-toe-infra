@@ -1,5 +1,5 @@
 import * as grpc from '@grpc/grpc-js';
-import logger from '../../logger';
+import logger from '@shared/logger';
 
 export type GrpcClientFactory<T> = () => T;
 

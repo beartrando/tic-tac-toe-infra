@@ -1,5 +1,5 @@
 import { Partitioners, Producer } from 'kafkajs';
-import logger from '../../logger';
+import logger from '@shared/logger';
 import { ensureTopic } from './admin';
 import { getKafkaInstance } from './register';
 import { KafkaConfig } from './types';
