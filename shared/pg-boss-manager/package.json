@@ -15,12 +15,10 @@
     }
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
-    "prisma": "^6.19.3"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "pg-boss": "^12.15.0",
-    "@prisma/client": "^6.19.3",
     "@shared/logger": "workspace:*",
     "@shared/kafka-manager": "workspace:*"
   },

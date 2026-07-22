@@ -1,7 +1,7 @@
 import {
     BossProvider,
+    SqlExecutor,
 } from './interfaces';
-import { Prisma } from '@prisma/client';
 
 export class QueueManager {
 
@@ -38,11 +38,9 @@ export class QueueManager {
     public async enqueueTx<T extends object>(
         topic: string,
         data: T,
-        tx: Pick<Prisma.TransactionClient, '$queryRawUnsafe'>,
+        tx: SqlExecutor,
     ): Promise<number> {
-        const result = await tx.$queryRawUnsafe<
-            { id: string }[]
-        >(
+        const result = await tx.$queryRawUnsafe<{ id: string }[]>(
             `
                 insert into pgboss.job(name, data)
                 values ($1, $2::jsonb)
@@ -51,7 +49,8 @@ export class QueueManager {
             topic,
             JSON.stringify(data),
         );
-        if (!result.length) {
+
+        if (result.length === 0) {
             throw new Error(
                 `Failed enqueue job: ${topic}`,
             );

@@ -10,3 +10,10 @@ export interface BossProvider {
     getBoss(): PgBoss;
 
 }
+
+export interface SqlExecutor {
+    $queryRawUnsafe<T = unknown>(
+        query: string,
+        ...values: unknown[]
+    ): Promise<T>;
+}
