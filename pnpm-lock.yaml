@@ -464,6 +464,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
+      '@shared/pg-boss-manager':
+        specifier: workspace:*
+        version: link:../../shared/pg-boss-manager
       bcrypt:
         specifier: ^6.0.0
         version: 6.0.0
@@ -473,6 +476,9 @@ importers:
       kafkajs:
         specifier: ^2.2.4
         version: 2.2.4
+      pg-boss:
+        specifier: ^12.15.0
+        version: 12.24.1
     devDependencies:
       '@types/amqplib':
         specifier: ^0.10.8
