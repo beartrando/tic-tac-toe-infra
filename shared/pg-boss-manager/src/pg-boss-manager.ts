@@ -138,9 +138,6 @@ export class PgBossManager implements BossProvider {
             max:
                 this.config.max ?? 5,
 
-            newConnectionTimeoutSeconds:
-                this.config.newConnectionTimeoutSeconds ?? 30,
-
             maintenanceIntervalSeconds:
                 this.config.maintenanceIntervalSeconds ?? 60,
 

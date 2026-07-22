@@ -5,11 +5,6 @@ export type PgBossConfig = {
     max?: number;
 
     /**
-     * New connection timeout in seconds.
-     */
-    newConnectionTimeoutSeconds?: number;
-
-    /**
      * PgBoss maintenance interval in seconds.
      */
     maintenanceIntervalSeconds?: number;

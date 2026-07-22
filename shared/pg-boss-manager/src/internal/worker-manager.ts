@@ -14,6 +14,7 @@ import {
     InternalBatchWorkerRegistration,
 } from './types';
 
+
 export class WorkerManager {
 
     private readonly workers:
@@ -36,14 +37,22 @@ export class WorkerManager {
         handler: WorkerHandler<T>,
     ): Promise<void> {
 
-        const registration = {
+        const registration: InternalWorkerRegistration = {
             topic,
-            handler,
+            handler: async data => {
+                await handler(data as T);
+            },
         };
 
-        this.workers.push(registration);
 
-        await this.registerWorker(registration);
+        this.workers.push(
+            registration,
+        );
+
+
+        await this.registerWorker(
+            registration,
+        );
     }
 
 
@@ -56,15 +65,25 @@ export class WorkerManager {
         handler: BatchWorkerHandler<T>,
     ): Promise<void> {
 
-        const registration = {
+        const registration: InternalBatchWorkerRegistration = {
             topic,
             batchSize,
-            handler,
+            handler: async data => {
+                await handler(
+                    data as T[],
+                );
+            },
         };
 
-        this.batchWorkers.push(registration);
 
-        await this.registerBatchWorker(registration);
+        this.batchWorkers.push(
+            registration,
+        );
+
+
+        await this.registerBatchWorker(
+            registration,
+        );
     }
 
 
@@ -79,26 +98,24 @@ export class WorkerManager {
     }
 
 
-    /**
-     * Restore simple workers.
-     */
     private async restoreWorkers(): Promise<void> {
 
         for (const worker of this.workers) {
 
-            await this.registerWorker(worker);
+            await this.registerWorker(
+                worker,
+            );
         }
     }
 
 
-    /**
-     * Restore batch workers.
-     */
     private async restoreBatchWorkers(): Promise<void> {
 
         for (const worker of this.batchWorkers) {
 
-            await this.registerBatchWorker(worker);
+            await this.registerBatchWorker(
+                worker,
+            );
         }
     }
 
@@ -106,29 +123,31 @@ export class WorkerManager {
     /**
      * Register simple worker inside PgBoss.
      */
-    private async registerWorker<T>(
-        registration: InternalWorkerRegistration<T>,
+    private async registerWorker(
+        registration: InternalWorkerRegistration,
     ): Promise<void> {
 
         const boss = this.bossProvider.getBoss();
 
         await boss.work(
             registration.topic,
-            async (job: Job) => {
+            async (jobs: Job<unknown>[]) => {
 
-                await registration.handler(
-                    job.data as T,
-                );
+                for (const job of jobs) {
+
+                    await registration.handler(
+                        job.data,
+                    );
+                }
             },
         );
     }
 
-
     /**
      * Register batch worker inside PgBoss.
      */
-    private async registerBatchWorker<T>(
-        registration: InternalBatchWorkerRegistration<T>,
+    private async registerBatchWorker(
+        registration: InternalBatchWorkerRegistration,
     ): Promise<void> {
 
         const boss = this.bossProvider.getBoss();
@@ -136,17 +155,17 @@ export class WorkerManager {
         await boss.work(
             registration.topic,
             {
-                batchSize: registration.batchSize,
+                batchSize:
+                registration.batchSize,
             },
-            async (jobs: Job[]) => {
+            async (jobs: Job<unknown>[]) => {
 
                 await registration.handler(
                     jobs.map(
-                        job => job.data as T,
+                        job => job.data,
                     ),
                 );
             },
         );
     }
-
 }
