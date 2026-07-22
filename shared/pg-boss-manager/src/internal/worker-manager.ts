@@ -101,6 +101,27 @@ export class WorkerManager {
     }
 
     /**
+     * Ensure queue exists.
+     */
+    private async ensureQueue(
+        topic: string,
+    ): Promise<void> {
+
+        const boss = this.bossProvider.getBoss();
+
+        try {
+
+            await boss.createQueue(
+                topic,
+            );
+
+        } catch {
+
+            // Queue already exists.
+        }
+    }
+
+    /**
      * Attach worker to current PgBoss instance.
      */
     private async attachWorker(
@@ -108,6 +129,10 @@ export class WorkerManager {
     ): Promise<void> {
 
         const boss = this.bossProvider.getBoss();
+
+        await this.ensureQueue(
+            registration.topic,
+        );
 
         await boss.work(
             registration.topic,
@@ -131,6 +156,10 @@ export class WorkerManager {
     ): Promise<void> {
 
         const boss = this.bossProvider.getBoss();
+
+        await this.ensureQueue(
+            registration.topic,
+        );
 
         await boss.work(
             registration.topic,

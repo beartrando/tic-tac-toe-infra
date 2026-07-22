@@ -11,6 +11,7 @@ export async function createConsumer<T>(
     config: KafkaConfig,
     consumerConfig: ConsumerConfig<T>,
 ): Promise<Consumer> {
+    logger.info('create kafka consumer ' + consumerConfig.topic);
     const kafka = getKafkaInstance(config);
 
     await ensureTopic(kafka, consumerConfig.topic);
