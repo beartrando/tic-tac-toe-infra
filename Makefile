@@ -249,18 +249,21 @@ tmux:
 healthloop:
 	@echo "▶ Starting health loop..."
 	@while true; do \
-        now=$$(date '+%Y-%m-%d %H:%M:%S'); \
-        response=$$(curl -s http://31.222.235.64:9090/health); \
-        if echo $$response | grep -q '"healthy":true'; then \
-            echo "$$now ✅ Services healthy"; \
-        else \
-            echo "$$now ❌ Not healthy"; \
-#            echo "$$response"; \
-            echo "$$response" | grep -oE '"[a-zA-Z0-9_-]+":"fail"' | sed 's/"//g' | cut -d: -f1 | sed 's/^/❌ /'; \
-            $(MAKE) bip; \
-        fi; \
-        sleep 5; \
-    done
+		now=$$(date '+%Y-%m-%d %H:%M:%S'); \
+		response=$$(curl -s http://127.0.0.1:9090/gateway/health); \
+		if echo "$$response" | grep -q '"status":1'; then \
+			echo "$$now ✅ Services healthy"; \
+		else \
+			echo "$$now ❌ Not healthy"; \
+			echo "$$response" \
+				| grep -oE '"[a-zA-Z0-9_-]+":2' \
+				| sed 's/"//g' \
+				| cut -d: -f1 \
+				| sed 's/^/❌ /'; \
+			$(MAKE) bip; \
+		fi; \
+		sleep 5; \
+	done
 
 battles-clear:
 	docker compose exec postgres psql -U postgres -d battle -c "TRUNCATE TABLE battles CASCADE;"
