@@ -11,7 +11,6 @@ import { QueueManager } from './internal/queue-manager';
 import { KafkaBridge } from './internal/kafka-bridge';
 import { BossProvider } from './internal/interfaces';
 
-
 export class PgBossManager implements BossProvider {
 
     private boss: PgBoss | null = null;
@@ -30,17 +29,12 @@ export class PgBossManager implements BossProvider {
 
     private readyPromise!: Promise<void>;
 
-    private createReadyPromise(): void {
-        this.readyPromise = new Promise<void>(resolve => {
-            this.readyResolver = resolve;
-        });
-    }
+    private readyResolver!: () => void;
 
-    public tryGetBoss(): PgBoss | null {
-        return this.boss;
-    }
+    private readyResolved = false;
 
     constructor() {
+
         this.createReadyPromise();
 
         this.workers = new WorkerManager(this);
@@ -52,7 +46,22 @@ export class PgBossManager implements BossProvider {
         );
     }
 
+    private createReadyPromise(): void {
+
+        this.readyPromise = new Promise<void>(
+            resolve => {
+                this.readyResolver = resolve;
+            },
+        );
+    }
+
+    public tryGetBoss(): PgBoss | null {
+
+        return this.boss;
+    }
+
     public async waitUntilReady(): Promise<PgBoss> {
+
         await this.readyPromise;
 
         return this.getBoss();
@@ -93,7 +102,6 @@ export class PgBossManager implements BossProvider {
                     { err },
                     'PgBoss crashed',
                 );
-
             }
 
             await this.cleanup();
@@ -122,7 +130,6 @@ export class PgBossManager implements BossProvider {
         await this.cleanup();
     }
 
-
     /**
      * Create PgBoss connection.
      */
@@ -134,16 +141,14 @@ export class PgBossManager implements BossProvider {
             );
         }
 
-
         logger.info(
             'Connecting PgBoss...',
         );
 
-
         const boss = new PgBoss({
 
             connectionString:
-                process.env.DATABASE_URL,
+            process.env.DATABASE_URL,
 
             max:
                 this.config.max ?? 5,
@@ -154,7 +159,6 @@ export class PgBossManager implements BossProvider {
             application_name:
             this.config.applicationName,
         });
-
 
         boss.on(
             'error',
@@ -169,26 +173,27 @@ export class PgBossManager implements BossProvider {
             },
         );
 
-
         await boss.start();
 
-
         this.boss = boss;
-
 
         logger.info(
             '✅ PgBoss connected',
         );
 
-
         await this.workers.restore();
-
 
         logger.info(
             '✅ PgBoss workers restored',
         );
-    }
 
+        if (!this.readyResolved) {
+
+            this.readyResolved = true;
+
+            this.readyResolver();
+        }
+    }
 
     /**
      * Close PgBoss connection.
@@ -197,14 +202,11 @@ export class PgBossManager implements BossProvider {
 
         const boss = this.boss;
 
-
         if (!boss) {
             return;
         }
 
-
         this.boss = null;
-
 
         try {
 
@@ -218,12 +220,10 @@ export class PgBossManager implements BossProvider {
             );
         }
 
-
         logger.warn(
             'PgBoss disconnected',
         );
     }
-
 
     /**
      * Get active PgBoss instance.
@@ -237,8 +237,6 @@ export class PgBossManager implements BossProvider {
             );
         }
 
-
         return this.boss;
     }
-
 }
