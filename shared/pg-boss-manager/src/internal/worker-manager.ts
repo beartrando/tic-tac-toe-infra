@@ -109,11 +109,11 @@ export class WorkerManager {
 
         await this.restoreWorkers();
 
-        logger.info('Regular workers restored');
+        // logger.info('Regular workers restored');
 
         await this.restoreBatchWorkers();
 
-        logger.info('Batch workers restored');
+        // logger.info('Batch workers restored');
     }
 
     /**
@@ -121,23 +121,23 @@ export class WorkerManager {
      */
     private async restoreWorkers(): Promise<void> {
 
-        logger.info(
-            `Restoring ${this.workers.length} workers`,
-        );
+        // logger.info(
+        //     `Restoring ${this.workers.length} workers`,
+        // );
 
         for (const worker of this.workers) {
 
-            logger.info(
-                `Restoring worker ${worker.topic}`,
-            );
+            // logger.info(
+            //     `Restoring worker ${worker.topic}`,
+            // );
 
             await this.attachWorker(
                 worker,
             );
 
-            logger.info(
-                `Worker attached ${worker.topic}`,
-            );
+            // logger.info(
+            //     `Worker attached ${worker.topic}`,
+            // );
         }
     }
 
@@ -146,23 +146,23 @@ export class WorkerManager {
      */
     private async restoreBatchWorkers(): Promise<void> {
 
-        logger.info(
-            `Restoring ${this.batchWorkers.length} batch workers`,
-        );
+        // logger.info(
+        //     `Restoring ${this.batchWorkers.length} batch workers`,
+        // );
 
         for (const worker of this.batchWorkers) {
 
-            logger.info(
-                `Restoring batch worker ${worker.topic}`,
-            );
+            // logger.info(
+            //     `Restoring batch worker ${worker.topic}`,
+            // );
 
             await this.attachBatchWorker(
                 worker,
             );
 
-            logger.info(
-                `Batch worker attached ${worker.topic}`,
-            );
+            // logger.info(
+            //     `Batch worker attached ${worker.topic}`,
+            // );
         }
     }
 
@@ -175,9 +175,9 @@ export class WorkerManager {
 
         const boss = this.bossProvider.getBoss();
 
-        logger.info(
-            `Ensure queue ${topic}`,
-        );
+        // logger.info(
+        //     `Ensure queue ${topic}`,
+        // );
 
         try {
 
@@ -190,7 +190,6 @@ export class WorkerManager {
             );
 
         } catch (err) {
-
             logger.info(
                 { err },
                 `Queue already exists ${topic}`,
@@ -215,45 +214,45 @@ export class WorkerManager {
             registration.topic,
         );
 
-        logger.info(
-            `Calling boss.work ${registration.topic}`,
-        );
+        // logger.info(
+        //     `Calling boss.work ${registration.topic}`,
+        // );
 
         await boss.work(
             registration.topic,
             async (jobs: Job<unknown>[]) => {
 
-                logger.info(
-                    `Worker ${registration.topic} received ${jobs.length} jobs`,
-                );
+                // logger.info(
+                //     `Worker ${registration.topic} received ${jobs.length} jobs`,
+                // );
 
                 for (const job of jobs) {
 
-                    logger.info(
-                        {
-                            id: job.id,
-                            data: job.data,
-                        },
-                        `Processing job ${registration.topic}`,
-                    );
+                    // logger.info(
+                    //     {
+                    //         id: job.id,
+                    //         data: job.data,
+                    //     },
+                    //     `Processing job ${registration.topic}`,
+                    // );
 
                     await registration.handler(
                         job.data,
                     );
 
-                    logger.info(
-                        {
-                            id: job.id,
-                        },
-                        `Job completed ${registration.topic}`,
-                    );
+                    // logger.info(
+                    //     {
+                    //         id: job.id,
+                    //     },
+                    //     `Job completed ${registration.topic}`,
+                    // );
                 }
             },
         );
 
-        logger.info(
-            `boss.work returned ${registration.topic}`,
-        );
+        // logger.info(
+        //     `boss.work returned ${registration.topic}`,
+        // );
     }
 
     /**
@@ -263,9 +262,9 @@ export class WorkerManager {
         registration: InternalBatchWorkerRegistration,
     ): Promise<void> {
 
-        logger.info(
-            `Attach batch worker ${registration.topic}`,
-        );
+        // logger.info(
+        //     `Attach batch worker ${registration.topic}`,
+        // );
 
         const boss = this.bossProvider.getBoss();
 
@@ -273,9 +272,9 @@ export class WorkerManager {
             registration.topic,
         );
 
-        logger.info(
-            `Calling boss.work(batch) ${registration.topic}`,
-        );
+        // logger.info(
+        //     `Calling boss.work(batch) ${registration.topic}`,
+        // );
 
         await boss.work(
             registration.topic,
@@ -284,9 +283,9 @@ export class WorkerManager {
             },
             async (jobs: Job<unknown>[]) => {
 
-                logger.info(
-                    `Batch worker ${registration.topic} received ${jobs.length} jobs`,
-                );
+                // logger.info(
+                //     `Batch worker ${registration.topic} received ${jobs.length} jobs`,
+                // );
 
                 await registration.handler(
                     jobs.map(
@@ -294,14 +293,14 @@ export class WorkerManager {
                     ),
                 );
 
-                logger.info(
-                    `Batch processed ${registration.topic}`,
-                );
+                // logger.info(
+                //     `Batch processed ${registration.topic}`,
+                // );
             },
         );
 
-        logger.info(
-            `boss.work(batch) returned ${registration.topic}`,
-        );
+        // logger.info(
+        //     `boss.work(batch) returned ${registration.topic}`,
+        // );
     }
 }
