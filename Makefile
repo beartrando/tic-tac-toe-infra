@@ -130,10 +130,27 @@ git-commit-and-push-all:
 	@make bip
 
 git-commit-all:
+	@for dir in $(GIT_SERVICES); do \
+		echo "\033[1;33m[*] Checking $$dir...\033[0m"; \
+		SERVICE_PATH="$(SERVICE_DIR)/$$dir"; \
+		if [ ! -e "$$SERVICE_PATH/.git" ]; then \
+			echo "\033[0;31m[!] Skipping $$dir — not a git repo\033[0m"; \
+			continue; \
+		fi; \
+		cd "$$SERVICE_PATH"; \
+		if [ -z "$$(git status --porcelain)" ]; then \
+			echo "\033[1;33m[-] No changes in $$dir\033[0m"; \
+		else \
+			git add . && \
+			git commit -am "$(COMMIT_MSG)" && \
+			echo "\033[0;32m[✓] Committed changes in $$dir\033[0m"; \
+		fi; \
+		cd - > /dev/null; \
+	done \
 
-	@echo "\033[1;33m[*] Checking proto...\033[0m";
-	cd proto 
-	if git diff --quiet; then \
+	@echo "\033[1;33m[*] Checking proto...\033[0m"; \
+	cd proto; \
+	if [ -z "$$(git status --porcelain)" ]; then \
 		echo "\033[1;33m[-] No changes in proto\033[0m"; \
 	else \
 		git add . && \
@@ -145,7 +162,7 @@ git-commit-all:
 	fi
 
 	@echo "\033[1;33m[*] Checking monorepo...\033[0m"; \
-	if git diff --quiet; then \
+	if [ -z "$$(git status --porcelain)" ]; then \
 		echo "\033[1;33m[-] No changes in monorepo\033[0m"; \
 	else \
 		git add . && \
