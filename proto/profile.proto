@@ -10,7 +10,7 @@ service Profile {
   rpc GetMe (common.empty.Empty) returns (ProfileObject);
   rpc GetByUser (auth.UserIdRequest) returns (ProfileObject);
   rpc Get (profile.ProfileIdRequest) returns (ProfileObject);
-  rpc Upsert (auth.UserIdRequest) returns (ProfileObject);
+  rpc Upsert (common.empty.Empty) returns (ProfileObject);
 }
 
 message ProfileIdRequest {
