@@ -131,14 +131,14 @@ git-commit-and-push-all:
 
 git-commit-all:
 
-	@echo "\033[1;33m[*] Checking proto...\033[0m"; \
-	cd proto; \
+	@echo "\033[1;33m[*] Checking proto...\033[0m";
+	cd proto 
 	if git diff --quiet; then \
-		echo "\033[1;33m[-] No changes in monorepo\033[0m"; \
+		echo "\033[1;33m[-] No changes in proto\033[0m"; \
 	else \
 		git add . && \
 		git commit -am "$(COMMIT_MSG)" && \
-		echo "\033[0;32m[✓] Committed changes in monorepo\033[0m"; \
+		echo "\033[0;32m[✓] Commited changes in proto\033[0m"; \
 	fi;
 	@if [ "$(bip)" != "no" ]; then \
 		$(MAKE) bip; \
@@ -150,7 +150,7 @@ git-commit-all:
 	else \
 		git add . && \
 		git commit -am "$(COMMIT_MSG)" && \
-		echo "\033[0;32m[✓] Committed changes in monorepo\033[0m"; \
+		echo "\033[0;32m[✓] Commited changes in monorepo\033[0m"; \
 	fi;
 	@if [ "$(bip)" != "no" ]; then \
 		$(MAKE) bip; \
