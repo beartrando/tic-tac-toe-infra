@@ -38,6 +38,13 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GH_PAT }}
 
+      - name: Update proto submodule
+        run: |
+          cd proto
+          git fetch origin
+          git checkout master
+          git pull origin master
+
       - name: Checkout service submodule branch
         run: |
           cd services/${{ github.event.client_payload.service }}
