@@ -8,18 +8,17 @@ import "battle.proto";
 
 package streaming;
 
-message BattleStreamRequest {
+message BattleRequest {
   oneof event {
-    StartBattleRequest    start     = 1;
-    BattleMoveRequest     move      = 2;
-    common.ping.Ping      ping      = 3;
-    LeaveBattleRequest    leave     = 4;
-    common.empty.Empty    end       = 5;
-    AiJoinToBattleRequest connectAi = 6;
+    BattleStartRequest    start      = 1;
+    BattleMoveRequest     move       = 2;
+    common.ping.Ping      ping       = 3;
+    BattleLeaveRequest    leave      = 4;
+    BattleJoinAiRequest connectAi  = 6;
   }
 }
 
-message BattleStreamResponse {
+message BattleResponse {
   oneof event {
     battle.BattleObject      battle  = 1;
     common.empty.Empty       ping    = 2;
@@ -27,15 +26,15 @@ message BattleStreamResponse {
   }
 }
 
-message StartBattleRequest {
+message BattleStartRequest {
   string battle_id   = 1;
 }
 
-message LeaveBattleRequest {
+message BattleLeaveRequest {
   string battle_id   = 1;
 }
 
-message AiJoinToBattleRequest {
+message BattleJoinAiRequest {
   string battle_id   = 1;
 }
 

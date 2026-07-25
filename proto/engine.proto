@@ -8,29 +8,32 @@ import "battle.proto";
 package engine;
 
 service Engine {
-  rpc BattleChannel (stream BattleStreamRequest) returns (stream BattleStreamResponse);
+  rpc BattleChannel (stream BattleRequest) returns (stream BattleResponse);
 }
 
-message BattleStreamRequest {
-  battle.BattleRequest      start = 1;
-  BattleMoveRequest         move  = 2;
-  battle.BattleLeaveRequest leave = 3;
-  common.ping.Ping          ping  = 4;
+message BattleRequest {
+  battle.BattleRequest start      = 1;
+  BattleMoveRequest    move       = 2;
+  BattleLeaveRequest   leave      = 3;
+  BattleLeaveRequest   disconnect = 4;
+  common.ping.Ping     ping       = 5;
 }
 
-
-
-message BattleStreamResponse {
+message BattleResponse {
   oneof event {
-    battle.BattleObject      battle  = 1;
-    common.empty.Empty       ping    = 2;
-    common.error.ErrorObject error   = 3;
+    battle.BattleObject      battle = 1;
+    common.empty.Empty       ping   = 2;
+    common.error.ErrorObject error  = 3;
   }
 }
 
 message BattleMoveRequest {
-  string battleId    = 1;
-  string profileId   = 2;
-  int32  cellIdx     = 3;
+  string battleId  = 1;
+  string profileId = 2;
+  int32  cellIdx   = 3;
 }
 
+message BattleLeaveRequest {
+  string battle_id  = 1;
+  string profile_id = 2;
+}

@@ -11,7 +11,7 @@ service Battle {
   rpc GetActiveByUser (auth.UserIdRequest) returns (BattleObject);
   rpc Get (BattleIdRequest) returns (BattleObject);
   rpc Upsert (profile.ProfileIdRequest) returns (BattleObject);
-  rpc Join (StartBattleRequest) returns (BattleObject);
+  rpc Join (BattleStartRequest) returns (BattleObject);
   rpc Leave (BattleLeaveRequest) returns (BattleObject);
 }
 
@@ -23,7 +23,7 @@ message BattleRequest {
   BattleObject battle = 1;
 }
 
-message StartBattleRequest {
+message BattleStartRequest {
   string battleId  = 1;
   string profileId = 2;
 }
