@@ -85,20 +85,20 @@ services:
       retries: 10
       start_period: 20s
 
-  ai:
+  bot:
     build:
       context: .
-      dockerfile: services/ai/Dockerfile
+      dockerfile: services/bot/Dockerfile
       target: dev
-    container_name: ttt-ai
+    container_name: ttt-bot
     env_file:
-      - services/ai/.env
+      - services/bot/.env
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/ai/prisma:/usr/src/app/services/ai/prisma
-      - ./services/ai/src:/usr/src/app/services/ai/src/
-      - ./services/ai/__tests__:/usr/src/app/services/ai/__tests__/
-      - ./services/ai/package.json:/usr/src/app/services/ai/package.json
+      - ./services/bot/prisma:/usr/src/app/services/bot/prisma
+      - ./services/bot/src:/usr/src/app/services/bot/src/
+      - ./services/bot/__tests__:/usr/src/app/services/bot/__tests__/
+      - ./services/bot/package.json:/usr/src/app/services/bot/package.json
     depends_on:
       pgbouncer:
         condition: service_healthy

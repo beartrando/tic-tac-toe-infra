@@ -7,9 +7,9 @@
 [submodule "services/profile"]
 	path = services/profile
 	url = git@github.com:beartrando/profile.git
-[submodule "services/ai"]
-	path = services/ai
-	url = git@github.com:beartrando/tic-tac-toe-ai.git
+[submodule "services/bot"]
+	path = services/bot
+	url = git@github.com:beartrando/tic-tac-toe-bot.git
 [submodule "services/battle"]
         path = services/battle
         url = git@github.com:beartrando/tic-tac-toe-battle.git

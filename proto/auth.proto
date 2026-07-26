@@ -1,20 +1,22 @@
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
-import "common/empty.proto";
-
 package auth;
 
+import "google/protobuf/timestamp.proto";
+import "common/empty.proto";
+import "common/error.proto";
+import "common/response.proto";
+
 service Auth {
-  rpc Register (RegisterRequest) returns (AuthObject);
-  rpc Login (LoginRequest) returns (AuthObject);
-  rpc Logout (LogoutRequest) returns (LogoutResponse);
-  rpc RefreshTokens (RefreshTokensRequest) returns (AuthObject);
-  rpc ForgotPassword (ForgotPasswordRequest) returns (common.empty.Empty);
-  rpc ResetPassword (ResetPasswordRequest) returns (AuthObject);
-  rpc AnonymousSignIn (AnonymousSignInRequest) returns (AuthObject);
-  rpc Get (UserIdRequest) returns (UserObject);
-  rpc GetMe (common.empty.Empty) returns (UserObject);
+  rpc Register (RegisterRequest) returns (AuthResponse);
+  rpc Login (LoginRequest) returns (AuthResponse);
+  rpc Logout (common.empty.Empty) returns (common.response.EmptyResponse);
+  rpc RefreshTokens (RefreshTokensRequest) returns (AuthResponse);
+  rpc ForgotPassword (ForgotPasswordRequest) returns (common.response.EmptyResponse);
+  rpc ResetPassword (ResetPasswordRequest) returns (AuthResponse);
+  rpc AnonymousSignIn (AnonymousSignInRequest) returns (AuthResponse);
+  rpc Get (UserIdRequest) returns (UserResponse);
+  rpc GetMe (common.empty.Empty) returns (UserResponse);
 }
 
 message RegisterRequest {
@@ -25,8 +27,8 @@ message RegisterRequest {
 message UserObject {
   string                     id         = 1;
   string                     email      = 2;
-  google.protobuf.Timestamp  createdAt  = 3;
-  google.protobuf.Timestamp  updatedAt  = 4;
+  google.protobuf.Timestamp  created_at = 3;
+  google.protobuf.Timestamp  updated_at = 4;
 }
 
 message UserIdRequest {
@@ -47,15 +49,6 @@ message RefreshTokensRequest {
   string token = 1;
 }
 
-message LogoutRequest {
-  string user_id = 1;
-}
-
-message LogoutResponse {
-  bool   success = 1;
-  string message = 2;
-}
-
 message ForgotPasswordRequest {
   string email = 1;
 }
@@ -67,4 +60,18 @@ message ResetPasswordRequest {
 
 message AnonymousSignInRequest {
   string device_id = 1;
+}
+
+message AuthResponse {
+  oneof output {
+    AuthObject               auth  = 1;
+    common.error.ErrorObject error = 2;
+  }
+}
+
+message UserResponse {
+  oneof output {
+    UserObject               user  = 1;
+    common.error.ErrorObject error = 2;
+  }
 }

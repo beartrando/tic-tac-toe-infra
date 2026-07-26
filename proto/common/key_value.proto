@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
-
 package common.key_value;
+
+import "google/protobuf/timestamp.proto";
 
 message KeyValue {
   string key   = 1;

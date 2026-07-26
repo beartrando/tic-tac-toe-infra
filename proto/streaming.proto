@@ -1,44 +1,44 @@
 syntax = "proto3";
 
+package streaming;
+
 import "common/empty.proto";
 import "common/error.proto";
 import "common/ping.proto";
 import "battle.proto";
 //import "ai.proto";
 
-package streaming;
-
 message BattleRequest {
-  oneof event {
-    BattleStartRequest    start      = 1;
-    BattleMoveRequest     move       = 2;
-    common.ping.Ping      ping       = 3;
-    BattleLeaveRequest    leave      = 4;
-    BattleJoinAiRequest connectAi  = 6;
+  oneof input {
+    BattleStart      start     = 1;
+    BattleMove       move      = 2;
+    common.ping.Ping ping      = 3;
+    BattleLeave      leave     = 4;
+    BattleJoinAi     connectAi = 6;
   }
 }
 
 message BattleResponse {
-  oneof event {
-    battle.BattleObject      battle  = 1;
-    common.empty.Empty       ping    = 2;
-    common.error.ErrorObject error   = 3;
+  oneof output {
+    battle.BattleObject      battle = 1;
+    common.empty.Empty       ping   = 2;
+    common.error.ErrorObject error  = 3;
   }
 }
 
-message BattleStartRequest {
-  string battle_id   = 1;
-}
-
-message BattleLeaveRequest {
-  string battle_id   = 1;
-}
-
-message BattleJoinAiRequest {
-  string battle_id   = 1;
-}
-
-message BattleMoveRequest {
+message BattleStart {
   string battle_id = 1;
-  int32  cellIdx   = 2;
+}
+
+message BattleLeave {
+  string battle_id = 1;
+}
+
+message BattleJoinAi {
+  string battle_id = 1;
+}
+
+message BattleMove {
+  string battle_id = 1;
+  int32  cell_idx  = 2;
 }

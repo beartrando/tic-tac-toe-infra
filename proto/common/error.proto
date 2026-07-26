@@ -3,6 +3,22 @@ syntax = "proto3";
 package common.error;
 
 message ErrorObject {
-  string type    = 1;
-  string message = 2;
+  ErrorCode code = 1;
+  string    message = 2;
 }
+
+enum ErrorCode {
+  ERROR_UNKNOWN     = 0;
+
+  INVALID_SESSION   = 1;
+  ACCESS_DENIED     = 2;
+  NOT_FOUND         = 3;
+  VALIDATION_FAILED = 4;
+
+  ENTITY_SPECIFIC   = 100;
+}
+
+message EmptyResponse {
+  ErrorObject error = 1;
+}
+

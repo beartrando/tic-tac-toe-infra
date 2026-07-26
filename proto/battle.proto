@@ -1,30 +1,26 @@
 syntax = "proto3";
 
+package battle;
+
 import "google/protobuf/timestamp.proto";
 import "auth.proto";
 import "profile.proto";
-//import "google/protobuf/timestamp.proto";
-
-package battle;
+import "common/error.proto";
 
 service Battle {
-  rpc GetActiveByUser (auth.UserIdRequest) returns (BattleObject);
-  rpc Get (BattleIdRequest) returns (BattleObject);
-  rpc Upsert (profile.ProfileIdRequest) returns (BattleObject);
-  rpc Join (BattleStartRequest) returns (BattleObject);
+  rpc GetActiveByUser (auth.UserIdRequest) returns (BattleResponse);
+  rpc Get (BattleIdRequest) returns (BattleResponse);
+  rpc GetOrCreate (profile.ProfileIdRequest) returns (BattleResponse);
+  rpc Join (BattleStartRequest) returns (BattleResponse);
 }
 
 message BattleIdRequest {
-  string battleId = 1;
-}
-
-message BattleRequest {
-  BattleObject battle = 1;
+  string battle_id = 1;
 }
 
 message BattleStartRequest {
-  string battleId  = 1;
-  string profileId = 2;
+  string battle_id  = 1;
+  string profile_id = 2;
 }
 
 enum BattleCellValue {
@@ -34,20 +30,28 @@ enum BattleCellValue {
 }
 
 enum BattleStatus {
-  NEW      = 0;
-  ACTIVE   = 1;
-  FINISHED = 2;
+  BATTLE_STATUS_UNKNOWN = 0;
+  NEW                   = 1;
+  ACTIVE                = 2;
+  FINISHED              = 3;
 }
 
 message BattleObject {
-  string                    id         = 1;
-  repeated BattleCellValue  cells      = 2;
-  repeated string           players    = 3;
-  BattleStatus              status     = 4;
-  string                    winner     = 5;
-  google.protobuf.Timestamp lastMoveAt = 6;
-  google.protobuf.Timestamp createdAt  = 7;
-  google.protobuf.Timestamp updatedAt  = 8;
+  string                    id           = 1;
+  repeated BattleCellValue  cells        = 2;
+  repeated string           player_ids   = 3;
+  BattleStatus              status       = 4;
+  string                    winner_id    = 5;
+  google.protobuf.Timestamp last_move_at = 6;
+  google.protobuf.Timestamp created_at   = 7;
+  google.protobuf.Timestamp updated_at   = 8;
+}
+
+message BattleResponse {
+  oneof output {
+    BattleObject             battle = 1;
+    common.error.ErrorObject error  = 2;
+  }
 }
 
 

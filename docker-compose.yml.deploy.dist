@@ -58,12 +58,12 @@ services:
       retries: 10
       start_period: 20s
 
-  ai:
-    container_name: ttt-ai
-    image: ghcr.io/beartrando/tic-tac-toe-ai/service:${AI_VERSION}
+  bot:
+    container_name: ttt-bot
+    image: ghcr.io/beartrando/tic-tac-toe-bot/service:${AI_VERSION}
     restart: always
     env_file:
-      - ./services/.env.ai
+      - ./services/.env.bot
     depends_on:
       pgbouncer:
         condition: service_healthy

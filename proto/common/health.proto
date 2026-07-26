@@ -6,7 +6,6 @@ import "common/empty.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
-
 service Health {
   rpc Check (common.empty.Empty) returns (HealthReport);
   rpc Status (common.empty.Empty) returns (ServiceStatus);

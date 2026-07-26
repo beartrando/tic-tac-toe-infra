@@ -1,29 +1,37 @@
 syntax = "proto3";
 
+package profile;
+
 import "google/protobuf/timestamp.proto";
 import "common/empty.proto";
 import "auth.proto";
-
-package profile;
+import "common/error.proto";
 
 service Profile {
-  rpc GetMe (common.empty.Empty) returns (ProfileObject);
-  rpc GetByUser (auth.UserIdRequest) returns (ProfileObject);
-  rpc Get (profile.ProfileIdRequest) returns (ProfileObject);
-  rpc Upsert (common.empty.Empty) returns (ProfileObject);
+  rpc GetMe (common.empty.Empty) returns (ProfileResponse);
+  rpc GetByUser (auth.UserIdRequest) returns (ProfileResponse);
+  rpc Get (ProfileIdRequest) returns (ProfileResponse);
+  rpc GetOrCreate (common.empty.Empty) returns (ProfileResponse);
 }
 
 message ProfileIdRequest {
   string profile_id = 1;
 }
 
+message ProfileResponse {
+  oneof output {
+    ProfileObject            profile = 1;
+    common.error.ErrorObject error   = 2;
+  }
+}
+
 message ProfileObject {
   string                    id         = 1;
   string                    user_id    = 2;
   string                    nickname   = 3;
-  int64                     level      = 4;
-  int64                     rating     = 5;
+  int32                     level      = 4;
+  int32                     rating     = 5;
   int64                     experience = 6;
-  google.protobuf.Timestamp createdAt  = 7;
-  google.protobuf.Timestamp updatedAt  = 8;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
 }
