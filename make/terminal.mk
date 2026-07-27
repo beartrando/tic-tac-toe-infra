@@ -1,4 +1,4 @@
-LOGS_ORDER := ai streaming engine gateway battle auth profile orchestration
+LOGS_ORDER := bot streaming engine gateway battle auth profile orchestration
 
 logs:
 	@guake --show

@@ -6,15 +6,14 @@ import "common/empty.proto";
 import "common/error.proto";
 import "common/ping.proto";
 import "battle.proto";
-//import "ai.proto";
 
 message BattleRequest {
   oneof input {
-    BattleStart      start     = 1;
-    BattleMove       move      = 2;
-    common.ping.Ping ping      = 3;
-    BattleLeave      leave     = 4;
-    BattleJoinAi     connectAi = 6;
+    BattleStart      start       = 1;
+    BattleMove       move        = 2;
+    common.ping.Ping ping        = 3;
+    BattleLeave      leave       = 4;
+    BattleJoinBot    connect_bot = 6;
   }
 }
 
@@ -34,7 +33,7 @@ message BattleLeave {
   string battle_id = 1;
 }
 
-message BattleJoinAi {
+message BattleJoinBot {
   string battle_id = 1;
 }
 

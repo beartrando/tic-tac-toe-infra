@@ -16,97 +16,6 @@ importers:
         specifier: ^2.9.3
         version: 2.10.2
 
-  services/ai:
-    dependencies:
-      '@bufbuild/protobuf':
-        specifier: ^2.11.0
-        version: 2.12.1
-      '@grpc/grpc-js':
-        specifier: ^1.14.3
-        version: 1.14.4
-      '@prisma/client':
-        specifier: ^6.19.3
-        version: 6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3)
-      '@shared/kafka-manager':
-        specifier: workspace:*
-        version: link:../../shared/kafka-manager
-      '@shared/logger':
-        specifier: workspace:*
-        version: link:../../shared/logger
-      '@shared/pg-boss-manager':
-        specifier: workspace:*
-        version: link:../../shared/pg-boss-manager
-      cookie-parser:
-        specifier: ^1.4.7
-        version: 1.4.7
-      cors:
-        specifier: ^2.8.6
-        version: 2.8.6
-      jsonwebtoken:
-        specifier: ^9.0.3
-        version: 9.0.3
-      kafkajs:
-        specifier: ^2.2.4
-        version: 2.2.4
-      pg-boss:
-        specifier: ^12.15.0
-        version: 12.24.1
-      ws:
-        specifier: ^8.21.0
-        version: 8.21.0
-    devDependencies:
-      '@types/cors':
-        specifier: ^2.8.19
-        version: 2.8.19
-      '@types/jest':
-        specifier: ^30.0.0
-        version: 30.0.0
-      '@types/jsonwebtoken':
-        specifier: ^9.0.10
-        version: 9.0.10
-      '@types/node':
-        specifier: ^24.13.2
-        version: 24.13.2
-      '@types/supertest':
-        specifier: ^7.2.0
-        version: 7.2.0
-      '@types/ws':
-        specifier: ^8.5.10
-        version: 8.18.1
-      fast-glob:
-        specifier: ^3.3.3
-        version: 3.3.3
-      jest:
-        specifier: ^30.3.0
-        version: 30.4.2(@types/node@24.13.2)(supports-color@5.5.0)(ts-node@10.9.2(@types/node@24.13.2)(typescript@6.0.3))
-      nodemon:
-        specifier: ^3.1.14
-        version: 3.1.14
-      prisma:
-        specifier: ^6.19.3
-        version: 6.19.3(typescript@6.0.3)
-      supertest:
-        specifier: ^7.2.2
-        version: 7.2.2(supports-color@5.5.0)
-      ts-jest:
-        specifier: ^29.4.9
-        version: 29.4.11(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7))(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.2)(ts-node@10.9.2(@types/node@24.13.2)(typescript@6.0.3)))(typescript@6.0.3)
-      ts-node:
-        specifier: ^10.9.2
-        version: 10.9.2(@types/node@24.13.2)(typescript@6.0.3)
-      ts-node-dev:
-        specifier: ^2.0.0
-        version: 2.0.0(@types/node@24.13.2)(typescript@6.0.3)
-      ts-proto:
-        specifier: ^2.11.6
-        version: 2.11.10
-      tsconfig-paths:
-        specifier: ^4.2.0
-        version: 4.2.0
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.3
-
   services/auth:
     dependencies:
       '@bufbuild/protobuf':
@@ -237,6 +146,97 @@ importers:
       '@types/supertest':
         specifier: ^7.2.0
         version: 7.2.0
+      fast-glob:
+        specifier: ^3.3.3
+        version: 3.3.3
+      jest:
+        specifier: ^30.3.0
+        version: 30.4.2(@types/node@24.13.2)(supports-color@5.5.0)(ts-node@10.9.2(@types/node@24.13.2)(typescript@6.0.3))
+      nodemon:
+        specifier: ^3.1.14
+        version: 3.1.14
+      prisma:
+        specifier: ^6.19.3
+        version: 6.19.3(typescript@6.0.3)
+      supertest:
+        specifier: ^7.2.2
+        version: 7.2.2(supports-color@5.5.0)
+      ts-jest:
+        specifier: ^29.4.9
+        version: 29.4.11(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7))(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.2)(ts-node@10.9.2(@types/node@24.13.2)(typescript@6.0.3)))(typescript@6.0.3)
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@24.13.2)(typescript@6.0.3)
+      ts-node-dev:
+        specifier: ^2.0.0
+        version: 2.0.0(@types/node@24.13.2)(typescript@6.0.3)
+      ts-proto:
+        specifier: ^2.11.6
+        version: 2.11.10
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+
+  services/bot:
+    dependencies:
+      '@bufbuild/protobuf':
+        specifier: ^2.11.0
+        version: 2.12.1
+      '@grpc/grpc-js':
+        specifier: ^1.14.3
+        version: 1.14.4
+      '@prisma/client':
+        specifier: ^6.19.3
+        version: 6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3)
+      '@shared/kafka-manager':
+        specifier: workspace:*
+        version: link:../../shared/kafka-manager
+      '@shared/logger':
+        specifier: workspace:*
+        version: link:../../shared/logger
+      '@shared/pg-boss-manager':
+        specifier: workspace:*
+        version: link:../../shared/pg-boss-manager
+      cookie-parser:
+        specifier: ^1.4.7
+        version: 1.4.7
+      cors:
+        specifier: ^2.8.6
+        version: 2.8.6
+      jsonwebtoken:
+        specifier: ^9.0.3
+        version: 9.0.3
+      kafkajs:
+        specifier: ^2.2.4
+        version: 2.2.4
+      pg-boss:
+        specifier: ^12.15.0
+        version: 12.24.1
+      ws:
+        specifier: ^8.21.0
+        version: 8.21.0
+    devDependencies:
+      '@types/cors':
+        specifier: ^2.8.19
+        version: 2.8.19
+      '@types/jest':
+        specifier: ^30.0.0
+        version: 30.0.0
+      '@types/jsonwebtoken':
+        specifier: ^9.0.10
+        version: 9.0.10
+      '@types/node':
+        specifier: ^24.13.2
+        version: 24.13.2
+      '@types/supertest':
+        specifier: ^7.2.0
+        version: 7.2.0
+      '@types/ws':
+        specifier: ^8.5.10
+        version: 8.18.1
       fast-glob:
         specifier: ^3.3.3
         version: 3.3.3
