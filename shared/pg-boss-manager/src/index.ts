@@ -1,7 +1,5 @@
-export { PgBossManager } from './pg-boss-manager';
 export * from './types';
-
-import { PgBossManager } from './pg-boss-manager';
+import {PgBossManager} from './pg-boss-manager';
 
 const pgBossManager = new PgBossManager();
 

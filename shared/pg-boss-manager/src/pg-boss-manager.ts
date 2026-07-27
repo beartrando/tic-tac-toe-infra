@@ -1,15 +1,15 @@
-import { PgBoss } from 'pg-boss';
+import {PgBoss} from 'pg-boss';
 
 import logger from '@shared/logger';
 
-import { PgBossConfig } from './types';
+import {PgBossConfig} from './types';
 
-import { sleep } from './internal/utils';
+import {sleep} from './internal/utils';
 
-import { WorkerManager } from './internal/worker-manager';
-import { QueueManager } from './internal/queue-manager';
-import { KafkaBridge } from './internal/kafka-bridge';
-import { BossProvider } from './internal/interfaces';
+import {WorkerManager} from './internal/worker-manager';
+import {QueueManager} from './internal/queue-manager';
+import {KafkaBridge} from './internal/kafka-bridge';
+import {BossProvider} from './internal/interfaces';
 
 export class PgBossManager implements BossProvider {
 
@@ -99,7 +99,7 @@ export class PgBossManager implements BossProvider {
             } catch (err) {
 
                 logger.error(
-                    { err },
+                    {err},
                     'PgBoss crashed',
                 );
             }
@@ -165,7 +165,7 @@ export class PgBossManager implements BossProvider {
             async err => {
 
                 logger.error(
-                    { err },
+                    {err},
                     'PgBoss error',
                 );
 
@@ -215,7 +215,7 @@ export class PgBossManager implements BossProvider {
         } catch (err) {
 
             logger.error(
-                { err },
+                {err},
                 'Failed to stop PgBoss',
             );
         }
@@ -238,5 +238,9 @@ export class PgBossManager implements BossProvider {
         }
 
         return this.boss;
+    }
+
+    async check(): Promise<boolean> {
+        return this.tryGetBoss() !== null;
     }
 }
