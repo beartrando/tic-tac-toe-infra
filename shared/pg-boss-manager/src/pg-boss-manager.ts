@@ -137,7 +137,7 @@ export class PgBossManager implements BossProvider {
 
         if (!this.config) {
             throw new Error(
-                'PgBoss config is missing',
+                'PgBoss app is missing',
             );
         }
 

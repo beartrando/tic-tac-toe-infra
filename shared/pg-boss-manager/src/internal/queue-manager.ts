@@ -31,7 +31,7 @@ export class QueueManager {
     }
 
     /**
-     * Enqueue job inside database transaction.
+     * Enqueue job inside db transaction.
      *
      * Useful when business data and job
      * must be committed atomically.

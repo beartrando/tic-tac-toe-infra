@@ -9,7 +9,7 @@ SERVICE_DIR := services
 PROTO_FILES := $(shell find proto -name '*.proto')
 
 
-NODE_PROTO_PATH=./src/grpc/generated
+NODE_PROTO_PATH=./src/infrastructure/grpc/generated
 FLUTTER_PROTO_PATH=./lib/src/grpc/generated
 
 up:

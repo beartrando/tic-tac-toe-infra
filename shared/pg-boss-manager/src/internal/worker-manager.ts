@@ -223,7 +223,7 @@ export class WorkerManager {
             async (jobs: Job<unknown>[]) => {
 
                 // logger.info(
-                //     `Worker ${registration.topic} received ${jobs.length} jobs`,
+                //     `Worker ${registration.topic} received ${job.length} job`,
                 // );
 
                 for (const job of jobs) {
@@ -284,7 +284,7 @@ export class WorkerManager {
             async (jobs: Job<unknown>[]) => {
 
                 // logger.info(
-                //     `Batch worker ${registration.topic} received ${jobs.length} jobs`,
+                //     `Batch worker ${registration.topic} received ${job.length} job`,
                 // );
 
                 await registration.handler(
