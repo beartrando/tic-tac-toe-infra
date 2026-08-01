@@ -11,7 +11,6 @@ services:
       - "9090:9090"
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/gateway/jest.config.js:/usr/src/app/services/gateway/jest.config.js
       - ./services/gateway/src:/usr/src/app/services/gateway/src/
       - ./services/gateway/__tests__:/usr/src/app/services/gateway/__tests__/
       - ./services/gateway/package.json:/usr/src/app/services/gateway/package.json
@@ -37,7 +36,6 @@ services:
       KAFKAJS_NO_PARTITIONER_WARNING: 1
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/auth/prisma:/usr/src/app/services/auth/prisma
       - ./services/auth/src:/usr/src/app/services/auth/src/
       - ./services/auth/__tests__:/usr/src/app/services/auth/__tests__/
       - ./services/auth/package.json:/usr/src/app/services/auth/package.json
@@ -66,7 +64,6 @@ services:
       - services/orchestration/.env
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/orchestration/prisma:/usr/src/app/services/orchestration/prisma
       - ./services/orchestration/src:/usr/src/app/services/orchestration/src/
       - ./services/orchestration/__tests__:/usr/src/app/services/orchestration/__tests__/
       - ./services/orchestration/package.json:/usr/src/app/services/orchestration/package.json
@@ -95,7 +92,6 @@ services:
       - services/bot/.env
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/bot/prisma:/usr/src/app/services/bot/prisma
       - ./services/bot/src:/usr/src/app/services/bot/src/
       - ./services/bot/__tests__:/usr/src/app/services/bot/__tests__/
       - ./services/bot/package.json:/usr/src/app/services/bot/package.json
@@ -122,7 +118,6 @@ services:
       - services/battle/.env
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/battle/prisma:/usr/src/app/services/battle/prisma
       - ./services/battle/src:/usr/src/app/services/battle/src/
       - ./services/battle/__tests__:/usr/src/app/services/battle/__tests__/
       - ./services/battle/package.json:/usr/src/app/services/battle/package.json
@@ -153,7 +148,6 @@ services:
       - "8080:8080"
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/streaming/prisma:/usr/src/app/services/streaming/prisma
       - ./services/streaming/src:/usr/src/app/services/streaming/src/
       - ./services/streaming/__tests__:/usr/src/app/services/streaming/__tests__/
       - ./services/streaming/package.json:/usr/src/app/services/streaming/package.json
@@ -177,7 +171,6 @@ services:
       - services/profile/.env
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/profile/prisma:/usr/src/app/services/profile/prisma
       - ./services/profile/src:/usr/src/app/services/profile/src/
       - ./services/profile/__tests__:/usr/src/app/services/profile/__tests__/
       - ./services/profile/package.json:/usr/src/app/services/profile/package.json
@@ -206,7 +199,6 @@ services:
       - services/engine/.env
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/engine/prisma:/usr/src/app/services/engine/prisma
       - ./services/engine/src:/usr/src/app/services/engine/src/
       - ./services/engine/__tests__:/usr/src/app/services/engine/__tests__/
       - ./services/engine/package.json:/usr/src/app/services/engine/package.json
@@ -264,7 +256,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
     volumes:
-      - kafka_data:/var/lib/kafka/data
+      - kafka_data:/var/utils/kafka/data
     networks:
       - backend
     healthcheck:
@@ -286,7 +278,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/utils/postgresql/data
     networks:
       - backend
     healthcheck:

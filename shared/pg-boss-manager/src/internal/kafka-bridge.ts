@@ -4,9 +4,7 @@ import {
     createProducer,
 } from '@shared/kafka-manager';
 
-import {
-    WorkerManager,
-} from './worker-manager';
+import WorkerManager from './worker-manager';
 
 
 export class KafkaBridge {
@@ -53,3 +51,5 @@ export class KafkaBridge {
     }
 
 }
+
+export default KafkaBridge;

@@ -27,6 +27,9 @@ importers:
       '@prisma/client':
         specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3)
+      '@shared/errors':
+        specifier: workspace:*
+        version: link:../../shared/errors
       '@shared/grpc-client-manager':
         specifier: workspace:*
         version: link:../../shared/grpc-client-manager
@@ -364,6 +367,9 @@ importers:
       '@grpc/grpc-js':
         specifier: ^1.14.3
         version: 1.14.4
+      '@shared/errors':
+        specifier: workspace:*
+        version: link:../../shared/errors
       '@shared/grpc-client-manager':
         specifier: workspace:*
         version: link:../../shared/grpc-client-manager
@@ -455,6 +461,9 @@ importers:
       '@prisma/client':
         specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3)
+      '@shared/errors':
+        specifier: workspace:*
+        version: link:../../shared/errors
       '@shared/grpc-client-manager':
         specifier: workspace:*
         version: link:../../shared/grpc-client-manager
@@ -704,6 +713,12 @@ importers:
       typescript:
         specifier: ^6.0.2
         version: 6.0.3
+
+  shared/errors:
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   shared/grpc-client-manager:
     dependencies:
@@ -975,7 +990,7 @@ packages:
   '@humanwhocodes/config-array@0.13.0':
     resolution: {integrity: sha512-DZLEEqFWQFiyK6h5YIeynKx7JlvCYWL0cImfSRXZ9l4Sg2efkFGTuFf6vzXjK1cq6IYkU+Eg/JizXw+TD2vRNw==}
     engines: {node: '>=10.10.0'}
-    deprecated: Use @eslint/app-array instead
+    deprecated: Use @eslint/config-array instead
 
   '@humanwhocodes/module-importer@1.0.1':
     resolution: {integrity: sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA==}

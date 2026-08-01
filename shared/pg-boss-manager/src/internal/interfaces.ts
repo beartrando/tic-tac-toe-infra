@@ -23,3 +23,5 @@ export interface BossProvider {
     tryGetBoss(): PgBoss | null;
     waitUntilReady(): Promise<PgBoss>;
 }
+
+export default BossProvider;

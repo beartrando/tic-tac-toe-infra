@@ -2,14 +2,14 @@ import {PgBoss} from 'pg-boss';
 
 import logger from '@shared/logger';
 
-import {PgBossConfig} from './types';
+import PgBossConfig from './types';
 
 import {sleep} from './internal/utils';
 
-import {WorkerManager} from './internal/worker-manager';
-import {QueueManager} from './internal/queue-manager';
-import {KafkaBridge} from './internal/kafka-bridge';
-import {BossProvider} from './internal/interfaces';
+import WorkerManager from './internal/worker-manager';
+import QueueManager from './internal/queue-manager';
+import KafkaBridge from './internal/kafka-bridge';
+import BossProvider from './internal/interfaces';
 
 export class PgBossManager implements BossProvider {
 

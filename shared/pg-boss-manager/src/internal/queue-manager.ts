@@ -61,3 +61,5 @@ export class QueueManager {
     }
 
 }
+
+export default QueueManager;

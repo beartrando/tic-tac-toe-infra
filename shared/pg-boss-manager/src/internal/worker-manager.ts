@@ -304,3 +304,5 @@ export class WorkerManager {
         // );
     }
 }
+
+export default WorkerManager;

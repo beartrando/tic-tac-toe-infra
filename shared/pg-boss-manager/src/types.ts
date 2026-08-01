@@ -24,3 +24,6 @@ export type WorkerHandler<T = unknown> = (
 export type BatchWorkerHandler<T = unknown> = (
     messages: T[],
 ) => Promise<void>;
+
+
+export default PgBossConfig;

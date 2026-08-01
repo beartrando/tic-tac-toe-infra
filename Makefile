@@ -9,7 +9,7 @@ SERVICE_DIR := services
 PROTO_FILES := $(shell find proto -name '*.proto')
 
 
-NODE_PROTO_PATH=./src/infrastructure/grpc/generated
+NODE_PROTO_PATH=./src/contracts/proto
 FLUTTER_PROTO_PATH=./lib/src/grpc/generated
 
 up:
@@ -69,11 +69,11 @@ migrate:
 	@echo '🚀 Apply migrations...'
 	@if [ -n "$(service)" ]; then \
   		echo "▶️  Running migrations for $(service)..."; \
-		docker compose exec -T -w /usr/src/app/$(SERVICE_DIR)/$(service) $(service) npx prisma migrate dev --schema=prisma/schema.prisma; \
+		docker compose exec -T -w /usr/src/app/$(SERVICE_DIR)/$(service) $(service) npx prisma migrate dev; \
 	else \
 		for s in $(PRISMA_SERVICES); do \
 			echo "▶️  Running migrations for $$s..."; \
-			docker compose exec -T -w /usr/src/app/$(SERVICE_DIR)/$$s $$s npx prisma migrate dev --schema=prisma/schema.prisma; \
+			docker compose exec -T -w /usr/src/app/$(SERVICE_DIR)/$$s $$s npx prisma migrate dev; \
 		done \
 	fi
 	@if [ "$(bip)" != "no" ]; then \
@@ -208,6 +208,10 @@ git-push-all:
 		$(MAKE) bip; \
 	fi
 
+
+
+SHARED_ERRORS_CONTRACTS_PATH=shared/errors/src/contracts/proto
+
 proto-generate:
 	@echo '🚀 Proto generate...'
 
@@ -216,6 +220,9 @@ proto-generate:
 		rm -rf $(SERVICE_DIR)/$$dir/${NODE_PROTO_PATH}; \
 		mkdir -p $(SERVICE_DIR)/$$dir/${NODE_PROTO_PATH}; \
 	done
+
+	rm -rf $(SHARED_ERRORS_CONTRACTS_PATH)
+	mkdir -p $(SHARED_ERRORS_CONTRACTS_PATH)
 
 	@for dir in $(FLUTTER_SERVICES); do \
 		echo "\033[1;33m[*] Checking $$dir...\033[0m"; \
@@ -237,6 +244,11 @@ proto-generate:
 			$(PROTO_FILES); \
 		echo "\033[1;32m[✓] $$dir done\033[0m"; \
 	done
+	echo "\033[1;34m[>] Generating proto for @shared/errors...\033[0m";
+	protoc \
+		--dart_out=$(SHARED_ERRORS_CONTRACTS_PATH) \
+		--proto_path=./proto ./proto/common/error.proto;
+	echo "\033[1;32m[✓] $$dir done\033[0m";
 	@if [ "$(bip)" != "no" ]; then \
 		$(MAKE) bip; \
 	fi
