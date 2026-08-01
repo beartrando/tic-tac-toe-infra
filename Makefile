@@ -244,11 +244,15 @@ proto-generate:
 			$(PROTO_FILES); \
 		echo "\033[1;32m[✓] $$dir done\033[0m"; \
 	done
+
 	echo "\033[1;34m[>] Generating proto for @shared/errors...\033[0m";
 	protoc \
-		--dart_out=$(SHARED_ERRORS_CONTRACTS_PATH) \
-		--proto_path=./proto ./proto/common/error.proto;
-	echo "\033[1;32m[✓] $$dir done\033[0m";
+		--plugin=./node_modules/.bin/protoc-gen-ts_proto \
+		--ts_proto_out=$(SHARED_ERRORS_CONTRACTS_PATH) \
+		--ts_proto_opt=esModuleInterop=true,outputServices=none \
+		--proto_path=./proto \
+		./proto/common/error.proto;
+	echo "\033[1;32m[✓] @shared/errors done\033[0m";
 	@if [ "$(bip)" != "no" ]; then \
 		$(MAKE) bip; \
 	fi

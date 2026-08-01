@@ -1,5 +1,5 @@
 import DomainError from "./domain.error";
-import { ErrorCode } from "./contracts/proto/common/error";
+import {ErrorCode} from "./contracts/proto/common/error";
 
 export class InvalidAuthorizationError extends DomainError {
     readonly code = ErrorCode.ACCESS_DENIED;

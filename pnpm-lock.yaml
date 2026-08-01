@@ -715,7 +715,14 @@ importers:
         version: 6.0.3
 
   shared/errors:
+    dependencies:
+      '@bufbuild/protobuf':
+        specifier: ^2.11.0
+        version: 2.12.1
     devDependencies:
+      ts-proto:
+        specifier: ^2.11.6
+        version: 2.11.10
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
