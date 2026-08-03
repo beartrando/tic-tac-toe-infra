@@ -188,7 +188,7 @@ git-push-all:
 	done
 
 	@echo "\033[1;34m[*] Pushing proto...\033[0m"
-	cd proto;
+	cd proto; \
 	if git push; then \
 		echo "\033[0;32m[✓] Pushed proto\033[0m"; \
 	else \
