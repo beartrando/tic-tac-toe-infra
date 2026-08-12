@@ -3776,7 +3776,7 @@ snapshots:
       slash: 3.0.0
     transitivePeerDependencies:
       - babel-plugin-macros
-      - esbuild-register
+      - esbuild-registerHandler
       - supports-color
       - ts-node
 
@@ -5191,7 +5191,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
-      - esbuild-register
+      - esbuild-registerHandler
       - supports-color
       - ts-node
 
@@ -5452,7 +5452,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
-      - esbuild-register
+      - esbuild-registerHandler
       - supports-color
       - ts-node
 
