@@ -138,7 +138,7 @@ jobs:
               --network tic-tac-toe_backend \
               "ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}"
   
-            docker compose pull
+            docker compose pull "$SERVICE"
             docker compose up -d "$SERVICE" --remove-orphans
   
             rm -f "$LOCK_FILE"
