@@ -118,7 +118,7 @@ jobs:
   
             cd ${{ secrets.DEPLOY_PATH }}
 
-            LOCK_DIR="/tmp/tic-tac-toe-deploy"
+            LOCK_DIR="/tmp/deploy-lock"
             SERVICE="${{ github.event.client_payload.service }}"
             LOCK_FILE="$LOCK_DIR/$SERVICE"
             PRUNE_LOCK="/tmp/tic-tac-toe-prune.lock"
