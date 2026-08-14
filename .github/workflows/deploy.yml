@@ -131,13 +131,9 @@ jobs:
   
             trap cleanup EXIT
   
-            echo "./services/.env.$SERVICE"
-            echo ./services/.env.$SERVICE
-            echo ./services/.env.${{ github.event.client_payload.service }}
-  
             docker run \
               --rm \
-              --env-file "./services/.env.$SERVICE" \
+              --env-file ./services/.env.$SERVICE \
               --network tic-tac-toe_backend \
               "ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}"
   
