@@ -151,8 +151,5 @@ jobs:
               echo "⏭️ Active deployments detected. Skipping Docker prune."
             else
               echo "🧹 No active deployments. Running Docker prune."
-
-#              docker image prune -f
-#              docker system prune -af
             fi
             EOF
