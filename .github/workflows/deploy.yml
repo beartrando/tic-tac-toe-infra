@@ -115,16 +115,46 @@ jobs:
           script: |
             bash -eo pipefail <<'EOF'
             set -e
+  
             cd ${{ secrets.DEPLOY_PATH }}
 
+            LOCK_DIR="/tmp/tic-tac-toe-deploy"
+            SERVICE="${{ github.event.client_payload.service }}"
+            LOCK_FILE="$LOCK_DIR/$SERVICE"
+            PRUNE_LOCK="/tmp/tic-tac-toe-prune.lock"
+  
+            mkdir -p "$LOCK_DIR"
+            touch "$LOCK_FILE"
+  
+            cleanup() {
+                rm -f "$LOCK_FILE"
+            }
+  
+            trap cleanup EXIT
+  
             docker run \
-              --rm --env-file ./services/.env.${{ github.event.client_payload.service }} \
+              --rm \
+              --env-file "./services/.env.$SERVICE" \
               --network tic-tac-toe_backend \
-              ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}
-
+              "ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}"
+  
             docker compose pull
-            docker compose up -d ${{ github.event.client_payload.service }} --remove-orphans
-            docker image prune -f
-            docker system prune -af
+            docker compose up -d "$SERVICE" --remove-orphans
+  
+            rm -f "$LOCK_FILE"
+  
+            if [ -z "$(ls -A "$LOCK_DIR")" ]; then
+                if mkdir "$PRUNE_LOCK" 2>/dev/null; then
+                    trap 'rm -rf "$PRUNE_LOCK"' EXIT
+  
+                    echo "🧹 No active deployments. Running Docker prune."
+  
+                    docker image prune -f
+                    docker system prune -af
+                else
+                    echo "⏭️ Another deployment is running prune. Skipping."
+                fi
+            else
+                echo "⏭️ Active deployments detected. Skipping Docker prune."
+            fi
             EOF
-
