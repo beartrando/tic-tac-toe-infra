@@ -138,16 +138,23 @@ jobs:
               "ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}"
   
             docker compose pull "$SERVICE"
+            echo "pull: $?"
+            
             docker compose up -d "$SERVICE" --remove-orphans
-  
+            echo "up: $?"
+            
             rm -f "$LOCK_FILE"
+            echo "lock removed"
+            
+            ls -la "$LOCK_DIR"
+            echo "lock dir checked"
   
-            if [ -z "$(ls -A "$LOCK_DIR")" ]; then
-                echo "🧹 No active deployments. Running Docker prune."
-  
-                docker image prune -f
-                docker system prune -af
+            if find "$LOCK_DIR" -mindepth 1 -maxdepth 1 -print -quit | grep -q .; then
+              echo "⏭️ Active deployments detected. Skipping Docker prune."
             else
-                echo "⏭️ Active deployments detected. Skipping Docker prune."
+              echo "🧹 No active deployments. Running Docker prune."
+              
+              docker image prune -f
+              docker system prune -af
             fi
             EOF
