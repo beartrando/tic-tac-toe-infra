@@ -131,6 +131,10 @@ jobs:
   
             trap cleanup EXIT
   
+            echo "./services/.env.$SERVICE"
+            echo ./services/.env.$SERVICE
+            echo ./services/.env.${{ github.event.client_payload.service }}
+  
             docker run \
               --rm \
               --env-file "./services/.env.$SERVICE" \
