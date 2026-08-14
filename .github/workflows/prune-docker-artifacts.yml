@@ -1,0 +1,38 @@
+name: Prune docker artifacts
+
+on:
+  repository_dispatch:
+    types:
+      - service-updated
+
+  workflow_dispatch:
+
+run-name: Prune docker artifacts
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script_stop: true
+          script: |
+            bash -eo pipefail <<'EOF'
+            set -e
+  
+            echo "🧹 Running Docker prune."
+
+            docker image prune -f
+            docker system prune -af
+            
+
+            EOF
