@@ -19,10 +19,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check environment
-        run: |
-          echo "Environment: dev"
-          test -n "${{ secrets.DEPLOY_HOST }}" || exit 1
-          test -n "${{ secrets.DEPLOY_USER }}" || exit 1
-          test -n "${{ secrets.DEPLOY_KEY }}" || exit 1
-          echo "✅ All deploy secrets are available"
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script_stop: true
+          script: |
+            bash -eo pipefail <<'EOF'
+            set -e
+  
+            echo "🧹 Running Docker prune."
+
+            docker image prune -f
+            docker system prune -af
+            
+
+            EOF
