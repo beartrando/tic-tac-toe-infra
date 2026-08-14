@@ -60,7 +60,7 @@ services:
 
   bot:
     container_name: ttt-bot
-    image: ghcr.io/beartrando/tic-tac-toe-bot/service:${AI_VERSION}
+    image: ghcr.io/beartrando/tic-tac-toe-bot/service:${BOT_VERSION}
     restart: always
     env_file:
       - ./services/.env.bot
