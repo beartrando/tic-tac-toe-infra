@@ -149,7 +149,7 @@ jobs:
             ls -la "$LOCK_DIR"
             echo "lock dir checked"
   
-            if find "$LOCK_DIR" -mindepth 1 -maxdepth 1 -print -quit | grep -q .; then
+            if [ "$(ls -A "$LOCK_DIR")" ]; then
               echo "⏭️ Active deployments detected. Skipping Docker prune."
             else
               echo "🧹 No active deployments. Running Docker prune."
