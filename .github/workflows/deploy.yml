@@ -147,11 +147,12 @@ jobs:
           
             echo "Active deployment locks: $LOCK_COUNT"
             
-            [ "$LOCK_COUNT" -eq 0 ] && {
-              echo "🧹 No active deployments. Running Docker prune."
-              docker image prune -f
-              docker system prune -af
-            } || {
+            if (( LOCK_COUNT > 0 )); then
               echo "⏭️ Active deployments detected. Skipping Docker prune."
-            }
+            else
+              echo "🧹 No active deployments. Running Docker prune."
+
+#              docker image prune -f
+#              docker system prune -af
+            fi
             EOF
