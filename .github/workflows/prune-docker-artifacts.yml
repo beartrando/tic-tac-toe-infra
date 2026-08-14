@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   deploy:
+    environment: dev
     runs-on: ubuntu-latest
 
     steps:
