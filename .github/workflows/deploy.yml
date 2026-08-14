@@ -121,7 +121,6 @@ jobs:
             LOCK_DIR="/tmp/deploy-lock"
             SERVICE="${{ github.event.client_payload.service }}"
             LOCK_FILE="$LOCK_DIR/$SERVICE"
-            PRUNE_LOCK="/tmp/tic-tac-toe-prune.lock"
   
             mkdir -p "$LOCK_DIR"
             touch "$LOCK_FILE"
@@ -144,16 +143,10 @@ jobs:
             rm -f "$LOCK_FILE"
   
             if [ -z "$(ls -A "$LOCK_DIR")" ]; then
-                if mkdir "$PRUNE_LOCK" 2>/dev/null; then
-                    trap 'rm -rf "$PRUNE_LOCK"' EXIT
+                echo "🧹 No active deployments. Running Docker prune."
   
-                    echo "🧹 No active deployments. Running Docker prune."
-  
-                    docker image prune -f
-                    docker system prune -af
-                else
-                    echo "⏭️ Another deployment is running prune. Skipping."
-                fi
+                docker image prune -f
+                docker system prune -af
             else
                 echo "⏭️ Active deployments detected. Skipping Docker prune."
             fi
