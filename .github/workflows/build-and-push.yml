@@ -139,10 +139,18 @@ jobs:
 
             docker rmi "ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}"
 
+            OLD_IMAGE=$(docker inspect \
+              "$(docker compose ps -q "$SERVICE")" \
+              --format '{{.Image}}' 2>/dev/null || true)
+  
             docker compose pull "$SERVICE"
 
             docker compose up -d "$SERVICE" --remove-orphans
 
+            if [ -n "$OLD_IMAGE" ]; then
+              docker rmi "$OLD_IMAGE" 2>/dev/null || true
+            fi
+            
             rm -f "$LOCK_FILE"
 
             LOCK_COUNT=$(find "$LOCK_DIR" -mindepth 1 -maxdepth 1 -type f | wc -l)
