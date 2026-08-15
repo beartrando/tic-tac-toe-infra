@@ -137,6 +137,8 @@ jobs:
               --network tic-tac-toe_backend \
               "ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}"
 
+            docker rmi "ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}"
+
             docker compose pull "$SERVICE"
 
             docker compose up -d "$SERVICE" --remove-orphans
@@ -150,6 +152,8 @@ jobs:
             if [ "$LOCK_COUNT" -eq 0 ]; then
               echo "🧹 No active deployments. Run docker prune."
 
+              docker image prune -f
+              docker system prune -af
             fi
 
             if [ "$LOCK_COUNT" -ne 0 ]; then
