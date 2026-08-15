@@ -1,18 +1,18 @@
-name: Build and push Node App
+name: Deploy Node App
 
 on:
   repository_dispatch:
     types:
       - service-updated
 
-run-name: Build and push ${{ github.event.client_payload.service }}
+run-name: Deploy ${{ github.event.client_payload.service }}
 
 concurrency:
   group: deploy-${{ github.event.client_payload.service }}
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 env:
@@ -98,23 +98,64 @@ jobs:
           docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.sha }}
           docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:latest
 
-      - name: Trigger deploy
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
-        run: |
-          curl -L \
-            -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $GH_PAT" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/${{ github.repository }}/dispatches \
-            -d '{
-              "event_type": "service-build",
-              "client_payload": {
-                "repo": "${{ github.event.client_payload.repo }}",
-                "service": "${{ github.event.client_payload.service }}",
-                "branch": "${{ github.event.client_payload.branch }}",
-                "version": "${{ github.event.client_payload.version }}",
-                "sha": "${{ github.event.client_payload.sha }}"
-              }
-            }'
+
+  deploy:
+    environment: ${{ github.event.client_payload.branch }}
+    runs-on: ubuntu-latest
+    needs: build-and-push
+
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script_stop: true
+          script: |
+            bash -eo pipefail <<'EOF'
+            set -e
+
+            cd ${{ secrets.DEPLOY_PATH }}
+
+            LOCK_DIR="/tmp/deploy-lock"
+            SERVICE="${{ github.event.client_payload.service }}"
+            LOCK_FILE="$LOCK_DIR/$SERVICE"
+
+            mkdir -p "$LOCK_DIR"
+            touch "$LOCK_FILE"
+
+            cleanup() {
+                rm -f "$LOCK_FILE"
+            }
+
+            trap cleanup EXIT
+
+            docker run \
+              --rm \
+              --env-file "./services/.env.$SERVICE" \
+              --network tic-tac-toe_backend \
+              "ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}"
+
+            docker compose pull "$SERVICE"
+
+            docker compose up -d "$SERVICE" --remove-orphans
+
+            rm -f "$LOCK_FILE"
+
+            LOCK_COUNT=$(find "$LOCK_DIR" -mindepth 1 -maxdepth 1 -type f | wc -l)
+
+            echo "Active deployment locks: $LOCK_COUNT"
+
+            if [ "$LOCK_COUNT" -eq 0 ]; then
+              echo "🧹 No active deployments. Run docker prune."
+
+              docker image prune -f
+              docker system prune -af
+            fi
+
+            if [ "$LOCK_COUNT" -ne 0 ]; then
+              echo "⏭️ Active deployments detected. Skip docker prune."
+            fi
+
+            EOF
