@@ -3,106 +3,21 @@ name: Deploy Node App
 on:
   repository_dispatch:
     types:
-      - service-updated
+      - service-build
 
 run-name: Deploy ${{ github.event.client_payload.service }}
 
 concurrency:
-  group: deploy-${{ github.event.client_payload.service }}
-  cancel-in-progress: true
-
-permissions:
-  contents: write
-  packages: write
+  group: deploy
+  cancel-in-progress: false
 
 env:
   REGISTRY: ghcr.io
 
 jobs:
-  build-and-push:
-    environment: ${{ github.event.client_payload.branch }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print payload
-        run: |
-          echo "Repo: ${{ github.event.client_payload.repo }}"
-          echo "Service: ${{ github.event.client_payload.service }}"
-          echo "Branch: ${{ github.event.client_payload.branch }}"
-          echo "Version: ${{ github.event.client_payload.version }}"
-          echo "Sha: ${{ github.event.client_payload.sha }}"
-
-      - name: Checkout monorepo
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          fetch-depth: 0
-          token: ${{ secrets.GH_PAT }}
-
-      - name: Update proto submodule
-        run: |
-          cd proto
-          git fetch origin
-          git checkout master
-          git pull origin master
-
-      - name: Checkout service submodule branch
-        run: |
-          cd services/${{ github.event.client_payload.service }}
-          git fetch origin ${{ github.event.client_payload.branch }}
-          git checkout ${{ github.event.client_payload.branch }}
-          git pull origin ${{ github.event.client_payload.branch }}
-
-      - name: Build Docker image
-        run: |
-          docker build \
-            --target prod \
-            --build-arg VERSION=${{ github.event.client_payload.version }} \
-            -t $REGISTRY/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
-            -f services/${{ github.event.client_payload.service }}/Dockerfile .
-
-          docker tag ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
-
-          docker tag ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/service:latest
-
-          docker tag ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.sha }}
-
-          docker build \
-            --target predeploy \
-            --build-arg VERSION=${{ github.event.client_payload.version }} \
-            -t $REGISTRY/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
-            -f services/${{ github.event.client_payload.service }}/Dockerfile .
-
-          docker tag ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.branch }}
-
-          docker tag ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/predeploy:latest
-
-          docker tag ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.sha }}
-
-
-      - name: Push image
-        run: |
-          echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.sha }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:latest
-
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.branch }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.sha }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:latest
-
-
   deploy:
     environment: ${{ github.event.client_payload.branch }}
     runs-on: ubuntu-latest
-    needs: build-and-push
 
     steps:
       - name: Deploy over SSH
@@ -148,14 +63,14 @@ jobs:
             echo "Active deployment locks: $LOCK_COUNT"
             
             if [ "$LOCK_COUNT" -eq 0 ]; then
-              echo "🧹 No active deployments. Running Docker prune."
-
-              docker image prune -f
-              docker system prune -af
+              echo "🧹 No active deployments."
             fi
   
             if [ "$LOCK_COUNT" -ne 0 ]; then
-              echo "⏭️ Active deployments detected. Skipping Docker prune."
+              echo "⏭️ Active deployments detected."
             fi
+
+            docker image prune -f
+            docker system prune -af
 
             EOF
