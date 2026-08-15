@@ -1,10 +1,6 @@
 name: Prune docker artifacts
 
 on:
-  repository_dispatch:
-    types:
-      - service-updated
-
   workflow_dispatch:
 
 run-name: Prune docker artifacts
