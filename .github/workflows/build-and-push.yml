@@ -150,8 +150,6 @@ jobs:
             if [ "$LOCK_COUNT" -eq 0 ]; then
               echo "🧹 No active deployments. Run docker prune."
 
-              docker image prune -f
-              docker system prune -af
             fi
 
             if [ "$LOCK_COUNT" -ne 0 ]; then
