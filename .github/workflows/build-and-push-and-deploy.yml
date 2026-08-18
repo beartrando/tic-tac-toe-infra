@@ -113,8 +113,8 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script_stop: true
           script: |
-            bash -eo pipefail <<'EOF'
             set -e
+            set -o pipefail
 
             cd ${{ secrets.DEPLOY_PATH }}
 
@@ -168,4 +168,3 @@ jobs:
               echo "⏭️ Active deployments detected. Skip docker prune."
             fi
 
-            EOF
