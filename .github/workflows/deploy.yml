@@ -1,84 +1,84 @@
-name: Deploy Node App
-
-on:
-  repository_dispatch:
-    types:
-      - service-build
-
-run-name: Deploy ${{ github.event.client_payload.service }}
-
-concurrency:
-  group: deploy
-  cancel-in-progress: false
-
-env:
-  REGISTRY: ghcr.io
-
-jobs:
-  deploy:
-    environment: ${{ github.event.client_payload.branch }}
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Print payload
-        run: |
-          echo "Repo: ${{ github.event.client_payload.repo }}"
-          echo "Service: ${{ github.event.client_payload.service }}"
-          echo "Branch: ${{ github.event.client_payload.branch }}"
-          echo "Version: ${{ github.event.client_payload.version }}"
-          echo "Sha: ${{ github.event.client_payload.sha }}"
-
-      - name: Deploy over SSH
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          script_stop: true
-          script: |
-            bash -eo pipefail <<'EOF'
-            set -e
-
-            cd ${{ secrets.DEPLOY_PATH }}
-
-            LOCK_DIR="/tmp/deploy-lock"
-            SERVICE="${{ github.event.client_payload.service }}"
-            LOCK_FILE="$LOCK_DIR/$SERVICE"
-
-            mkdir -p "$LOCK_DIR"
-            touch "$LOCK_FILE"
-
-            cleanup() {
-                rm -f "$LOCK_FILE"
-            }
-
-            trap cleanup EXIT
-
-            docker run \
-              --rm \
-              --env-file "./services/.env.$SERVICE" \
-              --network tic-tac-toe_backend \
-              "ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}"
-
-            docker compose pull "$SERVICE"
-
-            docker compose up -d "$SERVICE" --remove-orphans
-
-            rm -f "$LOCK_FILE"
-
-            LOCK_COUNT=$(find "$LOCK_DIR" -mindepth 1 -maxdepth 1 -type f | wc -l)
-
-            echo "Active deployment locks: $LOCK_COUNT"
-
-            if [ "$LOCK_COUNT" -eq 0 ]; then
-              echo "🧹 No active deployments."
-            fi
-
-            if [ "$LOCK_COUNT" -ne 0 ]; then
-              echo "⏭️ Active deployments detected."
-            fi
-
-            docker image prune -f
-            docker system prune -af
-
-            EOF
+#name: Deploy Node App
+#
+#on:
+#  repository_dispatch:
+#    types:
+#      - service-build
+#
+#run-name: Deploy ${{ github.event.client_payload.service }}
+#
+#concurrency:
+#  group: deploy
+#  cancel-in-progress: false
+#
+#env:
+#  REGISTRY: ghcr.io
+#
+#jobs:
+#  deploy:
+#    environment: ${{ github.event.client_payload.branch }}
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Print payload
+#        run: |
+#          echo "Repo: ${{ github.event.client_payload.repo }}"
+#          echo "Service: ${{ github.event.client_payload.service }}"
+#          echo "Branch: ${{ github.event.client_payload.branch }}"
+#          echo "Version: ${{ github.event.client_payload.version }}"
+#          echo "Sha: ${{ github.event.client_payload.sha }}"
+#
+#      - name: Deploy over SSH
+#        uses: appleboy/ssh-action@v0.1.10
+#        with:
+#          host: ${{ secrets.DEPLOY_HOST }}
+#          username: ${{ secrets.DEPLOY_USER }}
+#          key: ${{ secrets.DEPLOY_KEY }}
+#          script_stop: true
+#          script: |
+#            bash -eo pipefail <<'EOF'
+#            set -e
+#
+#            cd ${{ secrets.DEPLOY_PATH }}
+#
+#            LOCK_DIR="/tmp/deploy-lock"
+#            SERVICE="${{ github.event.client_payload.service }}"
+#            LOCK_FILE="$LOCK_DIR/$SERVICE"
+#
+#            mkdir -p "$LOCK_DIR"
+#            touch "$LOCK_FILE"
+#
+#            cleanup() {
+#                rm -f "$LOCK_FILE"
+#            }
+#
+#            trap cleanup EXIT
+#
+#            docker run \
+#              --rm \
+#              --env-file "./services/.env.$SERVICE" \
+#              --network tic-tac-toe_backend \
+#              "ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}"
+#
+#            docker compose pull "$SERVICE"
+#
+#            docker compose up -d "$SERVICE" --remove-orphans
+#
+#            rm -f "$LOCK_FILE"
+#
+#            LOCK_COUNT=$(find "$LOCK_DIR" -mindepth 1 -maxdepth 1 -type f | wc -l)
+#
+#            echo "Active deployment locks: $LOCK_COUNT"
+#
+#            if [ "$LOCK_COUNT" -eq 0 ]; then
+#              echo "🧹 No active deployments."
+#            fi
+#
+#            if [ "$LOCK_COUNT" -ne 0 ]; then
+#              echo "⏭️ Active deployments detected."
+#            fi
+#
+#            docker image prune -f
+#            docker system prune -af
+#
+#            EOF
