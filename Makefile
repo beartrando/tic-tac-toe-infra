@@ -10,7 +10,7 @@ PROTO_FILES := $(shell find proto -name '*.proto')
 
 
 NODE_PROTO_PATH=./src/contracts/proto
-FLUTTER_PROTO_PATH=./lib/src/grpc/generated
+FLUTTER_PROTO_PATH=./lib/src/contracts/proto
 
 up:
 	@echo "🚀 Запуск docker compose (поднимаем все сервисы)..."
