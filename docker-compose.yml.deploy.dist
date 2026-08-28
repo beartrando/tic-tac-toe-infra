@@ -284,7 +284,7 @@ services:
 #    image: axllent/mailpit
 #    container_name: ttt-mailpit
 #    ports:
-#      - 8025:8025
+#      - 8025:8025cat
 #      - 1025:1025
 #    environment:
 #      MP_WEBROOT : "/mailpit/"
@@ -305,7 +305,7 @@ services:
 
 volumes:
   kafka_data:
-  mongo_data:
+#  mongo_data:
 
 networks:
   backend:

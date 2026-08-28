@@ -327,7 +327,6 @@ services:
 volumes:
   postgres_data:
   kafka_data:
-  mongo_data:
 
 networks:
   backend:
