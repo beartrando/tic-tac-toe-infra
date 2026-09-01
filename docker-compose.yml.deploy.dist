@@ -2,7 +2,7 @@ services:
   gateway:
     container_name: ttt-gateway
     image: ghcr.io/beartrando/gateway/service:${GATEWAY_VERSION}
-    restart: always
+    restart: unless-stopped
     env_file:
       - ./services/.env.gateway
     ports:
@@ -18,8 +18,8 @@ services:
 
   auth:
     container_name: ttt-auth
-    image: ghcr.io/beartrando/tic-tac-toe-auth/service:${AUTH_VERSION}
-    restart: always
+    image: ghcr.io/beartrando/auth/service:${AUTH_VERSION}
+    restart: unless-stopped
     env_file:
       - ./services/.env.auth
     environment:
@@ -41,7 +41,7 @@ services:
   orchestration:
     container_name: ttt-orchestration
     image: ghcr.io/beartrando/tic-tac-toe-orchestration/service:${ORCHESTRATION_VERSION}
-    restart: always
+    restart: unless-stopped
     env_file:
       - ./services/.env.orchestration
     depends_on:
@@ -61,7 +61,7 @@ services:
   bot:
     container_name: ttt-bot
     image: ghcr.io/beartrando/tic-tac-toe-bot/service:${BOT_VERSION}
-    restart: always
+    restart: unless-stopped
     env_file:
       - ./services/.env.bot
     depends_on:
@@ -79,7 +79,7 @@ services:
   battle:
     container_name: ttt-battle
     image: ghcr.io/beartrando/tic-tac-toe-battle/service:${BATTLE_VERSION}
-    restart: always
+    restart: unless-stopped
     env_file:
       - ./services/.env.battle
     depends_on:
@@ -99,7 +99,7 @@ services:
   streaming:
     container_name: ttt-streaming
     image: ghcr.io/beartrando/tic-tac-toe-streaming/service:${STREAMING_VERSION}
-    restart: always
+    restart: unless-stopped
     env_file:
         - ./services/.env.streaming
     ports:
@@ -115,8 +115,8 @@ services:
 
   profile:
     container_name: ttt-profile
-    image: ghcr.io/beartrando/tic-tac-toe-profile/service:${PROFILE_VERSION}
-    restart: always
+    image: ghcr.io/beartrando/profile/service:${PROFILE_VERSION}
+    restart: unless-stopped
     env_file:
       - ./services/.env.profile
     depends_on:
@@ -136,7 +136,7 @@ services:
   engine:
     container_name: ttt-engine
     image: ghcr.io/beartrando/tic-tac-toe-engine/service:${ENGINE_VERSION}
-    restart: always
+    restart: unless-stopped
     env_file:
       - ./services/.env.engine
     depends_on:
@@ -158,6 +158,7 @@ services:
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: ttt-kafka-ui
+    restart: unless-stopped
     ports:
       - "8081:8080"
     environment:
@@ -179,6 +180,7 @@ services:
   kafka:
     image: apache/kafka:4.1.1
     container_name: ttt-kafka
+    restart: unless-stopped
     ports:
       - "9092:9092"
     environment:
@@ -208,7 +210,7 @@ services:
   postgres:
     image: postgres:17.6
     container_name: ttt-postgres
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -229,6 +231,7 @@ services:
   pgbouncer:
     image: edoburu/pgbouncer
     container_name: ttt-pgbouncer
+    restart: unless-stopped
     volumes:
       - ./services/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
       - ./services/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
@@ -250,9 +253,9 @@ services:
   redis:
     image: redis:7.2
     container_name: ttt-redis
+    restart: unless-stopped
     networks:
       - backend
-    restart: always
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -262,7 +265,7 @@ services:
 #  mongo:
 #    image: mongo:8
 #    container_name: ttt-mongo
-#    restart: always
+#    restart: unless-stopped
 #    ports:
 #      - "27017:27017"
 #    environment:
@@ -283,6 +286,7 @@ services:
 #  mailpit:
 #    image: axllent/mailpit
 #    container_name: ttt-mailpit
+#    restart: unless-stopped
 #    ports:
 #      - 8025:8025cat
 #      - 1025:1025
@@ -296,7 +300,6 @@ services:
 #      - /data
 #    networks:
 #      - backend
-#    restart: always
 #    healthcheck:
 #      test: ["CMD", "redis-cli", "ping"]
 #      interval: 30s
