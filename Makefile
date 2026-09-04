@@ -343,3 +343,19 @@ build:
 	@for service in $(NODE_SERVICES); do \
 		BUILDKIT_PROGRESS=plain docker compose build "$$service" || exit 1; \
 	done
+
+fix-eof:
+	find . \
+		-type d -name .git -prune -o \
+		-path './services/postgres/data' -prune -o \
+		-type d -name dist -prune -o \
+		-type d -name node_modules -prune -o \
+		-type f \
+		-exec sh -c '\
+			for f do \
+				if [ -s "$$f" ] && [ "$$(tail -c 1 "$$f" | od -An -t x1 | tr -d " ")" != "0a" ]; then \
+					printf "\n" >> "$$f"; \
+					echo "$$f"; \
+				fi; \
+			done \
+		' sh {} +
