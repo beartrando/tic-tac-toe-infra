@@ -348,6 +348,8 @@ fix-eof:
 	find . \
 		-type d -name .git -prune -o \
 		-path './services/postgres/data' -prune -o \
+		-path './services/front/.dart_tool' -prune -o \
+		-path './services/front/build' -prune -o \
 		-type d -name dist -prune -o \
 		-type d -name node_modules -prune -o \
 		-type f \
