@@ -69,11 +69,11 @@ migrate:
 	@echo '🚀 Apply migrations...'
 	@if [ -n "$(service)" ]; then \
   		echo "▶️  Running migrations for $(service)..."; \
-		docker compose exec -T -w /usr/src/app/$(SERVICE_DIR)/$(service) $(service) npx prisma migrate dev; \
+		docker compose exec -w /usr/src/app/$(SERVICE_DIR)/$(service) $(service) npx prisma migrate dev; \
 	else \
 		for s in $(PRISMA_SERVICES); do \
 			echo "▶️  Running migrations for $$s..."; \
-			docker compose exec -T -w /usr/src/app/$(SERVICE_DIR)/$$s $$s npx prisma migrate dev; \
+			docker compose exec -w /usr/src/app/$(SERVICE_DIR)/$$s $$s npx prisma migrate dev; \
 		done \
 	fi
 	@if [ "$(bip)" != "no" ]; then \
