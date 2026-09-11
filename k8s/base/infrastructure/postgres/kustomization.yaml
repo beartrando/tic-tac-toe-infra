@@ -1,0 +1,12 @@
+resources:
+  - statefulset.yaml
+  - service.yaml
+
+configMapGenerator:
+  - name: postgres-init
+    files:
+      - init.sql
+
+
+
+

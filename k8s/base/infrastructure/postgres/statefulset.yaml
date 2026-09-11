@@ -30,16 +30,28 @@ spec:
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
+            - name: postgres-init
+              mountPath: /docker-entrypoint-initdb.d
           readinessProbe:
             exec:
               command:
                 - pg_isready
                 - -U
                 - postgres
-            initialDelaySeconds: 10
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 30
             periodSeconds: 10
-            timeoutSeconds: 3
-            failureThreshold: 5
+      volumes:
+        - name: postgres-init
+          configMap:
+            name: postgres-init
   volumeClaimTemplates:
     - metadata:
         name: postgres-data
@@ -48,4 +60,4 @@ spec:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 10Gi
+            storage: 5Gi
