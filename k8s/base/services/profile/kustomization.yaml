@@ -1,0 +1,9 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+  - configmap.yaml
+  - secret.yaml
+
+images:
+  - name: ghcr.io/beartrando/tic-tac-toe-profile/service
+    newTag: "dev"

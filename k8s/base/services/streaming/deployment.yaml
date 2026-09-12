@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streaming
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: streaming
+
+  template:
+    metadata:
+      labels:
+        app: streaming
+
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+
+      containers:
+        - name: streaming
+          image: ghcr.io/beartrando/tic-tac-toe-streaming/service
+
+          ports:
+            - containerPort: 50051
+            - containerPort: 8080
+
+          envFrom:
+            - configMapRef:
+                name: streaming-env
+            - secretRef:
+                name: streaming-env
+
+          livenessProbe:
+            exec:
+              command:
+                - wget
+                - -q
+                - --spider
+                - http://127.0.0.1:50051
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 10
+
+          readinessProbe:
+            exec:
+              command:
+                - wget
+                - -q
+                - --spider
+                - http://127.0.0.1:50051
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 10

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: engine-env
+data:
+  APP_NAME: "engine"
+  APP_ENV: "prod"
+  GRPC_PORT: "50051"
+
+  DATABASE_URL: "postgresql://postgres:postgres@pgbouncer:5432/engine"
+  DATABASE_DIRECT_URL: "postgresql://postgres:postgres@postgres:5432/engine"
+
+  PG_BOSS_MAX: "5"
+  PG_BOSS_MAINTENANCE_INTERVAL_SECONDS: "60"
+  PG_BOSS_APPLICATION_NAME: "engine-pg-boss"
+
+  KAFKA_BROKERS: "kafka:9092"
+  KAFKA_CLIENT_ID: "engine-client"
+
+  MESSAGE_PRODUCER_TOPIC_BATTLE_MATCHED: "engine.matched"
+  MESSAGE_CONSUMER_TOPIC_BATTLE_UPDATED: "engine.engine_updated"
+  MESSAGE_CONSUMER_TOPIC_BATTLE_TERMINATED: "engine.engine_terminated"
