@@ -13,3 +13,4 @@ resources:
 
   - services/gateway
   - services/auth
+  - services/orchestration

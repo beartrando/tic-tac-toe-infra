@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orchestration-env
+data:
+  APP_NAME: "orchestration"
+  APP_ENV: "prod"
+  GRPC_PORT: "50051"
+
+  DATABASE_URL: "postgresql://postgres:postgres@pgbouncer:5432/orchestration"
+  DATABASE_DIRECT_URL: "postgresql://postgres:postgres@postgres:5432/orchestration"
+
+  SERVICE_AUTH_URL: "auth:50051"
+  SERVICE_PROFILE_URL: "profile:50051"
+  SERVICE_ENGINE_URL: "engine:50051"
+  SERVICE_BATTLE_URL: "battle:50051"
+
+  PG_BOSS_MAX: "5"
+  PG_BOSS_MAINTENANCE_INTERVAL_SECONDS: "60"
+  PG_BOSS_APPLICATION_NAME: "orchestration-pg-boss"
+
+  KAFKA_BROKERS: "kafka:9092"
+  KAFKA_CLIENT_ID: "orchestration-client"
+
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"

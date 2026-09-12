@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orchestration
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: orchestration
+
+  template:
+    metadata:
+      labels:
+        app: orchestration
+
+    spec:
+      containers:
+        - name: orchestration
+          image: ghcr.io/beartrando/tic-tac-toe-orchestration/service
+
+          ports:
+            - containerPort: 50051
+
+          envFrom:
+            - configMapRef:
+                name: orchestration-env
+            - secretRef:
+                name: orchestration-env
+
+          livenessProbe:
+            exec:
+              command:
+                - wget
+                - -q
+                - --spider
+                - http://127.0.0.1:50051
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 10
+
+          readinessProbe:
+            exec:
+              command:
+                - wget
+                - -q
+                - --spider
+                - http://127.0.0.1:50051
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 10
