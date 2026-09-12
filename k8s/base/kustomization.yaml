@@ -7,4 +7,8 @@ resources:
   - namespace.yaml
   - infrastructure/postgres
   - infrastructure/pgbouncer
+  - infrastructure/redis
   - infrastructure/kafka
+  - infrastructure/kafka-ui
+
+  - services/gateway

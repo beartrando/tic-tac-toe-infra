@@ -3,13 +3,11 @@ kind: StatefulSet
 metadata:
   name: kafka
 spec:
-  clusterIP: None
+  serviceName: kafka
+  replicas: 1
   selector:
-    app: kafka
-  ports:
-    - name: kafka
-      port: 9092
-      targetPort: 9092
+    matchLabels:
+      app: kafka
 
   template:
     metadata:
