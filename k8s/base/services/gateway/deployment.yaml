@@ -14,21 +14,19 @@ spec:
       labels:
         app: gateway
 
-    envFrom:
-      - configMapRef:
-          name: gateway-env
-
     spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
       containers:
         - name: gateway
-          image: ghcr.io/beartrando/gateway/service:${GATEWAY_VERSION}
+          image: ghcr.io/beartrando/gateway/service
 
           ports:
             - containerPort: 9090
             - containerPort: 50051
 
           envFrom:
-            - secretRef:
+            - configMapRef:
                 name: gateway-env
 
           livenessProbe:

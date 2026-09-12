@@ -12,3 +12,4 @@ resources:
   - infrastructure/kafka-ui
 
   - services/gateway
+  - services/auth

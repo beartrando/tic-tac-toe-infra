@@ -2,3 +2,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - configmap.yaml
+
+images:
+  - name: ghcr.io/beartrando/gateway/service
+    newTag: "dev"
