@@ -7,7 +7,7 @@ data:
   APP_ENV: "prod"
   GRPC_PORT: "50051"
 
-  DATABASE_URL: "postgresql://postgres:postgres@pgbouncer:5432/battle"
+  DATABASE_URL: "postgresql://postgres:postgres@pgbouncer:6432/battle"
   DATABASE_DIRECT_URL: "postgresql://postgres:postgres@postgres:5432/battle"
 
   PG_BOSS_MAX: "5"

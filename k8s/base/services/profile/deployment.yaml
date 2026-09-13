@@ -20,7 +20,7 @@ spec:
 
       containers:
         - name: profile
-          image: ghcr.io/beartrando/tic-tac-toe-profile/service
+          image: ghcr.io/beartrando/profile/service
 
           ports:
             - containerPort: 50051

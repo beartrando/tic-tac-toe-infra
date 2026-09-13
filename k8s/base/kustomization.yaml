@@ -17,3 +17,5 @@ resources:
   - services/bot
   - services/battle
   - services/streaming
+  - services/profile
+  - services/engine

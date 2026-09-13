@@ -7,7 +7,7 @@ data:
   APP_ENV: "prod"
   GRPC_PORT: "50051"
 
-  DATABASE_URL: "postgresql://postgres:postgres@pgbouncer:5432/profile"
+  DATABASE_URL: "postgresql://postgres:postgres@pgbouncer:6432/profile"
   DATABASE_DIRECT_URL: "postgresql://postgres:postgres@postgres:5432/profile"
 
   PG_BOSS_MAX: "5"
@@ -16,7 +16,6 @@ data:
 
   KAFKA_BROKERS: "kafka:9092"
   KAFKA_CLIENT_ID: "profile-client"
-
-  MESSAGE_PRODUCER_TOPIC_BATTLE_MATCHED: "profile.matched"
-  MESSAGE_CONSUMER_TOPIC_BATTLE_UPDATED: "engine.profile_updated"
-  MESSAGE_CONSUMER_TOPIC_BATTLE_TERMINATED: "engine.profile_terminated"
+  KAFKA_GROUP_ID: "profile-service"
+  MESSAGE_CONSUMER_TOPIC_USER_CREATED: "user.created"
+  MESSAGE_PRODUCER_TOPIC_PROFILE_CREATED: "profile.created"

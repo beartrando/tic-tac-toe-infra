@@ -10,7 +10,7 @@ data:
   HTTP_GATEWAY: "gateway:9090"
   WEBSOCKET_STREAMING: "streaming:8080"
 
-  DATABASE_URL: "postgresql://postgres:postgres@pgbouncer:5432/bot"
+  DATABASE_URL: "postgresql://postgres:postgres@pgbouncer:6432/bot"
   DATABASE_DIRECT_URL: "postgresql://postgres:postgres@postgres:5432/bot"
 
   KAFKA_BROKERS: "kafka:9092"

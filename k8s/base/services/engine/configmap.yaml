@@ -7,7 +7,7 @@ data:
   APP_ENV: "prod"
   GRPC_PORT: "50051"
 
-  DATABASE_URL: "postgresql://postgres:postgres@pgbouncer:5432/engine"
+  DATABASE_URL: "postgresql://postgres:postgres@pgbouncer:6432/engine"
   DATABASE_DIRECT_URL: "postgresql://postgres:postgres@postgres:5432/engine"
 
   PG_BOSS_MAX: "5"
@@ -16,7 +16,15 @@ data:
 
   KAFKA_BROKERS: "kafka:9092"
   KAFKA_CLIENT_ID: "engine-client"
+  KAFKA_GROUP_ID: "engine-service"
 
-  MESSAGE_PRODUCER_TOPIC_BATTLE_MATCHED: "engine.matched"
-  MESSAGE_CONSUMER_TOPIC_BATTLE_UPDATED: "engine.engine_updated"
-  MESSAGE_CONSUMER_TOPIC_BATTLE_TERMINATED: "engine.engine_terminated"
+  MESSAGE_CONSUMER_TOPIC_BATTLE_MATCHED: "battle.matched"
+  MESSAGE_PRODUCER_TOPIC_BATTLE_UPDATED: "engine.battle_updated"
+  MESSAGE_PRODUCER_TOPIC_BATTLE_STARTED: "engine.battle_started"
+  MESSAGE_PRODUCER_TOPIC_BATTLE_TERMINATED: "engine.battle_finished"
+
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
+
+  BATTLE_TURN_TIME_LIMIT: "21"
+  BATTLE_START_TIME_LIMIT: "5"

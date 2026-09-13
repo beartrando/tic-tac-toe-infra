@@ -16,7 +16,7 @@ spec:
         - name: pgbouncer
           image: edoburu/pgbouncer
           ports:
-            - containerPort: 5432
+            - containerPort: 6432
 
           volumeMounts:
             - name: config

@@ -8,7 +8,7 @@ data:
 
   GRPC_PORT: "50051"
 
-  DATABASE_URL: "postgresql://postgres:postgres@pgbouncer:5432/auth"
+  DATABASE_URL: "postgresql://postgres:postgres@pgbouncer:6432/auth"
   DATABASE_DIRECT_URL: "postgresql://postgres:postgres@postgres:5432/auth"
 
   ACCESS_TOKEN_EXPIRES_IN: "1h"
