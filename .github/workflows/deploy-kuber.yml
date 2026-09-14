@@ -42,25 +42,25 @@ jobs:
 
             echo "=== Run migrations ==="
 
-            sudo kubectl delete pod "$SERVICE-predeploy" \
+            kubectl delete pod "$SERVICE-predeploy" \
               -n "$NAMESPACE" \
               --ignore-not-found
 
-            sudo kubectl run "$SERVICE-predeploy" \
+            kubectl run "$SERVICE-predeploy" \
               -n "$NAMESPACE" \
               --restart=Never \
               --image="$PREDEPLOY_IMAGE" \
               --image-pull-policy=Always \
               --overrides="{\"spec\":{\"imagePullSecrets\":[{\"name\":\"ghcr-pull-secret\"}],\"containers\":[{\"name\":\"$SERVICE-predeploy\",\"image\":\"$PREDEPLOY_IMAGE\",\"envFrom\":[{\"configMapRef\":{\"name\":\"$SERVICE-env\"}},{\"secretRef\":{\"name\":\"$SERVICE-env\"}}]}]}}"
 
-            if ! sudo kubectl wait \
+            if ! kubectl wait \
               --for=jsonpath='{.status.phase}'=Succeeded \
               "pod/$SERVICE-predeploy" \
               -n "$NAMESPACE" \
               --timeout=300s; then
 
               echo "=== Predeploy failed ==="
-              sudo kubectl logs \
+              kubectl logs \
                 "pod/$SERVICE-predeploy" \
                 -n "$NAMESPACE"
 
@@ -69,23 +69,23 @@ jobs:
 
             echo "=== Migrations completed ==="
 
-            sudo kubectl logs \
+            kubectl logs \
               "pod/$SERVICE-predeploy" \
               -n "$NAMESPACE"
 
-            sudo kubectl delete pod "$SERVICE-predeploy" \
+            kubectl delete pod "$SERVICE-predeploy" \
               -n "$NAMESPACE"
 
             echo "=== Update deployment ==="
 
-            sudo kubectl set image \
+            kubectl set image \
               "deployment/$SERVICE" \
               "$SERVICE=$IMAGE" \
               -n "$NAMESPACE"
 
             echo "=== Waiting for rollout ==="
 
-            sudo kubectl rollout status \
+            kubectl rollout status \
               "deployment/$SERVICE" \
               -n "$NAMESPACE" \
               --timeout=300s
