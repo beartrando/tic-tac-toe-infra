@@ -12,31 +12,6 @@ run-name: Deploy ${{ github.event.client_payload.service }} service
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy over SSH
-        uses: appleboy/ssh-action@v1.2.5
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          script: |
-            set -e
-            set -o pipefail
-
-            echo "=== Docker Compose deploy started ==="
-            echo "Workflow: ${{ github.event.workflow_run.name }}"
-            echo "Run ID: ${{ github.event.workflow_run.id }}"
-            echo "Conclusion: ${{ github.event.workflow_run.conclusion }}"
-            echo "Branch: ${{ github.event.workflow_run.head_branch }}"
-            echo "SHA: ${{ github.event.workflow_run.head_sha }}"
-            echo "=== End ==="
-
-            echo "Docker Compose deployment started"
-
-  deploy:
     environment: ${{ github.event.client_payload.branch }}
     runs-on: ubuntu-latest
     needs: build-and-push
