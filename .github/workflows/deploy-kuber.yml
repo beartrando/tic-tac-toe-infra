@@ -27,58 +27,67 @@ jobs:
             set -e
             set -o pipefail
 
-            cd ${{ secrets.DEPLOY_PATH }}
-
-            LOCK_DIR="/tmp/deploy-lock"
+            NAMESPACE="tic-tac-toe"
             SERVICE="${{ github.event.client_payload.service }}"
-            LOCK_FILE="$LOCK_DIR/$SERVICE"
+            REPO="${{ github.event.client_payload.repo }}"
+            VERSION="${{ github.event.client_payload.version }}"
 
-            mkdir -p "$LOCK_DIR"
-            touch "$LOCK_FILE"
+            IMAGE="ghcr.io/$REPO/service:$VERSION"
+            PREDEPLOY_IMAGE="ghcr.io/$REPO/predeploy:$VERSION"
 
-            cleanup() {
-                rm -f "$LOCK_FILE"
-            }
+            echo "=== Kubernetes deployment ==="
+            echo "Service: $SERVICE"
+            echo "Image: $IMAGE"
+            echo "Predeploy: $PREDEPLOY_IMAGE"
 
-            trap cleanup EXIT
+            echo "=== Run migrations ==="
 
-            docker run \
-              --rm \
-              --env-file "./services/.env.$SERVICE" \
-              --network tic-tac-toe_backend \
-              "ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}"
+            sudo kubectl delete pod "$SERVICE-predeploy" \
+              -n "$NAMESPACE" \
+              --ignore-not-found
 
-            docker rmi "ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}"
+            sudo kubectl run "$SERVICE-predeploy" \
+              -n "$NAMESPACE" \
+              --restart=Never \
+              --image="$PREDEPLOY_IMAGE" \
+              --image-pull-policy=Always \
+              --overrides="{\"spec\":{\"imagePullSecrets\":[{\"name\":\"ghcr-pull-secret\"}],\"containers\":[{\"name\":\"$SERVICE-predeploy\",\"image\":\"$PREDEPLOY_IMAGE\",\"envFrom\":[{\"configMapRef\":{\"name\":\"$SERVICE-env\"}},{\"secretRef\":{\"name\":\"$SERVICE-env\"}}]}]}}"
 
-            OLD_IMAGE=$(docker inspect \
-              "$(docker compose ps -q "$SERVICE")" \
-              --format '{{.Image}}' 2>/dev/null || true)
+            if ! sudo kubectl wait \
+              --for=jsonpath='{.status.phase}'=Succeeded \
+              "pod/$SERVICE-predeploy" \
+              -n "$NAMESPACE" \
+              --timeout=300s; then
 
-            docker compose pull "$SERVICE"
+              echo "=== Predeploy failed ==="
+              sudo kubectl logs \
+                "pod/$SERVICE-predeploy" \
+                -n "$NAMESPACE"
 
-            docker compose up -d "$SERVICE" --remove-orphans
-
-            if [ -n "$OLD_IMAGE" ]; then
-              docker rmi "$OLD_IMAGE" 2>/dev/null || true
+              exit 1
             fi
 
-            rm -f "$LOCK_FILE"
+            echo "=== Migrations completed ==="
 
-            LOCK_COUNT=$(find "$LOCK_DIR" -mindepth 1 -maxdepth 1 -type f | wc -l)
+            sudo kubectl logs \
+              "pod/$SERVICE-predeploy" \
+              -n "$NAMESPACE"
 
-            echo "Active deployment locks: $LOCK_COUNT"
+            sudo kubectl delete pod "$SERVICE-predeploy" \
+              -n "$NAMESPACE"
 
-            if [ "$LOCK_COUNT" -eq 0 ]; then
-              echo "🧹 No active deployments. Run docker prune."
+            echo "=== Update deployment ==="
 
-              docker image prune -f
-              docker system prune -af
-            fi
+            sudo kubectl set image \
+              "deployment/$SERVICE" \
+              "$SERVICE=$IMAGE" \
+              -n "$NAMESPACE"
 
-            if [ "$LOCK_COUNT" -ne 0 ]; then
-              echo "⏭️ Active deployments detected. Skip docker prune."
-            fi
+            echo "=== Waiting for rollout ==="
 
+            sudo kubectl rollout status \
+              "deployment/$SERVICE" \
+              -n "$NAMESPACE" \
+              --timeout=300s
 
-
-
+            echo "=== Deployment completed ==="
