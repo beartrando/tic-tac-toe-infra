@@ -1,11 +1,9 @@
 name: Deploy Docker Compose
 
 on:
-  workflow_run:
-    workflows:
-      - Build and Push Node App
+  repository_dispatch:
     types:
-      - completed
+      - deploy-docker
 
 run-name: Deploy ${{ github.event.client_payload.service }} service
 

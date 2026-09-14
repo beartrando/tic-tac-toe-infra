@@ -97,3 +97,18 @@ jobs:
           docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.branch }}
           docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.sha }}
           docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:latest
+
+      - name: Trigger deploy
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+          repository: ${{ github.repository }}
+          event-type: deploy-docker
+          client-payload: |
+            {
+              "service": "${{ github.event.client_payload.service }}",
+              "repo": "${{ github.event.client_payload.repo }}",
+              "branch": "${{ github.event.client_payload.branch }}",
+              "version": "${{ github.event.client_payload.version }}",
+              "sha": "${{ github.event.client_payload.sha }}"
+            }

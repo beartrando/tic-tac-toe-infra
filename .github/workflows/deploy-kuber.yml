@@ -1,11 +1,9 @@
 name: Deploy kuber
 
 on:
-  workflow_dispatch:
-#    workflows:
-#      - Build and Push Node App
-#    types:
-#      - completed
+  repository_dispatch:
+    types:
+      - deploy-kuber
 
 run-name: Deploy ${{ github.event.client_payload.service }} service
 
