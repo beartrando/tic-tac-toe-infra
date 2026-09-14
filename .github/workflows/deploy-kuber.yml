@@ -8,11 +8,12 @@ on:
 run-name: Deploy ${{ github.event.client_payload.service }} service
 
 concurrency:
+  group: deploy-${{ github.event.client_payload.service }}
   cancel-in-progress: true
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    environment: ${{ github.event.client_payload.branch }}
     runs-on: ubuntu-latest
 
     steps:
