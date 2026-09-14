@@ -3,6 +3,7 @@ resources:
   - service.yaml
   - configmap.yaml
   - secret.yaml
+  - ingress.yaml
 
 images:
   - name: ghcr.io/beartrando/tic-tac-toe-streaming/service

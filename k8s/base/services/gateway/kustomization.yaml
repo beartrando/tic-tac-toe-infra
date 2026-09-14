@@ -2,6 +2,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - configmap.yaml
+  - ingress.yaml
 
 images:
   - name: ghcr.io/beartrando/gateway/service
