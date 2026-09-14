@@ -42,6 +42,8 @@ jobs:
 
             echo "=== Run migrations ==="
 
+            export KUBECONFIG=$HOME/.kube/config
+  
             kubectl delete pod "$SERVICE-predeploy" \
               -n "$NAMESPACE" \
               --ignore-not-found
