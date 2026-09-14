@@ -1,7 +1,7 @@
 name: Deploy kuber
 
-#on:
-#  workflow_run:
+on:
+  workflow_dispatch:
 #    workflows:
 #      - Build and Push Node App
 #    types:
