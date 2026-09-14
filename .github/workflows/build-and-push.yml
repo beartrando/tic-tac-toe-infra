@@ -8,7 +8,7 @@ on:
 run-name: Build and push ${{ github.event.client_payload.service }}
 
 concurrency:
-  group: deploy-${{ github.event.client_payload.service }}
+  group: build-and-push-${{ github.event.client_payload.service }}
   cancel-in-progress: true
 
 permissions:
