@@ -24,7 +24,6 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
-          script: |
             set -e
             set -o pipefail
 
