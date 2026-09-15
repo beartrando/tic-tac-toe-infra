@@ -1,7 +1,8 @@
 name: Deploy kuber
 
 on:
-  repository_dispatch:
+  workflow_dispatch:
+#  repository_dispatch:
 #    types:
 #      - deploy-kuber
 
