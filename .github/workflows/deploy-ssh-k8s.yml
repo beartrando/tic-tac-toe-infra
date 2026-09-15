@@ -1,0 +1,95 @@
+name: Deploy kuber
+
+#on:
+#  repository_dispatch:
+#    types:
+#      - deploy-kuber
+
+run-name: "${{ github.event.client_payload.service }}: deploy service"
+
+concurrency:
+  group: deploy-${{ github.event.client_payload.service }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment: ${{ github.event.client_payload.branch }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            set -e
+            set -o pipefail
+
+            NAMESPACE="tic-tac-toe"
+            SERVICE="${{ github.event.client_payload.service }}"
+            REPO="${{ github.event.client_payload.repo }}"
+            VERSION="${{ github.event.client_payload.version }}"
+
+            IMAGE="ghcr.io/$REPO/service:$VERSION"
+            PREDEPLOY_IMAGE="ghcr.io/$REPO/predeploy:$VERSION"
+
+            echo "=== Kubernetes deployment ==="
+            echo "Service: $SERVICE"
+            echo "Image: $IMAGE"
+            echo "Predeploy: $PREDEPLOY_IMAGE"
+
+            echo "=== Run migrations ==="
+
+            export KUBECONFIG=$HOME/.kube/config
+  
+            kubectl delete pod "$SERVICE-predeploy" \
+              -n "$NAMESPACE" \
+              --ignore-not-found
+
+            kubectl run "$SERVICE-predeploy" \
+              -n "$NAMESPACE" \
+              --restart=Never \
+              --image="$PREDEPLOY_IMAGE" \
+              --image-pull-policy=Always \
+              --overrides="{\"spec\":{\"imagePullSecrets\":[{\"name\":\"ghcr-pull-secret\"}],\"containers\":[{\"name\":\"$SERVICE-predeploy\",\"image\":\"$PREDEPLOY_IMAGE\",\"envFrom\":[{\"configMapRef\":{\"name\":\"$SERVICE-env\"}},{\"secretRef\":{\"name\":\"$SERVICE-env\"}}]}]}}"
+
+            if ! kubectl wait \
+              --for=jsonpath='{.status.phase}'=Succeeded \
+              "pod/$SERVICE-predeploy" \
+              -n "$NAMESPACE" \
+              --timeout=300s; then
+
+              echo "=== Predeploy failed ==="
+              kubectl logs \
+                "pod/$SERVICE-predeploy" \
+                -n "$NAMESPACE"
+
+              exit 1
+            fi
+
+            echo "=== Migrations completed ==="
+
+            kubectl logs \
+              "pod/$SERVICE-predeploy" \
+              -n "$NAMESPACE"
+
+            kubectl delete pod "$SERVICE-predeploy" \
+              -n "$NAMESPACE"
+
+            echo "=== Update deployment ==="
+
+            kubectl set image \
+              "deployment/$SERVICE" \
+              "$SERVICE=$IMAGE" \
+              -n "$NAMESPACE"
+
+            echo "=== Waiting for rollout ==="
+
+            kubectl rollout status \
+              "deployment/$SERVICE" \
+              -n "$NAMESPACE" \
+              --timeout=300s
+
+            echo "=== Deployment completed ==="
