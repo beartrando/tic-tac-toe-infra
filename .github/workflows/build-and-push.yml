@@ -103,8 +103,8 @@ jobs:
         with:
           token: ${{ secrets.GH_PAT }}
           repository: ${{ github.repository }}
-#          event-type: deploy-kuber
-          event-type: deploy-docker
+          event-type: deploy-kuber
+#          event-type: deploy-docker
           client-payload: |
             {
               "service": "${{ github.event.client_payload.service }}",
