@@ -17,6 +17,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Build info
+        run: |
+          echo "=== Build info ==="
+          echo "service: ${{ github.event.client_payload.service }}"
+          echo "repo: ${{ github.event.client_payload.repo }}"
+          echo "branch: ${{ github.event.client_payload.branch }}"
+          echo "version: ${{ github.event.client_payload.version }}"
+          echo "sha: ${{ github.event.client_payload.sha }}"
+          echo "=== End ==="
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:

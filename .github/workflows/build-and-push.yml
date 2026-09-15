@@ -113,3 +113,13 @@ jobs:
               "version": "${{ github.event.client_payload.version }}",
               "sha": "${{ github.event.client_payload.sha }}"
             }
+
+      - name: Build info
+        run: |
+          echo "=== Build info ==="
+          echo "service: ${{ github.event.client_payload.service }}"
+          echo "repo: ${{ github.event.client_payload.repo }}"
+          echo "branch: ${{ github.event.client_payload.branch }}"
+          echo "version: ${{ github.event.client_payload.version }}"
+          echo "sha: ${{ github.event.client_payload.sha }}"
+          echo "=== End ==="
