@@ -5,7 +5,7 @@ on:
     types:
       - deploy-kuber
 
-#run-name: Deploy ${{ github.event.client_payload.service }} service
+run-name: Deploy ${{ github.event.client_payload.service }} service
 
 concurrency:
   group: deploy-${{ github.event.client_payload.service }}
