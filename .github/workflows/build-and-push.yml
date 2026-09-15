@@ -5,7 +5,7 @@ on:
     types:
       - service-updated
 
-run-name: ${{ github.event.client_payload.service }}: Build and push
+run-name: "${{ github.event.client_payload.service }}: Build and push image"
 
 concurrency:
   group: build-and-push-${{ github.event.client_payload.service }}
