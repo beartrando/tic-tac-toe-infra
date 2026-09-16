@@ -4,8 +4,8 @@ import DomainError from "./domain.error";
 export class AccessDeniedError extends DomainError {
     readonly code = errorProto.ErrorCode.ACCESS_DENIED;
 
-    constructor(message = "Access denied") {
-        super(message);
+    constructor(details = "Access denied") {
+        super(details);
     }
 }
 

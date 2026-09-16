@@ -4,8 +4,8 @@ import DomainError from "./domain.error";
 export class ValidationError extends DomainError {
     readonly code = errorProto.ErrorCode.VALIDATION_FAILED;
 
-    constructor(message: string) {
-        super(message);
+    constructor(details: string) {
+        super(details);
     }
 }
 

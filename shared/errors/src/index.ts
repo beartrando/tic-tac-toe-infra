@@ -5,4 +5,5 @@ export {default as InvalidAuthorizationError} from "./invalid-authorization.erro
 export {default as InvalidSessionError} from "./invalid-session.error";
 export {default as NotFoundError} from "./not-found.error";
 export {default as ValidationError} from "./validation.error";
+export {default as TokenExpiredError} from "./token-expired.error";
 
