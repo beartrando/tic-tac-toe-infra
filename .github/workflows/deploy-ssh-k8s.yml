@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 #  repository_dispatch:
 #    types:
-#      - deploy-kuber
+#      - deploy-ssh-k8e
 
 run-name: "Deploy service --- --- --- ${{ github.event.client_payload.service }}"
 

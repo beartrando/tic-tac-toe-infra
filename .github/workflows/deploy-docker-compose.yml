@@ -3,7 +3,7 @@ name: Deploy Docker Compose
 on:
   repository_dispatch:
     types:
-      - deploy-docker
+      - deploy-ssh-docker-compose
 
 run-name: "Deploy service --- --- --- ${{ github.event.client_payload.service }}"
 

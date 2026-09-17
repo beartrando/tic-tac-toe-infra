@@ -5,7 +5,7 @@ on:
     types:
       - service-updated
 
-run-name: "Build and push image --- ${{ github.event.client_payload.service }}"
+run-name: "Build and push image: ${{ github.event.client_payload.service }}"
 
 concurrency:
   group: build-and-push-${{ github.event.client_payload.service }}
@@ -103,8 +103,9 @@ jobs:
         with:
           token: ${{ secrets.GH_PAT }}
           repository: ${{ github.repository }}
-          event-type: deploy-kuber
-#          event-type: deploy-docker
+          event-type: deploy-gke
+#          event-type: deploy-ssh-k8e
+#          event-type: deploy-ssh-docker-compose
           client-payload: |
             {
               "service": "${{ github.event.client_payload.service }}",

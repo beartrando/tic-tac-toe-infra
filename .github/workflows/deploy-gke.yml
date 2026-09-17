@@ -3,7 +3,7 @@ name: Deploy GKE
 on:
   repository_dispatch:
     types:
-      - deploy-kuber
+      - deploy-gke
 
 run-name: "Deploy service --- --- --- ${{ github.event.client_payload.service }}"
 
