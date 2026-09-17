@@ -5,7 +5,8 @@ on:
     types:
       - deploy-docker
 
-run-name: "${{ github.event.client_payload.service }}: deploy service"
+run-name: "Deploy service --- --- --- ${{ github.event.client_payload.service }}"
+
 
 concurrency:
   group: deploy-${{ github.event.client_payload.service }}

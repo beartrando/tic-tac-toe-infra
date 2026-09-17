@@ -1,4 +1,4 @@
-name: Deploy kuber
+name: Deploy k8s
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
 #    types:
 #      - deploy-kuber
 
-run-name: "${{ github.event.client_payload.service }}: deploy service"
+run-name: "Deploy service --- --- --- ${{ github.event.client_payload.service }}"
 
 concurrency:
   group: deploy-${{ github.event.client_payload.service }}

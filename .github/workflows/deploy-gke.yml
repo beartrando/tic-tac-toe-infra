@@ -1,11 +1,11 @@
-name: Deploy kuber
+name: Deploy GKE
 
 on:
   repository_dispatch:
     types:
       - deploy-kuber
 
-run-name: "${{ github.event.client_payload.service }}: deploy service"
+run-name: "Deploy service --- --- --- ${{ github.event.client_payload.service }}"
 
 concurrency:
   group: deploy-${{ github.event.client_payload.service }}
