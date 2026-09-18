@@ -1,4 +1,4 @@
-import * as errorProto from "./contracts/proto/common/error";
+import * as errorProto from "../contracts/proto/common/error";
 import DomainError from "./domain.error";
 
 export class TokenExpiredError extends DomainError {

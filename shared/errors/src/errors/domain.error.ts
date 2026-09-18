@@ -1,10 +1,10 @@
-import * as errorProto from "./contracts/proto/common/error";
+import * as errorProto from "../contracts/proto/common/error";
 
 export abstract class DomainError extends Error {
     abstract readonly code: errorProto.ErrorCode;
 
-    protected constructor(details: string) {
-        super(details);
+    constructor(message: string) {
+        super(message);
         this.name = this.constructor.name;
     }
 }
