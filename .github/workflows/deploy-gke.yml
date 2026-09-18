@@ -106,6 +106,6 @@ jobs:
           kubectl rollout status \
             "deployment/$SERVICE" \
             -n "$NAMESPACE" \
-            --timeout=300s
+            --timeout=900s
 
           echo "=== Deployment completed ==="
