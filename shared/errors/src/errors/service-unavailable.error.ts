@@ -5,7 +5,7 @@ export class ServiceUnavailableError extends DomainError {
     readonly code = errorProto.ErrorCode.SERVICE_UNAVAILABLE;
 
     constructor(serviceName?: string) {
-        super((ServiceName ?? '') + " service unavailable");
+        super((serviceName ?? '') + " service unavailable");
     }
 }
 
