@@ -14,7 +14,7 @@ services:
       - ./services/gateway/src:/usr/src/app/services/gateway/src/
       - ./services/gateway/__tests__:/usr/src/app/services/gateway/__tests__/
       - ./services/gateway/package.json:/usr/src/app/services/gateway/package.json
-    command: pnpm dlx turbo run dev --parallel
+    command: pnpm dlx turbo run dev --parallel --filter gateway
     networks:
       - backend
     healthcheck:
@@ -44,7 +44,7 @@ services:
         condition: service_healthy
       pgbouncer:
         condition: service_healthy
-    command: pnpm dlx turbo run dev --parallel
+    command: pnpm dlx turbo run dev --parallel --filter auth
     networks:
       - backend
     healthcheck:
@@ -72,7 +72,7 @@ services:
         condition: service_healthy
       pgbouncer:
         condition: service_healthy
-    command: pnpm dlx turbo run dev --parallel
+    command: pnpm dlx turbo run dev --parallel --filter orchestration
     networks:
       - backend
     healthcheck:
@@ -98,7 +98,7 @@ services:
     depends_on:
       pgbouncer:
         condition: service_healthy
-    command: pnpm dlx turbo run dev --parallel
+    command: pnpm dlx turbo run dev --parallel --filter bot
     networks:
       - backend
     healthcheck:
@@ -126,7 +126,7 @@ services:
         condition: service_healthy
       pgbouncer:
         condition: service_healthy
-    command: pnpm dlx turbo run dev --parallel
+    command: pnpm dlx turbo run dev --parallel --filter battle
     networks:
       - backend
     healthcheck:
@@ -151,7 +151,7 @@ services:
       - ./services/streaming/src:/usr/src/app/services/streaming/src/
       - ./services/streaming/__tests__:/usr/src/app/services/streaming/__tests__/
       - ./services/streaming/package.json:/usr/src/app/services/streaming/package.json
-    command: pnpm dlx turbo run dev --parallel
+    command: pnpm dlx turbo run dev --parallel --filter streaming
     networks:
       - backend
     healthcheck:
@@ -179,7 +179,7 @@ services:
         condition: service_healthy
       pgbouncer:
         condition: service_healthy
-    command: pnpm dlx turbo run dev --parallel
+    command: pnpm dlx turbo run dev --parallel --filter profile
     networks:
       - backend
     healthcheck:
@@ -209,7 +209,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    command: pnpm dlx turbo run dev --parallel
+    command: pnpm dlx turbo run dev --parallel --filter engine
     networks:
       - backend
     healthcheck:
