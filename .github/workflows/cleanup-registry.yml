@@ -1,4 +1,4 @@
-name: Delete streaming images
+name: Delete ${{ github.event.client_payload.service }} images
 
 on:
   repository_dispatch:
