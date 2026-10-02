@@ -1,4 +1,4 @@
-name: Delete ${{ github.event.client_payload.service }} images
+name: Cleanup docker images
 
 on:
   repository_dispatch:
