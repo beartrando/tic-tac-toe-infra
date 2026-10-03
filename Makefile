@@ -30,6 +30,14 @@ install:
 			cp "$$ENV_EXAMPLE_PATH" "$$ENV_PATH"; \
 		fi; \
 	done
+
+
+	for s in $(FRONT_SERVICES); do \
+		echo "▶️  Creating env for $$s..."; \
+		$(MAKE) -C services/$$s env-generate; \
+	done \
+
+
 	@if [ ! -f "docker-compose.yml" ] && [ -f "docker-compose.yml.dist" ]; then \
         echo "[env] Создаю docker-compose.yml из docker-compose.yml.dist"; \
         cp docker-compose.yml.dist docker-compose.yml; \
@@ -94,7 +102,7 @@ prisma-generate:
 	@echo '🚀 Generating Prisma clients...'
 	@for service in $(PRISMA_SERVICES); do \
 		echo '🚀 Generating' $$service 'Prisma client...' && \
-		docker cp ./$(SERVICE_DIR)/$$service/src/infrastructure/db/prisma ttt-$$service:/usr/src/app/$(SERVICE_DIR)/$$service; \
+		docker cp ./$(SERVICE_DIR)/$$service/src/infrastructure/db/prisma $(PROJECT_PREFIX)-$$service:/usr/src/app/$(SERVICE_DIR)/$$service; \
 		docker compose exec -T -w /usr/src/app/services/$$service $$service npx prisma generate; \
 	done
 	@if [ "$(bip)" != "no" ]; then \
@@ -175,6 +183,13 @@ git-commit-all:
 
 
 git-push-all:
+	@echo "\033[1;34m[*] Pushing monorepo...\033[0m"
+	if git push; then \
+		echo "\033[0;32m[✓] Pushed monorepo\033[0m"; \
+	else \
+		echo "\033[0;31m[✗] Failed to push monorepo\033[0m"; \
+	fi
+
 	@for dir in $(GIT_SERVICES); do \
 		echo "\033[1;34m[*] Pushing $$dir...\033[0m"; \
 		SERVICE_PATH="$(SERVICE_DIR)/$$dir"; \
@@ -198,12 +213,6 @@ git-push-all:
 		$(MAKE) bip; \
 	fi
 
-	@echo "\033[1;34m[*] Pushing monorepo...\033[0m"
-	if git push; then \
-		echo "\033[0;32m[✓] Pushed monorepo\033[0m"; \
-	else \
-		echo "\033[0;31m[✗] Failed to push monorepo\033[0m"; \
-	fi
 	@if [ "$(bip)" != "no" ]; then \
 		$(MAKE) bip; \
 	fi
@@ -273,17 +282,6 @@ test:
 	done
 	@make bip
 
-tmux:
-	tmux new-session -d -s logs
-	tmux send-keys -t logs:0 'docker compose logs -f streaming | lnav -t ' C-m
-	tmux split-window -h -t logs:0
-	tmux send-keys -t logs:0.1 'docker compose logs -f battle | lnav -t ' C-m
-	tmux split-window -v -t logs:0.1
-	tmux send-keys -t logs:0.2 'docker compose logs -f engine | lnav -t ' C-m
-	tmux split-window -v -t logs:0.0
-	tmux select-pane -t logs:0.1
-	tmux attach -t logs
-
 healthloop:
 	@echo "▶ Starting health loop..."
 	@while true; do \
@@ -303,9 +301,6 @@ healthloop:
 		sleep 5; \
 	done
 
-battles-clear:
-	docker compose exec postgres psql -U postgres -d battle -c "TRUNCATE TABLE battles CASCADE;"
-
 reset-db:
 	docker compose down postgres
 	docker volume rm game_postgres_data
@@ -317,22 +312,6 @@ reset-kafka:
 	docker volume rm game_kafka_data
 	docker compose up kafka -d
 	@make migrate
-
-battles-drop:
-	dc exec postgres dropdb -U postgres battle
-
-
-
-
-
-BATTLE_ID := e9034cbf-30fb-42ee-8bed-40218b6ac9f3
-
-kafka-connect-bot:
-	echo '{"battleId":"$(BATTLE_ID)"}' | \
-    docker compose exec -T kafka \
-        /opt/kafka/bin/kafka-console-producer.sh \
-        --bootstrap-server localhost:9092 \
-        --topic bot.connecting-request
 
 artifacts-drop:
 	find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
