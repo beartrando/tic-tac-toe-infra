@@ -88,6 +88,10 @@ jobs:
       - name: Push image
         run: |
           echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          echo ${{ github.event.client_payload.version }}
+          echo ${{ github.event.client_payload.branch }}
+          echo ${{ github.event.client_payload.sha }}
+          echo latest
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }}
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.sha }}
