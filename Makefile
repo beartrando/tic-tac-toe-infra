@@ -362,6 +362,8 @@ fix-eof:
 		! -iname '*.ico' \
 		! -iname '*.bmp' \
 		! -iname '*.svg' \
+		! -iname '*.bin' \
+		! -iname '*.lock' \
 		-exec sh -c '\
 			for f do \
 				if [ -s "$$f" ] && [ "$$(tail -c 1 "$$f" | od -An -t x1 | tr -d " ")" != "0a" ]; then \
