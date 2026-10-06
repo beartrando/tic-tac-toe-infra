@@ -1,15 +1,15 @@
 [submodule "services/auth"]
-	path = services/auth
-	url = git@github.com:beartrando/tic-tac-toe-auth.git
+    path = services/auth
+    url = git@github.com:beartrando/tic-tac-toe-auth.git
 [submodule "services/gateway"]
     path = services/gateway
     url = git@github.com:beartrando/tic-tac-toe-gateway.git
 [submodule "services/profile"]
-	path = services/profile
-	url = git@github.com:beartrando/tic-tac-toe-profile.git
+    path = services/profile
+    url = git@github.com:beartrando/tic-tac-toe-profile.git
 [submodule "services/bot"]
-	path = services/bot
-	url = git@github.com:beartrando/tic-tac-toe-bot.git
+    path = services/bot
+    url = git@github.com:beartrando/tic-tac-toe-bot.git
 [submodule "services/battle"]
     path = services/battle
     url = git@github.com:beartrando/tic-tac-toe-battle.git
@@ -28,3 +28,6 @@
 [submodule "proto"]
     path = proto
     url = git@github.com:beartrando/tic-tac-toe-proto.git
+[submodule "context"]
+    path = context
+    url = git@github.com:beartrando/tic-tac-toe-context.git
