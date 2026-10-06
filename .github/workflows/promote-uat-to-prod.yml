@@ -1,0 +1,34 @@
+name: Promote uat to prod
+
+on:
+  push:
+    branches:
+      - uat
+
+permissions:
+  contents: write
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge uat into prod
+        run: |
+          git fetch origin
+
+          git checkout prod
+          git pull --ff-only origin prod
+
+          git merge --no-edit origin/uat
+          git push origin prod
