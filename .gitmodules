@@ -46,3 +46,6 @@
 [submodule "shared/pg-boss-manager"]
     path = shared/pg-boss-manager
     url = git@github.com:beartrando/pg-boss-manager.git
+[submodule "shared/pg-boss-manager"]
+    path = wiki
+    url = git@github.com:beartrando/tic-tac-toe-wiki.git
