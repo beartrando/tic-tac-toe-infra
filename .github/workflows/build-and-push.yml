@@ -42,8 +42,18 @@ jobs:
         run: |
           cd proto
           git fetch origin
-          git checkout master
-          git pull origin master
+          git checkout ${{ github.event.client_payload.branch }}
+          git pull origin ${{ github.event.client_payload.branch }}
+
+      - name: Update shared folders
+        run: |
+          for dir in logger errors grpc-client-manager kafka-manager pg-boss-manager; do
+            cd "shared/$dir"
+            git fetch origin
+            git checkout "${{ github.event.client_payload.branch }}"
+            git pull origin "${{ github.event.client_payload.branch }}"
+            cd ../..
+          done
 
       - name: Checkout service submodule branch
         run: |
