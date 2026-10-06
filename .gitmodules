@@ -28,3 +28,6 @@
 [submodule "proto"]
         path = proto
         url = git@github.com:beartrando/tic-tac-toe-proto.git
+[submodule "context"]
+	path = context
+	url = git@github.com:beartrando/tic-tac-toe-context.git
