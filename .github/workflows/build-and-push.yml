@@ -32,7 +32,7 @@ jobs:
           echo "Sha: ${{ github.event.client_payload.sha }}"
 
       - name: Checkout monorepo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
           fetch-depth: 0
@@ -88,6 +88,10 @@ jobs:
       - name: Push image
         run: |
           echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          echo ${{ github.event.client_payload.version }}
+          echo ${{ github.event.client_payload.branch }}
+          echo ${{ github.event.client_payload.sha }}
+          echo latest
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }}
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.sha }}
@@ -98,23 +102,12 @@ jobs:
           docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.sha }}
           docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:latest
 
-      - name: Trigger deploy
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.GH_PAT }}
-          repository: ${{ github.repository }}
-          event-type: deploy-gke
-#          event-type: deploy-ssh-k8e
-#          event-type: deploy-ssh-docker-compose
-          client-payload: |
-            {
-              "service": "${{ github.event.client_payload.service }}",
-              "repo": "${{ github.event.client_payload.repo }}",
-              "branch": "${{ github.event.client_payload.branch }}",
-              "version": "${{ github.event.client_payload.version }}",
-              "sha": "${{ github.event.client_payload.sha }}"
-            }
 
+  trigger-deploy:
+    needs: build-and-push
+    environment: ${{ github.event.client_payload.branch }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Build info
         run: |
           echo "=== Build info ==="
@@ -124,3 +117,50 @@ jobs:
           echo "version: ${{ github.event.client_payload.version }}"
           echo "sha: ${{ github.event.client_payload.sha }}"
           echo "=== End ==="
+
+      - name: Trigger deploy
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+          repository: ${{ github.repository }}
+          event-type: deploy-gke
+          #          event-type: deploy-ssh-k8e
+          #          event-type: deploy-ssh-docker-compose
+          client-payload: |
+            {
+              "service": "${{ github.event.client_payload.service }}",
+              "repo": "${{ github.event.client_payload.repo }}",
+              "branch": "${{ github.event.client_payload.branch }}",
+              "version": "${{ github.event.client_payload.version }}",
+              "sha": "${{ github.event.client_payload.sha }}"
+            }
+
+  trigger-cleanup:
+    needs: build-and-push
+    environment: ${{ github.event.client_payload.branch }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build info
+        run: |
+          echo "=== Build info ==="
+          echo "service: ${{ github.event.client_payload.service }}"
+          echo "repo: ${{ github.event.client_payload.repo }}"
+          echo "branch: ${{ github.event.client_payload.branch }}"
+          echo "version: ${{ github.event.client_payload.version }}"
+          echo "sha: ${{ github.event.client_payload.sha }}"
+          echo "=== End ==="
+
+      - name: Trigger cleanup registry
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+          repository: ${{ github.repository }}
+          event-type: cleanup-registry
+          client-payload: |
+            {
+              "service": "${{ github.event.client_payload.service }}",
+              "repo": "${{ github.event.client_payload.repo }}",
+              "branch": "${{ github.event.client_payload.branch }}",
+              "version": "${{ github.event.client_payload.version }}",
+              "sha": "${{ github.event.client_payload.sha }}"
+            }

@@ -1,7 +1,7 @@
 services:
   gateway:
     container_name: ttt-gateway
-    image: ghcr.io/beartrando/gateway/service:${GATEWAY_VERSION}
+    image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION}
     restart: unless-stopped
     env_file:
       - ./services/.env.gateway
@@ -18,7 +18,7 @@ services:
 
   auth:
     container_name: ttt-auth
-    image: ghcr.io/beartrando/auth/service:${AUTH_VERSION}
+    image: ghcr.io/beartrando/tic-tac-toe-auth/service:${AUTH_VERSION}
     restart: unless-stopped
     env_file:
       - ./services/.env.auth
@@ -115,7 +115,7 @@ services:
 
   profile:
     container_name: ttt-profile
-    image: ghcr.io/beartrando/profile/service:${PROFILE_VERSION}
+    image: ghcr.io/beartrando/tic-tac-toe-profile/service:${PROFILE_VERSION}
     restart: unless-stopped
     env_file:
       - ./services/.env.profile

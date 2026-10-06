@@ -14,7 +14,7 @@ services:
       - ./services/gateway/src:/usr/src/app/services/gateway/src/
       - ./services/gateway/__tests__:/usr/src/app/services/gateway/__tests__/
       - ./services/gateway/package.json:/usr/src/app/services/gateway/package.json
-    command: pnpm dlx turbo run dev --parallel
+    command: pnpm dlx turbo run dev --parallel --filter gateway
     networks:
       - backend
     healthcheck:
@@ -44,7 +44,7 @@ services:
         condition: service_healthy
       pgbouncer:
         condition: service_healthy
-    command: pnpm dlx turbo run dev --parallel
+    command: pnpm dlx turbo run dev --parallel --filter auth
     networks:
       - backend
     healthcheck:
@@ -72,7 +72,7 @@ services:
         condition: service_healthy
       pgbouncer:
         condition: service_healthy
-    command: pnpm dlx turbo run dev --parallel
+    command: pnpm dlx turbo run dev --parallel --filter orchestration
     networks:
       - backend
     healthcheck:
@@ -98,7 +98,7 @@ services:
     depends_on:
       pgbouncer:
         condition: service_healthy
-    command: pnpm dlx turbo run dev --parallel
+    command: pnpm dlx turbo run dev --parallel --filter bot
     networks:
       - backend
     healthcheck:
@@ -126,7 +126,7 @@ services:
         condition: service_healthy
       pgbouncer:
         condition: service_healthy
-    command: pnpm dlx turbo run dev --parallel
+    command: pnpm dlx turbo run dev --parallel --filter battle
     networks:
       - backend
     healthcheck:
@@ -151,7 +151,7 @@ services:
       - ./services/streaming/src:/usr/src/app/services/streaming/src/
       - ./services/streaming/__tests__:/usr/src/app/services/streaming/__tests__/
       - ./services/streaming/package.json:/usr/src/app/services/streaming/package.json
-    command: pnpm dlx turbo run dev --parallel
+    command: pnpm dlx turbo run dev --parallel --filter streaming
     networks:
       - backend
     healthcheck:
@@ -179,7 +179,7 @@ services:
         condition: service_healthy
       pgbouncer:
         condition: service_healthy
-    command: pnpm dlx turbo run dev --parallel
+    command: pnpm dlx turbo run dev --parallel --filter profile
     networks:
       - backend
     healthcheck:
@@ -209,7 +209,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    command: pnpm dlx turbo run dev --parallel
+    command: pnpm dlx turbo run dev --parallel --filter engine
     networks:
       - backend
     healthcheck:
@@ -222,8 +222,8 @@ services:
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: ttt-kafka-ui
-#    ports:
-#      - "8081:8080"
+    # ports:
+    #   - "8081:8080"
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
@@ -235,7 +235,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-
 
   kafka:
     image: apache/kafka:4.1.1
@@ -269,17 +268,17 @@ services:
   postgres:
     image: postgres:17.6
     container_name: ttt-postgres
-    restart: always
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
       POSTGRES_INITDB_ARGS: "--auth-host=md5"
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-#      - ./services/postgres/data:/var/lib/postgresql/data
+    # - ./services/postgres/data:/var/lib/postgresql/data
+    restart: always
     networks:
       - backend
     healthcheck:
@@ -309,20 +308,17 @@ services:
       retries: 5
       start_period: 10s
 
-
   redis:
     image: redis:7.2
     container_name: ttt-redis
+    restart: always
     networks:
       - backend
-    restart: always
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
-
-
 
 volumes:
   postgres_data:
