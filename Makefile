@@ -1,6 +1,5 @@
 include make/parameters.mk
 include make/kafka.mk
-include make/context.mk
 include make/git.mk
 
 NODE_BIN=./node_modules/.bin

@@ -31,3 +31,18 @@
 [submodule "context"]
     path = context
     url = git@github.com:beartrando/tic-tac-toe-context.git
+[submodule "shared/logger"]
+    path = shared/logger
+    url = git@github.com:beartrando/logger.git
+[submodule "shared/errors"]
+    path = shared/errors
+    url = git@github.com:beartrando/errors.git
+[submodule "shared/kafka-manager"]
+    path = shared/kafka-manager
+    url = git@github.com:beartrando/kafka-manager.git
+[submodule "shared/grpc-client-manager"]
+    path = shared/grpc-client-manager
+    url = git@github.com:beartrando/grpc-client-manager.git
+[submodule "shared/pg-boss-manager"]
+    path = shared/pg-boss-manager
+    url = git@github.com:beartrando/pg-boss-manager.git
