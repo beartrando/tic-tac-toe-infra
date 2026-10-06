@@ -2,6 +2,10 @@ include make/parameters.mk
 include make/kafka.mk
 include make/git.mk
 
+WIKI_DIR := wiki
+
+.PHONY: install install-deploy bip bipAlert migrate prod-migrate prisma-generate reset seed proto-generate test healthloop reset-db reset-kafka artifacts-drop build fix-eof wiki
+
 NODE_BIN=./node_modules/.bin
 SERVICE_DIR := services
 
@@ -215,8 +219,6 @@ reset-kafka:
 
 artifacts-drop:
 	find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
-	find . -name "dist" -type d -prune -exec rm -rf '{}' +
-	find . -name "tsconfig.tsbuildinfo" -type f -delete
 
 build:
 	@for service in $(NODE_SERVICES); do \
@@ -254,3 +256,9 @@ fix-eof:
 				fi; \
 			done \
 		' sh {} +
+
+wiki:
+	@echo "📖 Opening wiki..."
+	@cd $(WIKI_DIR) && python3 -m http.server 8000 --directory . &
+
+	@echo "📖 Wiki available at http://localhost:8000"
