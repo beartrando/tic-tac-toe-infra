@@ -2,6 +2,16 @@ packages:
   - 'services/*'
   - 'shared/*'
 
+# @shared/* всегда резолвятся как локальные workspace-модули, даже если где-то
+# в пакетах осталась git+https-спецификация (в сабмодулях shared/* свои
+# overrides указывают на GitHub — они здесь игнорируются, читается только корень)
+overrides:
+  '@shared/logger': 'workspace:*'
+  '@shared/errors': 'workspace:*'
+  '@shared/kafka-manager': 'workspace:*'
+  '@shared/grpc-client-manager': 'workspace:*'
+  '@shared/pg-boss-manager': 'workspace:*'
+
 injectWorkspacePackages: true
 
 allowBuilds:
