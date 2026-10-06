@@ -9,4 +9,3 @@ export {default as TokenExpiredError} from "./errors/token-expired.error";
 export {default as UnknownError} from "./errors/unknown.error";
 export {default as ServiceUnavailableError} from "./errors/service-unavailable.error";
 export {default as InvalidResponseError} from "./errors/invalid-response.error";
-

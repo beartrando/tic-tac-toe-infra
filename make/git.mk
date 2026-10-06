@@ -163,4 +163,3 @@ git-pull-all:
 	done; \
 	\
 	echo "\033[0;32m[✓] All repositories pulled successfully.\033[0m"
-

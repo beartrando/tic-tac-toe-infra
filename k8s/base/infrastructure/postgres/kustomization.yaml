@@ -6,7 +6,3 @@ configMapGenerator:
   - name: postgres-init
     files:
       - init.sql
-
-
-
-

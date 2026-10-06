@@ -58,6 +58,3 @@ context-drop:
 			exit 1; \
 			;; \
 	esac
-
-
-

@@ -6,4 +6,3 @@ kafka-user-created-list:
         --bootstrap-server localhost:9092 \
         --topic user.created \
         --from-beginning
-

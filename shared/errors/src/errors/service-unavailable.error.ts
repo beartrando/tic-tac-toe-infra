@@ -10,4 +10,3 @@ export class ServiceUnavailableError extends DomainError {
 }
 
 export default ServiceUnavailableError;
-

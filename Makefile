@@ -249,7 +249,9 @@ fix-eof:
 				if [ -s "$$f" ] && [ "$$(tail -c 1 "$$f" | od -An -t x1 | tr -d " ")" != "0a" ]; then \
 					printf "\n" >> "$$f"; \
 					echo "$$f"; \
+				elif [ -s "$$f" ] && [ "$$(tail -c 2 "$$f" | od -An -t x1 | tr -d " ")" = "0a0a" ]; then \
+					perl -0pi -e "s/\\n+$$/\\n/" "$$f"; \
+					echo "$$f"; \
 				fi; \
 			done \
 		' sh {} +
-

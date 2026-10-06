@@ -10,4 +10,3 @@ export class UnknownError extends DomainError {
 }
 
 export default UnknownError;
-

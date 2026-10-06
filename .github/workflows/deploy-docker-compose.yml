@@ -90,7 +90,3 @@ jobs:
             if [ "$LOCK_COUNT" -ne 0 ]; then
               echo "⏭️ Active deployments detected. Skip docker prune."
             fi
-
-
-
-

@@ -10,4 +10,3 @@ export class InvalidSessionError extends DomainError {
 }
 
 export default InvalidSessionError;
-

@@ -10,4 +10,3 @@ export class AccessDeniedError extends DomainError {
 }
 
 export default AccessDeniedError;
-

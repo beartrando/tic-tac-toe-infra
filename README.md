@@ -28,5 +28,3 @@ CI/CD
 Мониторинг
     сначала всё запускаем
     потом Prometheus/Grafana/Sentry
-
-
