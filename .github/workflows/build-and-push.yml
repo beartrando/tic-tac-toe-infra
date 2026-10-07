@@ -110,7 +110,7 @@ jobs:
 
 
   trigger-deploy:
-    if: github.event.client_payload.branch != 'dev'
+    if: ${{ github.event.client_payload.branch != 'dev' }}
     needs: build-and-push
     environment: ${{ github.event.client_payload.branch }}
     runs-on: ubuntu-latest
