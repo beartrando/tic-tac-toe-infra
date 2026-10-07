@@ -1,30 +1,10 @@
+# Wiki
 
-VPS
-    ставим K3s
-    проверяем kubectl
-    подключаем kubeconfig
-Infrastructure
-    PostgreSQL оставляем на VPS
-    Kafka оставляем на VPS
-    Redis — если нужен отдельно
-    MinIO — тоже пока не трогаем без необходимости
-Приложения
-    gateway
-    auth
-    profile
-    остальные сервисы 
-Networking
-    Ingress
-    домены
-    TLS
-    маршрутизация gateway → services
-Secrets / Config
-    Secrets
-    ConfigMaps
-    env
-CI/CD
-    GitHub Actions → GHCR → K3s
-    автоматический rollout новой версии
-Мониторинг
-    сначала всё запускаем
-    потом Prometheus/Grafana/Sentry
+Wiki содержит архитектурный и рабочий контекст проекта.
+
+Перед началом работы с проектом или изменением его архитектуры:
+
+1. Открой директорию [`wiki`](./wiki).
+2. Изучи необходимые документы Wiki, относящиеся к текущей задаче.
+3. Используй Wiki как источник актуального контекста и принятых архитектурных решений.
+
