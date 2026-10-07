@@ -1,6 +1,6 @@
 name: Promote uat to prod
 
-run-name: Promote uat to prod -- ${{ github.event.comment.body }}
+run-name: Promote dev to uat -- ${{ github.event.head_commit.message }}
 
 on:
   push:
