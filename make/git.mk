@@ -189,6 +189,7 @@ git-ensure-branch:
 				echo "\033[1;33m[+] Creating $(BRANCH) from dev\033[0m"; \
 				git branch "$(BRANCH)" dev || exit 1; \
 			fi; \
+			git checkout "$(BRANCH)" || exit 1; \
 		else \
 			echo "\033[1;34m[*] Checking branch $(BRANCH) in $$dir...\033[0m"; \
 			if git -C "$$dir" show-ref --verify --quiet "refs/heads/$(BRANCH)"; then \
@@ -197,6 +198,7 @@ git-ensure-branch:
 				echo "\033[1;33m[+] Creating $(BRANCH) from dev\033[0m"; \
 				git -C "$$dir" branch "$(BRANCH)" dev || exit 1; \
 			fi; \
+			git -C "$$dir" checkout "$(BRANCH)" || exit 1; \
 		fi; \
 	done
 
