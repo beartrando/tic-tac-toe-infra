@@ -169,3 +169,70 @@ git-pull-all:
 	done; \
 	\
 	echo "\033[0;32m[✓] All repositories pulled successfully.\033[0m"
+
+
+
+git-checkout-dev:
+	@failed=0; \
+	echo "\033[1;34m[*] Checking monorepo...\033[0m"; \
+	if [ -n "$$(git status --porcelain --ignore-submodules=all)" ]; then \
+		echo "\033[0;31m[✗] Monorepo has uncommitted changes\033[0m"; \
+		failed=1; \
+	else \
+		echo "\033[0;32m[✓] Monorepo is clean\033[0m"; \
+	fi; \
+	\
+	for dir in $(GIT_SERVICES); do \
+		echo "\033[1;34m[*] Checking $$dir...\033[0m"; \
+		SERVICE_PATH="$(SERVICE_DIR)/$$dir"; \
+		if ! git -C "$$SERVICE_PATH" rev-parse --is-inside-work-tree >/dev/null 2>&1; then \
+			echo "\033[0;31m[!] $$dir — not a git repo\033[0m"; \
+			failed=1; \
+			continue; \
+		fi; \
+		if [ -n "$$(git -C "$$SERVICE_PATH" status --porcelain)" ]; then \
+			echo "\033[0;31m[✗] $$dir has uncommitted changes\033[0m"; \
+			failed=1; \
+		else \
+			echo "\033[0;32m[✓] $$dir is clean\033[0m"; \
+		fi; \
+	done; \
+	\
+	for dir in $(GIT_EXTRA_REPOS); do \
+		echo "\033[1;34m[*] Checking $$dir...\033[0m"; \
+		if ! git -C "$$dir" rev-parse --is-inside-work-tree >/dev/null 2>&1; then \
+			echo "\033[0;31m[!] $$dir — not a git repo\033[0m"; \
+			failed=1; \
+			continue; \
+		fi; \
+		if [ -n "$$(git -C "$$dir" status --porcelain)" ]; then \
+			echo "\033[0;31m[✗] $$dir has uncommitted changes\033[0m"; \
+			failed=1; \
+		else \
+			echo "\033[0;32m[✓] $$dir is clean\033[0m"; \
+		fi; \
+	done; \
+	\
+	if [ "$$failed" -ne 0 ]; then \
+		echo "\033[0;31m[✗] Checkout aborted — some repositories have changes.\033[0m"; \
+		exit 1; \
+	fi; \
+	\
+	echo "\033[1;34m[*] All repositories are clean. Switching to dev...\033[0m"; \
+	\
+	echo "\033[1;34m[*] Monorepo...\033[0m"; \
+	git checkout dev || exit 1; \
+	\
+	for dir in $(GIT_SERVICES); do \
+		SERVICE_PATH="$(SERVICE_DIR)/$$dir"; \
+		echo "\033[1;34m[*] $$dir...\033[0m"; \
+		git -C "$$SERVICE_PATH" checkout dev || exit 1; \
+	done; \
+	\
+	for dir in $(GIT_EXTRA_REPOS); do \
+		echo "\033[1;34m[*] $$dir...\033[0m"; \
+		git -C "$$dir" checkout dev || exit 1; \
+	done; \
+	\
+	echo "\033[0;32m[✓] All repositories switched to dev.\033[0m"
+
