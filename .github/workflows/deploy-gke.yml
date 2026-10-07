@@ -5,7 +5,7 @@ on:
     types:
       - deploy-gke
 
-run-name: "Deploy service --- ${{ github.event.client_payload.branch }} --- ${{ github.event.client_payload.service }}"
+run-name: "Deploy service --- --- ${{ github.event.client_payload.branch }} --- --- ${{ github.event.client_payload.service }}"
 
 concurrency:
   group: deploy-${{ github.event.client_payload.service }}
