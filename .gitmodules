@@ -58,3 +58,6 @@
 [submodule "shared/pg-boss-manager"]
     path = shared/pg-boss-manager
     url = git@github.com:beartrando/pg-boss-manager.git
+[submodule "shared/timer"]
+	path = shared/timer
+	url = git@github.com:beartrando/timer
