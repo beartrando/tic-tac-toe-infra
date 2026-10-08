@@ -1,28 +1,7 @@
-export interface TimerServiceInterface<KEntity, TEntity> {
-    start(key: KEntity, entity: TEntity, timeoutMs?: number): void;
+import TimerServiceInterface from "./interfaces/timer-service.interface";
+import TimerCallbackFactoryHolderInterface from "./interfaces/timer-callback-factory-holder.interface";
 
-    stop(key: KEntity): void;
-
-    restart(key: KEntity, entity: TEntity, timeoutMs?: number): void;
-}
-
-export interface TimerCallbackInterface {
-    (): void | Promise<void>;
-}
-
-export interface TimerCallbackFactoryInterface<TEntity> {
-    create(entity: TEntity): TimerCallbackInterface;
-}
-
-export interface TimerCallbackFactoryHolderInterface<TEntity> {
-    set factory(factory: TimerCallbackFactoryInterface<TEntity>);
-
-    get factory(): TimerCallbackFactoryInterface<TEntity>;
-}
-
-export class TimerService<KEntity, TEntity>
-    implements TimerServiceInterface<KEntity, TEntity>
-{
+export class TimerService<KEntity, TEntity> implements TimerServiceInterface<KEntity, TEntity> {
     private readonly timers = new Map<KEntity, NodeJS.Timeout>();
 
     constructor(
@@ -31,7 +10,11 @@ export class TimerService<KEntity, TEntity>
     ) {
     }
 
-    start(key: KEntity, entity: TEntity, timeoutS?: number): void {
+    start(
+        key: KEntity,
+        entity: TEntity,
+        timeoutS?: number,
+    ): void {
         const timeout = 1000 * (timeoutS ?? this.timeoutS);
 
         const callbackFactory = this._callbackFactoryHolder.factory;
@@ -48,7 +31,9 @@ export class TimerService<KEntity, TEntity>
         this.timers.set(key, timer);
     }
 
-    stop(key: KEntity): void {
+    stop(
+        key: KEntity,
+    ): void {
         const timer = this.timers.get(key);
 
         if (!timer) {
@@ -59,7 +44,11 @@ export class TimerService<KEntity, TEntity>
         this.timers.delete(key);
     }
 
-    restart(key: KEntity, entity: TEntity, timeoutS?: number): void {
+    restart(
+        key: KEntity,
+        entity: TEntity,
+        timeoutS?: number,
+    ): void {
         this.start(key, entity, timeoutS);
     }
 }

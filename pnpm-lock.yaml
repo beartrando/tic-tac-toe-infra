@@ -650,61 +650,25 @@ importers:
       '@grpc/grpc-js':
         specifier: ^1.14.3
         version: 1.14.4
-      '@prisma/client':
-        specifier: ^6.19.3
-        version: 6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3)
       '@shared/errors':
         specifier: workspace:*
         version: link:../../shared/errors
       '@shared/grpc-client-manager':
         specifier: workspace:*
         version: link:../../shared/grpc-client-manager
-      '@shared/kafka-manager':
-        specifier: workspace:*
-        version: link:../../shared/kafka-manager
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/pg-boss-manager':
-        specifier: workspace:*
-        version: link:../../shared/pg-boss-manager
-      jsonwebtoken:
-        specifier: ^9.0.3
-        version: 9.0.3
-      kafkajs:
-        specifier: ^2.2.4
-        version: 2.2.4
-      pg-boss:
-        specifier: ^12.15.0
-        version: 12.24.1
     devDependencies:
-      '@types/amqplib':
-        specifier: ^0.10.8
-        version: 0.10.8
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
-      '@types/jsonwebtoken':
-        specifier: ^9.0.10
-        version: 9.0.10
-      '@types/supertest':
-        specifier: ^7.2.0
-        version: 7.2.0
-      fast-glob:
-        specifier: ^3.3.3
-        version: 3.3.3
       jest:
         specifier: ^30.3.0
         version: 30.4.2(@types/node@24.13.2)(ts-node@10.9.2(@types/node@24.13.2)(typescript@6.0.3))
       nodemon:
         specifier: ^3.1.14
         version: 3.1.14
-      prisma:
-        specifier: ^6.19.3
-        version: 6.19.3(typescript@6.0.3)
-      supertest:
-        specifier: ^7.2.2
-        version: 7.2.2(supports-color@5.5.0)
       ts-jest:
         specifier: ^29.4.9
         version: 29.4.11(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7))(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.2)(ts-node@10.9.2(@types/node@24.13.2)(typescript@6.0.3)))(typescript@6.0.3)
