@@ -38,7 +38,7 @@
     path = docs/workflow
     url = git@github.com:beartrando/workflow.git
 [submodule "make"]
-    path = docs/workflow
+    path = make
     url = git@github.com:beartrando/make.git
 [submodule "shared/logger"]
     path = shared/logger
