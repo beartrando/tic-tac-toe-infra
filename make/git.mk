@@ -170,3 +170,78 @@ git-pull-all:
 	\
 	echo "\033[0;32m[✓] All repositories pulled successfully.\033[0m"
 
+git-merge-dev-to-uat:
+	@make git-merge-from-to FROM=dev TO=uat
+
+
+
+git-ensure-branch:
+	@if [ -z "$(BRANCH)" ]; then \
+		echo "Usage: make git-ensure-branch BRANCH=<branch>"; \
+		exit 1; \
+	fi; \
+	for dir in . $(addprefix $(SERVICE_DIR)/,$(GIT_SERVICES)) $(GIT_EXTRA_REPOS); do \
+		if [ "$$dir" = "." ]; then \
+			echo "\033[1;34m[*] Checking branch $(BRANCH) in monorepo...\033[0m"; \
+			if git show-ref --verify --quiet "refs/heads/$(BRANCH)"; then \
+				echo "\033[0;32m[✓] $(BRANCH) exists\033[0m"; \
+			else \
+				echo "\033[1;33m[+] Creating $(BRANCH) from dev\033[0m"; \
+				git branch "$(BRANCH)" dev || exit 1; \
+			fi; \
+			git checkout "$(BRANCH)" || exit 1; \
+		else \
+			echo "\033[1;34m[*] Checking branch $(BRANCH) in $$dir...\033[0m"; \
+			if git -C "$$dir" show-ref --verify --quiet "refs/heads/$(BRANCH)"; then \
+				echo "\033[0;32m[✓] $(BRANCH) exists\033[0m"; \
+			else \
+				echo "\033[1;33m[+] Creating $(BRANCH) from dev\033[0m"; \
+				git -C "$$dir" branch "$(BRANCH)" dev || exit 1; \
+			fi; \
+			git -C "$$dir" checkout "$(BRANCH)" || exit 1; \
+		fi; \
+	done
+
+git-merge-from-to:
+	@if [ -z "$(FROM)" ] || [ -z "$(TO)" ]; then \
+    	echo "Usage: make git-merge-from-to FROM=<source-branch> TO=<target-branch>"; \
+		exit 1; \
+  	fi; \
+	failed=0; \
+  	\
+	echo "\033[1;34m[*] Checking repositories are clean...\033[0m"; \
+	for dir in . $(addprefix $(SERVICE_DIR)/,$(GIT_SERVICES)) $(GIT_EXTRA_REPOS); do \
+		if [ "$$dir" = "." ]; then \
+			status=$$(git status --porcelain --ignore-submodules=all); \
+		else \
+			status=$$(git -C "$$dir" status --porcelain --ignore-submodules=all); \
+		fi; \
+		if [ -n "$$status" ]; then \
+			echo "\033[0;31m[✗] Dirty repository: $$dir\033[0m"; \
+			failed=1; \
+		fi; \
+	done; \
+	\
+	if [ "$$failed" -ne 0 ]; then \
+	echo "\033[0;31m[✗] Aborted: all repositories must be clean.\033[0m"; \
+	exit 1; \
+	fi; \
+	\
+	failed=0; \
+	for dir in . $(addprefix $(SERVICE_DIR)/,$(GIT_SERVICES)) $(GIT_EXTRA_REPOS); do \
+    	echo "\033[1;34m[*] $$dir: $(FROM) -> $(TO)\033[0m"; \
+		if [ "$$dir" = "." ]; then \
+			git checkout "$(TO)" && git merge "$(FROM)" || failed=1; \
+		else \
+			git -C "$$dir" checkout "$(TO)" && \
+			git -C "$$dir" merge "$(FROM)" || failed=1; \
+		fi; \
+		if [ "$$failed" -ne 0 ]; then break; fi; \
+	done; \
+	\
+	if [ "$$failed" -ne 0 ]; then \
+    	echo "\033[0;31m[✗] Merge failed.\033[0m"; \
+    	exit 1; \
+  	fi; \
+  	echo "\033[0;32m[✓] $(FROM) -> $(TO) merged in all repositories.\033[0m"
+
