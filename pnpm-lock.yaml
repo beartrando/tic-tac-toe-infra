@@ -6,11 +6,14 @@ settings:
   injectWorkspacePackages: true
 
 overrides:
-  '@shared/logger': workspace:*
+  '@shared/cache-store': workspace:*
   '@shared/errors': workspace:*
-  '@shared/kafka-manager': workspace:*
   '@shared/grpc-client-manager': workspace:*
+  '@shared/kafka-manager': workspace:*
+  '@shared/logger': workspace:*
   '@shared/pg-boss-manager': workspace:*
+  '@shared/state-store': workspace:*
+  '@shared/timer': workspace:*
 
 importers:
 
@@ -137,6 +140,9 @@ importers:
       '@shared/pg-boss-manager':
         specifier: workspace:*
         version: link:../../shared/pg-boss-manager
+      '@shared/timer':
+        specifier: workspace:*
+        version: link:../../shared/timer
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3
@@ -207,15 +213,15 @@ importers:
       '@shared/errors':
         specifier: workspace:*
         version: link:../../shared/errors
+      '@shared/grpc-client-manager':
+        specifier: workspace:*
+        version: link:../../shared/grpc-client-manager
       '@shared/kafka-manager':
         specifier: workspace:*
         version: link:../../shared/kafka-manager
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/pg-boss-manager':
-        specifier: workspace:*
-        version: link:../../shared/pg-boss-manager
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7
@@ -313,6 +319,9 @@ importers:
       '@shared/pg-boss-manager':
         specifier: workspace:*
         version: link:../../shared/pg-boss-manager
+      '@shared/timer':
+        specifier: workspace:*
+        version: link:../../shared/timer
       ioredis:
         specifier: ^5.10.1
         version: 5.11.1
@@ -714,6 +723,9 @@ importers:
       '@shared/pg-boss-manager':
         specifier: workspace:*
         version: link:../../shared/pg-boss-manager
+      '@shared/timer':
+        specifier: workspace:*
+        version: link:../../shared/timer
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7
@@ -857,6 +869,12 @@ importers:
       '@types/node':
         specifier: ^24.12.0
         version: 24.13.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  shared/timer:
+    devDependencies:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
