@@ -29,8 +29,17 @@
     path = proto
     url = git@github.com:beartrando/tic-tac-toe-proto.git
 [submodule "context"]
-    path = context
-    url = git@github.com:beartrando/tic-tac-toe-context.git
+    path = docs/wiki
+    url = git@github.com:beartrando/lenvora-context.git
+[submodule "wiki"]
+    path = docs/wiki
+    url = git@github.com:beartrando/lenvora-wiki.git
+[submodule "workflow"]
+    path = docs/workflow
+    url = git@github.com:beartrando/lenvora-workflow.git
+[submodule "make"]
+    path = docs/workflow
+    url = git@github.com:beartrando/make.git
 [submodule "shared/logger"]
     path = shared/logger
     url = git@github.com:beartrando/logger.git
@@ -49,3 +58,9 @@
 [submodule "shared/wiki"]
     path = wiki
     url = git@github.com:beartrando/tic-tac-toe-wiki.git
+[submodule "docs/wiki"]
+	path = docs/wiki
+	url = git@github.com:beartrando/wiki.git
+[submodule "docs/context"]
+	path = docs/context
+	url = git@github.com:beartrando/context.git
