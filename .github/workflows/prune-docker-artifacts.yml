@@ -25,11 +25,11 @@ jobs:
           script: |
             bash -eo pipefail <<'EOF'
             set -e
-  
+            
             echo "🧹 Running Docker prune."
 
             docker image prune -f
             docker system prune -af
             
-
+            
             EOF
