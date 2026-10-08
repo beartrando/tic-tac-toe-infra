@@ -1,2 +1,0 @@
-export { TimerService, TimerServiceInterface, TimerCallbackInterface, TimerCallbackFactoryInterface, TimerCallbackFactoryHolderInterface, TimerCallbackFactoryHolder } from './service';
-export default TimerService;
