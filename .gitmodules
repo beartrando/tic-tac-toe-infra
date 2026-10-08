@@ -29,7 +29,7 @@
     path = proto
     url = git@github.com:beartrando/tic-tac-toe-proto.git
 [submodule "context"]
-    path = docs/wiki
+    path = docs/context
     url = git@github.com:beartrando/tic-tac-toe-context.git
 [submodule "wiki"]
     path = docs/wiki
