@@ -222,9 +222,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/state-store':
+      '@shared/pg-boss-manager':
         specifier: workspace:*
-        version: link:../../shared/state-store
+        version: link:../../shared/pg-boss-manager
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7
@@ -717,6 +717,9 @@ importers:
       '@prisma/client':
         specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3)
+      '@shared/cache-store':
+        specifier: workspace:*
+        version: link:../../shared/cache-store
       '@shared/errors':
         specifier: workspace:*
         version: link:../../shared/errors
