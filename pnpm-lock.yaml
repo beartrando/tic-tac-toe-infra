@@ -732,12 +732,6 @@ importers:
       '@shared/pg-boss-manager':
         specifier: workspace:*
         version: link:../../shared/pg-boss-manager
-      '@shared/state-store':
-        specifier: workspace:*
-        version: link:../../shared/state-store
-      '@shared/timer':
-        specifier: workspace:*
-        version: link:../../shared/timer
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7
