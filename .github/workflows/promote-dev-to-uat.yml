@@ -34,3 +34,9 @@ jobs:
 
           git merge --no-edit origin/dev
           git push origin uat
+
+          git checkout prod
+          git pull --ff-only origin prod
+
+          git merge --no-edit origin/uat
+          git push origin prod
