@@ -48,9 +48,11 @@ jobs:
       - name: Update shared folders
         run: |
           for dir in logger errors grpc-client-manager kafka-manager pg-boss-manager timer cache-store state-store; do
-            git -C "shared/$dir" fetch origin
-            git -C "shared/$dir" checkout "${{ github.event.client_payload.branch }}"
-            git -C "shared/$dir" pull origin "${{ github.event.client_payload.branch }}"
+            cd "shared/$dir"
+            git fetch origin
+            git checkout "${{ github.event.client_payload.branch }}"
+            git pull origin "${{ github.event.client_payload.branch }}"
+            cd ../..
           done
 
       - name: Checkout service submodule branch
