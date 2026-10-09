@@ -51,11 +51,9 @@ jobs:
           SHARED_MODULES: "logger errors grpc-client-manager kafka-manager pg-boss-manager timer cache-store state-store"
         run: |
           for dir in $SHARED_MODULES; do
-            cd "shared/$dir"
-            git fetch origin
-            git checkout "$BRANCH"
-            git pull origin "$BRANCH"
-            cd ../..
+            git -C "shared/$dir" fetch origin
+            git -C "shared/$dir" checkout "$BRANCH"
+            git -C "shared/$dir" pull origin "$BRANCH"
           done
 
       - name: Checkout service submodule branch
