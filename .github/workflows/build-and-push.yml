@@ -46,14 +46,11 @@ jobs:
           git pull origin ${{ github.event.client_payload.branch }}
 
       - name: Update shared folders
-        env:
-          BRANCH: ${{ github.event.client_payload.branch }}
-          SHARED_MODULES: "logger errors grpc-client-manager kafka-manager pg-boss-manager timer cache-store state-store"
         run: |
-          for dir in $SHARED_MODULES; do
+          for dir in logger errors grpc-client-manager kafka-manager pg-boss-manager timer cache-store state-store; do
             git -C "shared/$dir" fetch origin
-            git -C "shared/$dir" checkout "$BRANCH"
-            git -C "shared/$dir" pull origin "$BRANCH"
+            git -C "shared/$dir" checkout "${{ github.event.client_payload.branch }}"
+            git -C "shared/$dir" pull origin "${{ github.event.client_payload.branch }}"
           done
 
 
