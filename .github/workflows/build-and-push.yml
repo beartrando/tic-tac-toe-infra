@@ -46,8 +46,9 @@ jobs:
           git pull origin ${{ github.event.client_payload.branch }}
 
       - name: Update shared folders
+        SHARED_REPOS: "logger errors grpc-client-manager kafka-manager pg-boss-manager timer cache-store state-store"
         run: |
-          for dir in logger errors grpc-client-manager kafka-manager pg-boss-manager; do
+          for dir in $SHARED_REPOS; do
             cd "shared/$dir"
             git fetch origin
             git checkout "${{ github.event.client_payload.branch }}"
