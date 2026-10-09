@@ -130,9 +130,9 @@ jobs:
         with:
           token: ${{ secrets.GH_PAT }}
           repository: ${{ github.repository }}
-            #          event-type: deploy-gke
-            #          event-type: deploy-ssh-k8e
-            event-type: deploy-ssh-docker-compose
+          event-type: deploy-gke
+          #          event-type: deploy-ssh-k8e
+          #          event-type: deploy-ssh-docker-compose
           client-payload: |
             {
               "service": "${{ github.event.client_payload.service }}",
