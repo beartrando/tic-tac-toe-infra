@@ -222,9 +222,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/state-store':
+      '@shared/pg-boss-manager':
         specifier: workspace:*
-        version: link:../../shared/state-store
+        version: link:../../shared/pg-boss-manager
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7

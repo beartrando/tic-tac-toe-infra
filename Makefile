@@ -6,4 +6,3 @@ PRISMA_SERVICES  := auth battle bot engine               orchestration profile s
 FLUTTER_SERVICES :=                        front
 
 PROJECT_PREFIX := ttt
-
