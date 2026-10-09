@@ -25,12 +25,24 @@
 [submodule "services/streaming"]
     path = services/streaming
     url = git@github.com:beartrando/tic-tac-toe-streaming.git
+[submodule "services/service-template"]
+    path = services/service-template
+    url = git@github.com:beartrando/service-template.git
 [submodule "proto"]
     path = proto
     url = git@github.com:beartrando/tic-tac-toe-proto.git
 [submodule "context"]
-    path = context
+    path = docs/context
     url = git@github.com:beartrando/tic-tac-toe-context.git
+[submodule "wiki"]
+    path = docs/wiki
+    url = git@github.com:beartrando/tic-tac-toe-wiki.git
+[submodule "workflow"]
+    path = docs/workflow
+    url = git@github.com:beartrando/workflow.git
+[submodule "make"]
+    path = make
+    url = git@github.com:beartrando/make.git
 [submodule "shared/logger"]
     path = shared/logger
     url = git@github.com:beartrando/logger.git
@@ -46,6 +58,12 @@
 [submodule "shared/pg-boss-manager"]
     path = shared/pg-boss-manager
     url = git@github.com:beartrando/pg-boss-manager.git
-[submodule "shared/wiki"]
-    path = wiki
-    url = git@github.com:beartrando/tic-tac-toe-wiki.git
+[submodule "shared/timer"]
+	path = shared/timer
+	url = git@github.com:beartrando/timer
+[submodule "shared/cache-store"]
+	path = shared/cache-store
+	url = git@github.com:beartrando/cache-store
+[submodule "shared/state-store"]
+	path = shared/state-store
+	url = git@github.com:beartrando/state-store
