@@ -39,11 +39,12 @@ jobs:
           token: ${{ secrets.GH_PAT }}
 
       - name: Update proto submodule
+        env:
+          BRANCH: ${{ github.event.client_payload.branch }}
         run: |
-          cd proto
-          git fetch origin
-          git checkout ${{ github.event.client_payload.branch }}
-          git pull origin ${{ github.event.client_payload.branch }}
+          git -C proto fetch origin
+          git -C proto checkout "$BRANCH"
+          git -C proto pull origin "$BRANCH"
 
       - name: Update shared folders
         env:
@@ -51,11 +52,9 @@ jobs:
           SHARED_MODULES: "logger errors grpc-client-manager kafka-manager pg-boss-manager timer cache-store state-store"
         run: |
           for dir in $SHARED_MODULES; do
-            cd "shared/$dir"
-            git fetch origin
-            git checkout "$BRANCH"
-            git pull origin "$BRANCH"
-            cd ../..
+            git -C "shared/$dir" fetch origin
+            git -C "shared/$dir" checkout "$BRANCH"
+            git -C "shared/$dir" pull origin "$BRANCH"
           done
 
       - name: Checkout service submodule branch
