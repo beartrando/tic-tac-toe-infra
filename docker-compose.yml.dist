@@ -139,11 +139,6 @@ services:
     container_name: ttt-matchmaking
     env_file:
       - services/matchmaking/.env
-    depends_on:
-      kafka:
-        condition: service_healthy
-      pgbouncer:
-        condition: service_healthy
     volumes:
       - ./shared:/usr/src/app/shared
       - ./services/matchmaking/src:/usr/src/app/services/matchmaking/src/
@@ -153,6 +148,37 @@ services:
       - backend
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  devorc:
+    build:
+      context: .
+      dockerfile: services/devorc/Dockerfile
+      target: dev
+    container_name: ttt-devorc
+    user: "1000:1000"
+    env_file:
+      - services/devorc/.env
+    depends_on:
+      kafka:
+        condition: service_healthy
+      pgbouncer:
+        condition: service_healthy
+    ports:
+      - "9091:9091"
+    volumes:
+      - ./:/usr/src/app
+      - ${HOME}/.ssh:/home/node/.ssh:ro
+      - ${HOME}/.gitconfig:/home/node/.gitconfig:ro
+      - ${HOME}/.config/gh:/home/node/.config/gh:ro
+    command: pnpm dlx turbo run dev --parallel --filter devorc
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:9091 || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 10
