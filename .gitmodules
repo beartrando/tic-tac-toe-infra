@@ -31,6 +31,9 @@
 [submodule "services/service-template"]
     path = services/service-template
     url = git@github.com:beartrando/service-template.git
+[submodule "services/devorc"]
+    path = services/devorc
+    url = git@github.com:beartrando/devorc.git
 [submodule "proto"]
     path = proto
     url = git@github.com:beartrando/tic-tac-toe-proto.git
