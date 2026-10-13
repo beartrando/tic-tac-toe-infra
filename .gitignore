@@ -6,3 +6,4 @@ docker-compose*.yml
 .vscode
 .env
 context.md
+.pnpm-store
