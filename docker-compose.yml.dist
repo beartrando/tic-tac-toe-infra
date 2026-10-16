@@ -195,6 +195,11 @@ services:
     container_name: ttt-streaming
     env_file:
       - services/streaming/.env
+    depends_on:
+      kafka:
+        condition: service_healthy
+      pgbouncer:
+        condition: service_healthy
     ports:
       - "8080:8080"
     volumes:
