@@ -89,6 +89,7 @@ services:
       - services/bot/.env
     volumes:
       - ./shared:/usr/src/app/shared
+      - ./services/bot/__tests__:/usr/src/app/services/bot/__tests__/
       - ./services/bot/src:/usr/src/app/services/bot/src/
       - ./services/bot/package.json:/usr/src/app/services/bot/package.json
     depends_on:
@@ -304,8 +305,8 @@ services:
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: ttt-kafka-ui
-    # ports:
-    #   - "8081:8080"
+    ports:
+      - "8081:8080"
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
