@@ -122,6 +122,11 @@ services:
     restart: unless-stopped
     env_file:
         - ./services/.env.streaming
+    depends_on:
+      kafka:
+        condition: service_healthy
+      pgbouncer:
+        condition: service_healthy
 #    ports:
 #      - "8080:8080"
     networks:
