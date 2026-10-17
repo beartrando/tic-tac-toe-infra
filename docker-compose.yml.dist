@@ -262,34 +262,34 @@ services:
       retries: 10
       start_period: 20s
 
-#  service-template:
-#    build:
-#      context: .
-#      dockerfile: services/service-template/Dockerfile
-#      target: dev
-#    container_name: ttt-service-template
-#    env_file:
-#      - services/service-template/.env
-#    environment:
-#      KAFKAJS_NO_PARTITIONER_WARNING: 1
-#    volumes:
-#      - ./shared:/usr/src/app/shared
-#      - ./services/service-template/src:/usr/src/app/services/service-template/src/
-#      - ./services/service-template/package.json:/usr/src/app/services/service-template/package.json
-#    depends_on:
-#      kafka:
-#        condition: service_healthy
-#      pgbouncer:
-#        condition: service_healthy
-#    command: pnpm dlx turbo run dev --parallel --filter service-template
-#    networks:
-#      - backend
-#    healthcheck:
-#      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
-#      start_period: 20s
+  #  service-template:
+  #    build:
+  #      context: .
+  #      dockerfile: services/service-template/Dockerfile
+  #      target: dev
+  #    container_name: ttt-service-template
+  #    env_file:
+  #      - services/service-template/.env
+  #    environment:
+  #      KAFKAJS_NO_PARTITIONER_WARNING: 1
+  #    volumes:
+  #      - ./shared:/usr/src/app/shared
+  #      - ./services/service-template/src:/usr/src/app/services/service-template/src/
+  #      - ./services/service-template/package.json:/usr/src/app/services/service-template/package.json
+  #    depends_on:
+  #      kafka:
+  #        condition: service_healthy
+  #      pgbouncer:
+  #        condition: service_healthy
+  #    command: pnpm dlx turbo run dev --parallel --filter service-template
+  #    networks:
+  #      - backend
+  #    healthcheck:
+  #      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+  #      interval: 10s
+  #      timeout: 5s
+  #      retries: 10
+  #      start_period: 20s
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -392,34 +392,34 @@ services:
       timeout: 5s
       retries: 5
 
-elasticsearch:
-  image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
-  container_name: ttt-elasticsearch
-  environment:
-    discovery.type: single-node
-    xpack.security.enabled: "false"
-    ES_JAVA_OPTS: "-Xms512m -Xmx512m"
-  volumes:
-    - elasticsearch_data:/usr/share/elasticsearch/data
-  networks:
-    - es_network
-  healthcheck:
-    test: [ "CMD-SHELL", "curl -fsS http://localhost:9200/_cluster/health || exit 1" ]
-    interval: 10s
-    timeout: 5s
-    retries: 5
-    start_period: 20s
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    container_name: ttt-elasticsearch
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - es_network
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fsS http://localhost:9200/_cluster/health || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
-kibana:
-  image: docker.elastic.co/kibana/kibana:8.15.0
-  container_name: ttt-kibana
-  environment:
-    ELASTICSEARCH_HOSTS: http://elasticsearch:9200
-  depends_on:
-    elasticsearch:
-      condition: service_healthy
-  networks:
-    - es_network
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.0
+    container_name: ttt-kibana
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - es_network
 
 volumes:
   postgres_data:
