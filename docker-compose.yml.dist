@@ -89,6 +89,7 @@ services:
       - services/bot/.env
     volumes:
       - ./shared:/usr/src/app/shared
+      - ./services/bot/__tests__:/usr/src/app/services/bot/__tests__/
       - ./services/bot/src:/usr/src/app/services/bot/src/
       - ./services/bot/package.json:/usr/src/app/services/bot/package.json
     depends_on:
