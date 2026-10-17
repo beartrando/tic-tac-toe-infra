@@ -126,6 +126,9 @@ importers:
       '@prisma/client':
         specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3)
+      '@shared/elastic':
+        specifier: workspace:*
+        version: link:../../shared/elastic
       '@shared/errors':
         specifier: workspace:*
         version: link:../../shared/errors
@@ -211,6 +214,9 @@ importers:
       '@prisma/client':
         specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3)
+      '@shared/elastic':
+        specifier: workspace:*
+        version: link:../../shared/elastic
       '@shared/errors':
         specifier: workspace:*
         version: link:../../shared/errors
@@ -936,6 +942,9 @@ importers:
       '@shared/cache-store':
         specifier: workspace:*
         version: link:../../shared/cache-store
+      '@shared/elastic':
+        specifier: workspace:*
+        version: link:../../shared/elastic
       '@shared/errors':
         specifier: workspace:*
         version: link:../../shared/errors
