@@ -7,6 +7,7 @@ packages:
 # overrides указывают на GitHub — они здесь игнорируются, читается только корень)
 overrides:
   '@shared/cache-store': 'workspace:*'
+  '@shared/elastic': 'workspace:*'
   '@shared/errors': 'workspace:*'
   '@shared/grpc-client-manager': 'workspace:*'
   '@shared/kafka-manager': 'workspace:*'

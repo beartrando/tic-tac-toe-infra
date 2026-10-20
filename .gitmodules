@@ -76,6 +76,6 @@
 [submodule "kibana"]
         path = kibana
         url = git@github.com:beartrando/tic-tac-toe-kibana
-
-
-
+[submodule "shared/persisted-logger"]
+	path = shared/persisted-logger
+	url = git@github.com:beartrando/persisted-logger

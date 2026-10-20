@@ -89,6 +89,7 @@ services:
       - services/bot/.env
     volumes:
       - ./shared:/usr/src/app/shared
+      - ./services/bot/__tests__:/usr/src/app/services/bot/__tests__/
       - ./services/bot/src:/usr/src/app/services/bot/src/
       - ./services/bot/package.json:/usr/src/app/services/bot/package.json
     depends_on:
@@ -402,7 +403,7 @@ services:
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
     networks:
-      - es_network
+      - backend
     healthcheck:
       test: [ "CMD-SHELL", "curl -fsS http://localhost:9200/_cluster/health || exit 1" ]
       interval: 10s
@@ -419,7 +420,7 @@ services:
       elasticsearch:
         condition: service_healthy
     networks:
-      - es_network
+      - backend
 
 volumes:
   postgres_data:
@@ -428,7 +429,4 @@ volumes:
 
 networks:
   backend:
-    driver: bridge
-
-  es_network:
     driver: bridge
