@@ -66,16 +66,16 @@
     url = git@github.com:beartrando/pg-boss-manager.git
 [submodule "shared/timer"]
 	path = shared/timer
-	url = git@github.com:beartrando/timer
+	url = git@github.com:beartrando/timer.git
 [submodule "shared/cache-store"]
 	path = shared/cache-store
-	url = git@github.com:beartrando/cache-store
+	url = git@github.com:beartrando/cache-store.git
 [submodule "shared/state-store"]
 	path = shared/state-store
-	url = git@github.com:beartrando/state-store
+	url = git@github.com:beartrando/state-store.git
 [submodule "kibana"]
         path = kibana
-        url = git@github.com:beartrando/tic-tac-toe-kibana
+        url = git@github.com:beartrando/tic-tac-toe-kibana.git
 [submodule "shared/persisted-logger"]
 	path = shared/persisted-logger
-	url = git@github.com:beartrando/persisted-logger
+	url = git@github.com:beartrando/shared-persisted-logger.git
