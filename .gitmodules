@@ -73,3 +73,9 @@
 [submodule "shared/state-store"]
 	path = shared/state-store
 	url = git@github.com:beartrando/state-store
+[submodule "kibana"]
+        path = kibana
+        url = git@github.com:beartrando/tic-tac-toe-kibana
+
+
+
