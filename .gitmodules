@@ -73,6 +73,6 @@
 [submodule "shared/state-store"]
 	path = shared/state-store
 	url = git@github.com:beartrando/state-store
-[submodule "shared/elastic"]
-	path = shared/elastic
-	url = git@github.com:beartrando/elastic
+[submodule "shared/persisted-logger"]
+	path = shared/persisted-logger
+	url = git@github.com:beartrando/persisted-logger
