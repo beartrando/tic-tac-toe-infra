@@ -1,0 +1,59 @@
+name: Cleanup docker images
+
+on:
+  repository_dispatch:
+    types:
+      - cleanup-registry
+
+run-name: "Cleanup registry - ${{ github.event.client_payload.service }}"
+
+jobs:
+  cleanup:
+    environment: ${{ github.event.client_payload.branch }}
+    runs-on: ubuntu-24.04
+
+    permissions:
+      packages: write
+
+    steps:
+      - name: Delete old images
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          set -e
+
+          KEEP_COUNT=30
+          PROTECTED_TAGS="uat prod dev"
+          REGISTRIES="service predeploy"
+
+          REPO_NAME="${{ github.event.client_payload.repo }}"
+          REPO_NAME="${REPO_NAME#*/}"
+
+          echo "Repository: $REPO_NAME"
+
+          for REGISTRY in $REGISTRIES; do
+            echo "=== Cleaning $REGISTRY ==="
+
+            gh api \
+              --paginate \
+              "/user/packages/container/${REPO_NAME}%2F${REGISTRY}/versions?per_page=${KEEP_COUNT}&page=2" |
+            jq -r --arg protected "$PROTECTED_TAGS" '
+              .[]
+              | select(
+                  any(
+                    (.metadata.container.tags // [])[];
+                    . as $tag | ($protected | split(" ") | index($tag)) != null
+                  ) | not
+                )
+              | .id
+            ' |
+            while read -r VERSION_ID; do
+              echo "Deleting $REGISTRY version: $VERSION_ID"
+
+              gh api \
+                --method DELETE \
+                "/user/packages/container/${REPO_NAME}%2F${REGISTRY}/versions/$VERSION_ID"
+            done
+          done
+
+          echo "=== Cleanup completed ==="

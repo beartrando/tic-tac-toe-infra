@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: streaming
+  namespace: tic-tac-toe
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websocket
+spec:
+  ingressClassName: traefik
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: streaming
+                port:
+                  number: 8080

@@ -1,0 +1,10 @@
+{
+  "name": "game",
+  "version": "1.0.0",
+  "main": "dist/server.js",
+  "devDependencies": {
+    "ts-proto": "^2.11.6",
+    "turbo": "^2.9.3"
+  },
+  "packageManager": "pnpm@11.9.0"
+}

@@ -1,0 +1,436 @@
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: services/gateway/Dockerfile
+      target: dev
+    container_name: ttt-gateway
+    env_file:
+      - services/gateway/.env
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/gateway/src:/usr/src/app/services/gateway/src/
+      - ./services/gateway/package.json:/usr/src/app/services/gateway/package.json
+    command: pnpm dlx turbo run dev --parallel --filter gateway
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  auth:
+    build:
+      context: .
+      dockerfile: services/auth/Dockerfile
+      target: dev
+    container_name: ttt-auth
+    env_file:
+      - services/auth/.env
+    environment:
+      KAFKAJS_NO_PARTITIONER_WARNING: 1
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/auth/src:/usr/src/app/services/auth/src/
+      - ./services/auth/package.json:/usr/src/app/services/auth/package.json
+    depends_on:
+      kafka:
+        condition: service_healthy
+      pgbouncer:
+        condition: service_healthy
+    command: pnpm dlx turbo run dev --parallel --filter auth
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  orchestration:
+    build:
+      context: .
+      dockerfile: services/orchestration/Dockerfile
+      target: dev
+    container_name: ttt-orchestration
+    env_file:
+      - services/orchestration/.env
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/orchestration/src:/usr/src/app/services/orchestration/src/
+      - ./services/orchestration/package.json:/usr/src/app/services/orchestration/package.json
+    depends_on:
+      kafka:
+        condition: service_healthy
+      pgbouncer:
+        condition: service_healthy
+    command: pnpm dlx turbo run dev --parallel --filter orchestration
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  bot:
+    build:
+      context: .
+      dockerfile: services/bot/Dockerfile
+      target: dev
+    container_name: ttt-bot
+    env_file:
+      - services/bot/.env
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/bot/__tests__:/usr/src/app/services/bot/__tests__/
+      - ./services/bot/src:/usr/src/app/services/bot/src/
+      - ./services/bot/package.json:/usr/src/app/services/bot/package.json
+    depends_on:
+      pgbouncer:
+        condition: service_healthy
+    command: pnpm dlx turbo run dev --parallel --filter bot
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  battle:
+    build:
+      context: .
+      dockerfile: services/battle/Dockerfile
+      target: dev
+    container_name: ttt-battle
+    env_file:
+      - services/battle/.env
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/battle/src:/usr/src/app/services/battle/src/
+      - ./services/battle/package.json:/usr/src/app/services/battle/package.json
+    depends_on:
+      kafka:
+        condition: service_healthy
+      pgbouncer:
+        condition: service_healthy
+    command: pnpm dlx turbo run dev --parallel --filter battle
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  matchmaking:
+    build:
+      context: .
+      dockerfile: services/matchmaking/Dockerfile
+      target: dev
+    container_name: ttt-matchmaking
+    env_file:
+      - services/matchmaking/.env
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/matchmaking/src:/usr/src/app/services/matchmaking/src/
+      - ./services/matchmaking/package.json:/usr/src/app/services/matchmaking/package.json
+    command: pnpm dlx turbo run dev --parallel --filter matchmaking
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  devorc:
+    build:
+      context: .
+      dockerfile: services/devorc/Dockerfile
+      target: dev
+    container_name: ttt-devorc
+    user: "1000:1000"
+    env_file:
+      - services/devorc/.env
+    ports:
+      - "9091:9090"
+    environment:
+      GH_TOKEN: ${GH_TOKEN}
+      HOME: /home/node
+      CI: "true"
+    volumes:
+      - ./:/usr/src/app
+      - ${HOME}/.ssh:/home/node/.ssh:ro
+      - ${HOME}/.gitconfig:/home/node/.gitconfig:ro
+    command: pnpm dlx turbo run dev --parallel --filter devorc
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:9091 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  streaming:
+    build:
+      context: .
+      dockerfile: services/streaming/Dockerfile
+      target: dev
+    container_name: ttt-streaming
+    env_file:
+      - services/streaming/.env
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/streaming/src:/usr/src/app/services/streaming/src/
+      - ./services/streaming/package.json:/usr/src/app/services/streaming/package.json
+    command: pnpm dlx turbo run dev --parallel --filter streaming
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  profile:
+    build:
+      context: .
+      dockerfile: services/profile/Dockerfile
+      target: dev
+    container_name: ttt-profile
+    env_file:
+      - services/profile/.env
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/profile/src:/usr/src/app/services/profile/src/
+      - ./services/profile/package.json:/usr/src/app/services/profile/package.json
+    depends_on:
+      kafka:
+        condition: service_healthy
+      pgbouncer:
+        condition: service_healthy
+    command: pnpm dlx turbo run dev --parallel --filter profile
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  engine:
+    build:
+      context: .
+      dockerfile: services/engine/Dockerfile
+      target: dev
+    container_name: ttt-engine
+    env_file:
+      - services/engine/.env
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/engine/src:/usr/src/app/services/engine/src/
+      - ./services/engine/package.json:/usr/src/app/services/engine/package.json
+    depends_on:
+      kafka:
+        condition: service_healthy
+      pgbouncer:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: pnpm dlx turbo run dev --parallel --filter engine
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  #  service-template:
+  #    build:
+  #      context: .
+  #      dockerfile: services/service-template/Dockerfile
+  #      target: dev
+  #    container_name: ttt-service-template
+  #    env_file:
+  #      - services/service-template/.env
+  #    environment:
+  #      KAFKAJS_NO_PARTITIONER_WARNING: 1
+  #    volumes:
+  #      - ./shared:/usr/src/app/shared
+  #      - ./services/service-template/src:/usr/src/app/services/service-template/src/
+  #      - ./services/service-template/package.json:/usr/src/app/services/service-template/package.json
+  #    depends_on:
+  #      kafka:
+  #        condition: service_healthy
+  #      pgbouncer:
+  #        condition: service_healthy
+  #    command: pnpm dlx turbo run dev --parallel --filter service-template
+  #    networks:
+  #      - backend
+  #    healthcheck:
+  #      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+  #      interval: 10s
+  #      timeout: 5s
+  #      retries: 10
+  #      start_period: 20s
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: ttt-kafka-ui
+    # ports:
+    #   - "8081:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep '\"status\":\"UP\"' || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  kafka:
+    image: apache/kafka:4.1.1
+    container_name: ttt-kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CLUSTER_ID: e1aUPLXOTOqTnT0SvYXMIg
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    volumes:
+      - kafka_data:/var/utils/kafka/data
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  postgres:
+    image: postgres:17.6
+    container_name: ttt-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_INITDB_ARGS: "--auth-host=md5"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # - ./services/postgres/data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  pgbouncer:
+    image: edoburu/pgbouncer
+    container_name: ttt-pgbouncer
+    volumes:
+      - ./services/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
+      - ./services/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+    tmpfs:
+      - /var/run/pgbouncer:uid=70,gid=70,mode=0755
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -h postgres -p 5432" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:7.2
+    container_name: ttt-redis
+    restart: always
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    container_name: ttt-elasticsearch
+    ports:
+      - "9200:9200"
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fsS http://localhost:9200/_cluster/health || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.0
+    container_name: ttt-kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - backend
+
+volumes:
+  postgres_data:
+  kafka_data:
+  elasticsearch_data:
+
+networks:
+  backend:
+    driver: bridge

@@ -1,0 +1,11 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+  - service-public.yaml
+  - configmap.yaml
+  - secret.yaml
+  - ingress.yaml
+
+images:
+  - name: ghcr.io/beartrando/tic-tac-toe-streaming/service
+    newTag: "dev"

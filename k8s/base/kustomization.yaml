@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: tic-tac-toe
+
+resources:
+  - namespace.yaml
+  - infrastructure/postgres
+  - infrastructure/pgbouncer
+  - infrastructure/redis
+  - infrastructure/kafka
+  - infrastructure/kafka-ui
+
+  - services/gateway
+  - services/auth
+  - services/orchestration
+  - services/bot
+  - services/battle
+  - services/streaming
+  - services/profile
+  - services/engine

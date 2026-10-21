@@ -1,0 +1,89 @@
+[submodule "services/auth"]
+	path = services/auth
+	url = git@github.com:beartrando/tic-tac-toe-auth.git
+[submodule "services/gateway"]
+	path = services/gateway
+	url = git@github.com:beartrando/tic-tac-toe-gateway.git
+[submodule "services/profile"]
+	path = services/profile
+	url = git@github.com:beartrando/tic-tac-toe-profile.git
+[submodule "services/bot"]
+	path = services/bot
+	url = git@github.com:beartrando/tic-tac-toe-bot.git
+[submodule "services/battle"]
+	path = services/battle
+	url = git@github.com:beartrando/tic-tac-toe-battle.git
+[submodule "services/engine"]
+	path = services/engine
+	url = git@github.com:beartrando/tic-tac-toe-engine.git
+[submodule "services/front"]
+	path = services/front
+	url = git@github.com:beartrando/tic-tac-toe-front.git
+[submodule "services/orchestration"]
+	path = services/orchestration
+	url = git@github.com:beartrando/tic-tac-toe-orchestration.git
+[submodule "services/streaming"]
+	path = services/streaming
+	url = git@github.com:beartrando/tic-tac-toe-streaming.git
+[submodule "services/matchmaking"]
+	path = services/matchmaking
+	url = git@github.com:beartrando/tic-tac-toe-matchmaking.git
+[submodule "services/service-template"]
+	path = services/service-template
+	url = git@github.com:beartrando/service-template.git
+[submodule "services/devorc"]
+	path = services/devorc
+	url = git@github.com:beartrando/devorc.git
+
+[submodule "proto"]
+	path = proto
+	url = git@github.com:beartrando/tic-tac-toe-proto.git
+[submodule "make"]
+	path = make
+	url = git@github.com:beartrando/make.git
+[submodule "context"]
+    path = docs/context
+    url = git@github.com:beartrando/tic-tac-toe-context.git
+[submodule "wiki"]
+    path = docs/wiki
+    url = git@github.com:beartrando/tic-tac-toe-wiki.git
+[submodule "workflow"]
+    path = docs/workflow
+    url = git@github.com:beartrando/workflow.git
+
+[submodule "shared/persistent-logger"]
+	path = shared/persistent-logger
+	url = git@github.com:beartrando/shared-persistent-logger.git
+[submodule "shared/logger"]
+	path = shared/logger
+	url = git@github.com:beartrando/shared-logger.git
+[submodule "shared/errors"]
+	path = shared/errors
+	url = git@github.com:beartrando/shared-errors.git
+[submodule "shared/kafka-manager"]
+	path = shared/kafka-manager
+	url = git@github.com:beartrando/shared-kafka-manager.git
+[submodule "shared/grpc-client-manager"]
+	path = shared/grpc-client-manager
+	url = git@github.com:beartrando/shared-grpc-client-manager.git
+[submodule "shared/pg-boss-manager"]
+	path = shared/pg-boss-manager
+	url = git@github.com:beartrando/shared-pg-boss-manager.git
+[submodule "shared/timer"]
+	path = shared/timer
+	url = git@github.com:beartrando/shared-timer.git
+[submodule "shared/cache-store"]
+	path = shared/cache-store
+	url = git@github.com:beartrando/shared-cache-store.git
+[submodule "shared/state-store"]
+	path = shared/state-store
+	url = git@github.com:beartrando/shared-state-store.git
+[submodule "docs/context"]
+	path = docs/context
+	url = git@github.com:beartrando/tic-tac-toe-context.git
+[submodule "docs/wiki"]
+	path = docs/wiki
+	url = git@github.com:beartrando/tic-tac-toe-wiki.git
+[submodule "docs/workflow"]
+	path = docs/workflow
+	url = git@github.com:beartrando/workflow.git

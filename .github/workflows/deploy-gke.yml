@@ -1,0 +1,111 @@
+name: Deploy GKE
+
+on:
+  repository_dispatch:
+    types:
+      - deploy-gke
+
+run-name: "Deploy service --- --- ${{ github.event.client_payload.branch }} --- --- ${{ github.event.client_payload.service }}"
+
+concurrency:
+  group: deploy-${{ github.event.client_payload.service }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment: ${{ github.event.client_payload.branch }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build info
+        run: |
+          echo "=== Build info ==="
+          echo "service: ${{ github.event.client_payload.service }}"
+          echo "repo: ${{ github.event.client_payload.repo }}"
+          echo "branch: ${{ github.event.client_payload.branch }}"
+          echo "version: ${{ github.event.client_payload.version }}"
+          echo "sha: ${{ github.event.client_payload.sha }}"
+          echo "=== End ==="
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Get GKE credentials
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: tic-tac-toe
+          location: europe-central2-a
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Deploy
+        run: |
+          set -e
+          set -o pipefail
+
+          NAMESPACE="tic-tac-toe"
+          SERVICE="${{ github.event.client_payload.service }}"
+          REPO="${{ github.event.client_payload.repo }}"
+          VERSION="${{ github.event.client_payload.version }}"
+
+          IMAGE="ghcr.io/$REPO/service:$VERSION"
+          PREDEPLOY_IMAGE="ghcr.io/$REPO/predeploy:$VERSION"
+
+          echo "=== Kubernetes deployment ==="
+          echo "Service: $SERVICE"
+          echo "Image: $IMAGE"
+          echo "Predeploy: $PREDEPLOY_IMAGE"
+
+          echo "=== Run migrations ==="
+
+          kubectl delete pod "$SERVICE-predeploy" \
+            -n "$NAMESPACE" \
+            --ignore-not-found
+
+          kubectl run "$SERVICE-predeploy" \
+            -n "$NAMESPACE" \
+            --restart=Never \
+            --image="$PREDEPLOY_IMAGE" \
+            --image-pull-policy=Always \
+            --overrides="{\"spec\":{\"imagePullSecrets\":[{\"name\":\"ghcr-pull-secret\"}],\"containers\":[{\"name\":\"$SERVICE-predeploy\",\"image\":\"$PREDEPLOY_IMAGE\",\"envFrom\":[{\"configMapRef\":{\"name\":\"$SERVICE-env\"}},{\"secretRef\":{\"name\":\"$SERVICE-env\"}}]}]}}"
+
+          if ! kubectl wait \
+            --for=jsonpath='{.status.phase}'=Succeeded \
+            "pod/$SERVICE-predeploy" \
+            -n "$NAMESPACE" \
+            --timeout=300s; then
+
+            echo "=== Predeploy failed ==="
+
+            kubectl logs \
+              "pod/$SERVICE-predeploy" \
+              -n "$NAMESPACE"
+
+            exit 1
+          fi
+
+          echo "=== Migrations completed ==="
+
+          kubectl logs \
+            "pod/$SERVICE-predeploy" \
+            -n "$NAMESPACE"
+
+          kubectl delete pod "$SERVICE-predeploy" \
+            -n "$NAMESPACE"
+
+          echo "=== Update deployment ==="
+
+          kubectl set image \
+            "deployment/$SERVICE" \
+            "$SERVICE=$IMAGE" \
+            -n "$NAMESPACE"
+
+          echo "=== Waiting for rollout ==="
+
+          kubectl rollout status \
+            "deployment/$SERVICE" \
+            -n "$NAMESPACE" \
+            --timeout=900s
+
+          echo "=== Deployment completed ==="
