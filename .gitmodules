@@ -90,3 +90,9 @@
 [submodule "docs/workflow"]
 	path = docs/workflow
 	url = git@github.com:beartrando/workflow.git
+[submodule "shared/otel"]
+	path = shared/otel
+	url = git@github.com:beartrando/shared-otel.git
+[submodule "grafana"]
+	path = grafana
+	url = git@github.com:beartrando/tic-tac-toe-grafana.git
