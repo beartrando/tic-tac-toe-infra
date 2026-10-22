@@ -242,8 +242,8 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_INITDB_ARGS: "--auth-host=md5"
     volumes:
-      - ./services/postgres/data:/var/lib/postgresql/data
-#      - ./services/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./services/infra/postgres/data:/var/lib/postgresql/data
+#      - ./services/infra/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
       - backend
     healthcheck:
@@ -258,8 +258,8 @@ services:
     container_name: ttt-pgbouncer
     restart: unless-stopped
     volumes:
-      - ./services/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
-      - ./services/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - ./services/infra/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
+      - ./services/infra/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
     tmpfs:
       - /var/run/pgbouncer:uid=70,gid=70,mode=0755
     depends_on:

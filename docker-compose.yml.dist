@@ -350,7 +350,7 @@ services:
       POSTGRES_INITDB_ARGS: "--auth-host=md5"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    # - ./services/postgres/data:/var/lib/postgresql/data
+    # - ./services/infra/postgres/data:/var/lib/postgresql/data
     restart: always
     networks:
       - backend
@@ -365,8 +365,8 @@ services:
     image: edoburu/pgbouncer
     container_name: ttt-pgbouncer
     volumes:
-      - ./services/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
-      - ./services/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - ./services/infra/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
+      - ./services/infra/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
     tmpfs:
       - /var/run/pgbouncer:uid=70,gid=70,mode=0755
     depends_on:
@@ -426,10 +426,62 @@ services:
     networks:
       - backend
 
+
+  tempo:
+    image: grafana/tempo:2.6.1
+    container_name: ttt-tempo
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./services/infra/tempo/tempo.yaml:/etc/tempo.yaml
+      - tempo_data:/var/tempo
+    ports:
+      - "3200:3200"
+      - "4317:4317"
+      - "4318:4318"
+    networks:
+      - backend
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: ttt-prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--web.enable-remote-write-receiver"
+      - "--enable-feature=otlp-write-receiver"
+    volumes:
+      - ./services/infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9093:9090"
+    networks:
+      - backend
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    container_name: ttt-grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+    volumes:
+      - ./services/infra/grafana/provisioning:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - tempo
+      - prometheus
+    networks:
+      - backend
+
+
 volumes:
   postgres_data:
   kafka_data:
   elasticsearch_data:
+  tempo_data:
+  prometheus_data:
+  grafana_data:
 
 networks:
   backend:
