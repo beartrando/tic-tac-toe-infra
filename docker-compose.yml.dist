@@ -432,7 +432,7 @@ services:
     container_name: ttt-tempo
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
-      - ./services/infra/tempo/tempo.yaml:/etc/tempo.yaml
+      - ./services/infra/observability/tempo/tempo.yaml:/etc/tempo.yaml
       - tempo_data:/var/tempo
     ports:
       - "3200:3200"
@@ -449,7 +449,7 @@ services:
       - "--web.enable-remote-write-receiver"
       - "--enable-feature=otlp-write-receiver"
     volumes:
-      - ./services/infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./services/infra/observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     ports:
       - "9093:9090"
@@ -464,7 +464,7 @@ services:
       GF_AUTH_ANONYMOUS_ENABLED: "true"
       GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
     volumes:
-      - ./services/infra/grafana/provisioning:/etc/grafana/provisioning
+      - ./services/infra/observability/grafana/provisioning:/etc/grafana/provisioning
       - grafana_data:/var/lib/grafana
     ports:
       - "3000:3000"

@@ -94,6 +94,6 @@
 [submodule "docs/workflow"]
     path = docs/workflow
     url = git@github.com:beartrando/workflow.git
-[submodule "grafana"]
-    path = grafana
-    url = git@github.com:beartrando/tic-tac-toe-grafana.git
+[submodule "services/infra/observability"]
+    path = services/infra/observability
+    url = git@github.com:beartrando/tic-tac-toe-observability.git
