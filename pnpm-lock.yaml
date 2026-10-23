@@ -329,9 +329,6 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/otel':
-        specifier: workspace:*
-        version: link:../../shared/otel
       cli-table3:
         specifier: ^0.6.5
         version: 0.6.5
@@ -1128,10 +1125,6 @@ importers:
         version: 5.9.3
 
   shared/logger:
-    dependencies:
-      '@opentelemetry/api':
-        specifier: ^1.9.0
-        version: 1.9.1
     devDependencies:
       typescript:
         specifier: ^5.9.3
@@ -1173,6 +1166,9 @@ importers:
       '@elastic/elasticsearch':
         specifier: ^8.15.0
         version: 8.19.2
+      '@opentelemetry/api':
+        specifier: ^1.9.0
+        version: 1.9.1
       '@shared/logger':
         specifier: workspace:*
         version: link:../logger
