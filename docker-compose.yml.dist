@@ -87,6 +87,9 @@ services:
     container_name: ttt-bot
     env_file:
       - services/bot/.env
+    environment:
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
     volumes:
       - ./shared:/usr/src/app/shared
       - ./services/bot/__tests__:/usr/src/app/services/bot/__tests__/
@@ -191,6 +194,9 @@ services:
     container_name: ttt-streaming
     env_file:
       - services/streaming/.env
+    environment:
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
     ports:
       - "8080:8080"
     volumes:
@@ -242,6 +248,9 @@ services:
     container_name: ttt-engine
     env_file:
       - services/engine/.env
+    environment:
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
     volumes:
       - ./shared:/usr/src/app/shared
       - ./services/engine/src:/usr/src/app/services/engine/src/
@@ -400,18 +409,38 @@ services:
       - "9200:9200"
     environment:
       discovery.type: single-node
-      xpack.security.enabled: "false"
+      xpack.security.enabled: "true"
+      xpack.security.http.ssl.enabled: "false"
+      xpack.security.transport.ssl.enabled: "false"
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
     networks:
       - backend
     healthcheck:
-      test: [ "CMD-SHELL", "curl -fsS http://localhost:9200/_cluster/health || exit 1" ]
+      test: [ "CMD-SHELL", "curl -fsS -u elastic:${ELASTIC_PASSWORD:-changeme} http://localhost:9200/_cluster/health || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 20s
+
+  kibana-setup:
+    image: curlimages/curl:8.10.1
+    container_name: ttt-kibana-setup
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
+    command: >
+      sh -c '
+        until curl -fsS -u "elastic:${ELASTIC_PASSWORD:-changeme}" http://elasticsearch:9200/_cluster/health >/dev/null 2>&1; do sleep 2; done;
+        curl -fsS -u "elastic:${ELASTIC_PASSWORD:-changeme}" -X POST "http://elasticsearch:9200/_security/user/kibana_system/_password" -H "Content-Type: application/json" -d "{\"password\":\"${ELASTIC_PASSWORD:-changeme}\"}";
+        echo "kibana_system password set";
+      '
+    networks:
+      - backend
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.15.0
@@ -420,9 +449,11 @@ services:
       - "5601:5601"
     environment:
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      ELASTICSEARCH_USERNAME: kibana_system
+      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
     depends_on:
-      elasticsearch:
-        condition: service_healthy
+      kibana-setup:
+        condition: service_completed_successfully
     networks:
       - backend
 
@@ -434,10 +465,6 @@ services:
     volumes:
       - ./services/infra/observability/tempo/tempo.yaml:/etc/tempo.yaml
       - tempo_data:/var/tempo
-    ports:
-      - "3200:3200"
-      - "4317:4317"
-      - "4318:4318"
     networks:
       - backend
 
@@ -451,8 +478,6 @@ services:
     volumes:
       - ./services/infra/observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
-    ports:
-      - "9093:9090"
     networks:
       - backend
 
@@ -460,9 +485,10 @@ services:
     image: grafana/grafana:11.2.0
     container_name: ttt-grafana
     environment:
-      GF_SECURITY_ADMIN_PASSWORD: admin
-      GF_AUTH_ANONYMOUS_ENABLED: "true"
-      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_AUTH_BASIC_ENABLED: "true"
     volumes:
       - ./services/infra/observability/grafana/provisioning:/etc/grafana/provisioning
       - grafana_data:/var/lib/grafana
