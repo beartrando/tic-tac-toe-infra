@@ -141,9 +141,6 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/otel':
-        specifier: workspace:*
-        version: link:../../shared/otel
       '@shared/pg-boss-manager':
         specifier: workspace:*
         version: link:../../shared/pg-boss-manager
@@ -229,9 +226,6 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/otel':
-        specifier: workspace:*
-        version: link:../../shared/otel
       '@shared/persistent-logger':
         specifier: workspace:*
         version: link:../../shared/persistent-logger
@@ -329,9 +323,6 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/otel':
-        specifier: workspace:*
-        version: link:../../shared/otel
       cli-table3:
         specifier: ^0.6.5
         version: 0.6.5
@@ -438,9 +429,6 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/otel':
-        specifier: workspace:*
-        version: link:../../shared/otel
       '@shared/persistent-logger':
         specifier: workspace:*
         version: link:../../shared/persistent-logger
@@ -981,9 +969,6 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/otel':
-        specifier: workspace:*
-        version: link:../../shared/otel
       '@shared/persistent-logger':
         specifier: workspace:*
         version: link:../../shared/persistent-logger
