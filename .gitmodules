@@ -38,8 +38,8 @@
 [submodule "proto"]
     path = proto
     url = git@github.com:beartrando/tic-tac-toe-proto.git
-[submodule "make"]
-    path = make
+[submodule "tools/make"]
+    path = tools/make
     url = git@github.com:beartrando/make.git
 [submodule "kibana"]
     path = kibana

@@ -1,0 +1,19 @@
+{
+  "index_patterns": ["service-messages"],
+  "priority": 100,
+  "template": {
+    "mappings": {
+      "properties": {
+        "@timestamp": {"type": "date"},
+        "service": {"type": "keyword"},
+        "direction": {"type": "keyword"},
+        "transport": {"type": "keyword"},
+        "channel": {"type": "keyword"},
+        "battle_id": {"type": "keyword"},
+        "trace_id": {"type": "keyword"},
+        "span_id": {"type": "keyword"},
+        "payload": {"type": "flattened"}
+      }
+    }
+  }
+}

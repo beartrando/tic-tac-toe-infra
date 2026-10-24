@@ -1,4 +1,4 @@
-include make/main.mk
+include tools/make/main.mk
 
 GIT_SERVICES     := auth battle bot engine front gateway orchestration profile matchmaking streaming devorc
 NODE_SERVICES    := auth battle bot engine       gateway orchestration profile matchmaking streaming devorc
