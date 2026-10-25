@@ -39,11 +39,11 @@
     path = proto
     url = git@github.com:beartrando/tic-tac-toe-proto.git
 [submodule "tools/make"]
-    path = tools/make
-    url = git@github.com:beartrando/make.git
-[submodule "kibana"]
-    path = kibana
-    url = git@github.com:beartrando/tic-tac-toe-kibana.git
+	path = tools/make
+	url = git@github.com:beartrando/make.git
+[submodule "services/infra/kibana"]
+	path = services/infra/kibana
+	url = git@github.com:beartrando/tic-tac-toe-kibana.git
 [submodule "context"]
     path = docs/context
     url = git@github.com:beartrando/tic-tac-toe-context.git
