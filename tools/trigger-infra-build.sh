@@ -5,15 +5,16 @@ PROJECT_PREFIX="tic-tac-toe"
 GITHUB_ORG="beartrando"
 
 SERVICES=(
-  auth
-#  gateway
-#  profile
-#  bot
-#  battle
-#  engine
-#  matchmaking
-#  orchestration
-#  streaming
+auth
+#battle
+#bot
+#engine
+#gateway
+#matchmaking
+#orchestration
+#profile
+#service-template
+#streaming
 )
 
 : "${GH_PAT:?Set GH_PAT environment variable}"
@@ -67,7 +68,7 @@ for SERVICE in "${SERVICES[@]}"; do
         sha: $sha
       }
     }' |
-  curl --fail-with-body --silent --show-error \
+  curl --fail --silent --show-error \
     -X POST \
     -H "Accept: application/vnd.github+json" \
     -H "Authorization: Bearer ${GH_PAT}" \
@@ -77,3 +78,5 @@ for SERVICE in "${SERVICES[@]}"; do
 
   echo "OK: $SERVICE"
 done
+
+
