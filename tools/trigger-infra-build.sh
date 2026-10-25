@@ -5,7 +5,7 @@ PROJECT_PREFIX="tic-tac-toe"
 GITHUB_ORG="beartrando"
 
 SERVICES=(
-auth
+#auth
 #battle
 #bot
 #engine
@@ -13,7 +13,6 @@ auth
 #matchmaking
 #orchestration
 #profile
-#service-template
 #streaming
 )
 
