@@ -56,7 +56,7 @@ jobs:
 
             docker run \
               --rm \
-              --env-file "./services/server/$SERVICE/.env" \
+              --env-file "./services/.env.$SERVICE" \
               --network tic-tac-toe_backend \
               "ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}"
 
