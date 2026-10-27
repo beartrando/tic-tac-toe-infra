@@ -1,4 +1,6 @@
 packages:
+  - 'services/server/*'
+  - 'services/infra/*'
   - 'services/*'
   - 'shared/*'
 
@@ -16,10 +18,10 @@ overrides:
   '@shared/state-store': 'workspace:*'
   '@shared/timer': 'workspace:*'
 
-
 injectWorkspacePackages: true
 
 allowBuilds:
+  '@parcel/watcher': true
   '@prisma/client': true
   '@prisma/engines': true
   bcrypt: true

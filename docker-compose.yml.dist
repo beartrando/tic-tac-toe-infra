@@ -2,17 +2,17 @@ services:
   gateway:
     build:
       context: .
-      dockerfile: services/gateway/Dockerfile
+      dockerfile: services/server/gateway/Dockerfile
       target: dev
     container_name: ttt-gateway
     env_file:
-      - services/gateway/.env
+      - services/server/gateway/.env
     ports:
       - "9090:9090"
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/gateway/src:/usr/src/app/services/gateway/src/
-      - ./services/gateway/package.json:/usr/src/app/services/gateway/package.json
+      - ./services/server/gateway/src:/usr/src/app/services/server/gateway/src/
+      - ./services/server/gateway/package.json:/usr/src/app/services/server/gateway/package.json
     command: pnpm dlx turbo run dev --parallel --filter gateway
     networks:
       - backend
@@ -26,17 +26,17 @@ services:
   auth:
     build:
       context: .
-      dockerfile: services/auth/Dockerfile
+      dockerfile: services/server/auth/Dockerfile
       target: dev
     container_name: ttt-auth
     env_file:
-      - services/auth/.env
+      - services/server/auth/.env
     environment:
       KAFKAJS_NO_PARTITIONER_WARNING: 1
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/auth/src:/usr/src/app/services/auth/src/
-      - ./services/auth/package.json:/usr/src/app/services/auth/package.json
+      - ./services/server/auth/src:/usr/src/app/services/server/auth/src/
+      - ./services/server/auth/package.json:/usr/src/app/services/server/auth/package.json
     depends_on:
       kafka:
         condition: service_healthy
@@ -55,15 +55,15 @@ services:
   orchestration:
     build:
       context: .
-      dockerfile: services/orchestration/Dockerfile
+      dockerfile: services/server/orchestration/Dockerfile
       target: dev
     container_name: ttt-orchestration
     env_file:
-      - services/orchestration/.env
+      - services/server/orchestration/.env
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/orchestration/src:/usr/src/app/services/orchestration/src/
-      - ./services/orchestration/package.json:/usr/src/app/services/orchestration/package.json
+      - ./services/server/orchestration/src:/usr/src/app/services/server/orchestration/src/
+      - ./services/server/orchestration/package.json:/usr/src/app/services/server/orchestration/package.json
     depends_on:
       kafka:
         condition: service_healthy
@@ -82,19 +82,19 @@ services:
   bot:
     build:
       context: .
-      dockerfile: services/bot/Dockerfile
+      dockerfile: services/server/bot/Dockerfile
       target: dev
     container_name: ttt-bot
     env_file:
-      - services/bot/.env
+      - services/server/bot/.env
     environment:
       ELASTICSEARCH_USERNAME: elastic
       ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/bot/__tests__:/usr/src/app/services/bot/__tests__/
-      - ./services/bot/src:/usr/src/app/services/bot/src/
-      - ./services/bot/package.json:/usr/src/app/services/bot/package.json
+      - ./services/server/bot/__tests__:/usr/src/app/services/server/bot/__tests__/
+      - ./services/server/bot/src:/usr/src/app/services/server/bot/src/
+      - ./services/server/bot/package.json:/usr/src/app/services/server/bot/package.json
     depends_on:
       pgbouncer:
         condition: service_healthy
@@ -111,15 +111,15 @@ services:
   battle:
     build:
       context: .
-      dockerfile: services/battle/Dockerfile
+      dockerfile: services/server/battle/Dockerfile
       target: dev
     container_name: ttt-battle
     env_file:
-      - services/battle/.env
+      - services/server/battle/.env
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/battle/src:/usr/src/app/services/battle/src/
-      - ./services/battle/package.json:/usr/src/app/services/battle/package.json
+      - ./services/server/battle/src:/usr/src/app/services/server/battle/src/
+      - ./services/server/battle/package.json:/usr/src/app/services/server/battle/package.json
     depends_on:
       kafka:
         condition: service_healthy
@@ -138,15 +138,15 @@ services:
   matchmaking:
     build:
       context: .
-      dockerfile: services/matchmaking/Dockerfile
+      dockerfile: services/server/matchmaking/Dockerfile
       target: dev
     container_name: ttt-matchmaking
     env_file:
-      - services/matchmaking/.env
+      - services/server/matchmaking/.env
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/matchmaking/src:/usr/src/app/services/matchmaking/src/
-      - ./services/matchmaking/package.json:/usr/src/app/services/matchmaking/package.json
+      - ./services/server/matchmaking/src:/usr/src/app/services/server/matchmaking/src/
+      - ./services/server/matchmaking/package.json:/usr/src/app/services/server/matchmaking/package.json
     command: pnpm dlx turbo run dev --parallel --filter matchmaking
     networks:
       - backend
@@ -160,12 +160,12 @@ services:
   devorc:
     build:
       context: .
-      dockerfile: services/devorc/Dockerfile
+      dockerfile: services/infra/devorc/Dockerfile
       target: dev
     container_name: ttt-devorc
     user: "1000:1000"
     env_file:
-      - services/devorc/.env
+      - services/infra/devorc/.env
     ports:
       - "9091:9090"
     environment:
@@ -189,11 +189,11 @@ services:
   streaming:
     build:
       context: .
-      dockerfile: services/streaming/Dockerfile
+      dockerfile: services/server/streaming/Dockerfile
       target: dev
     container_name: ttt-streaming
     env_file:
-      - services/streaming/.env
+      - services/server/streaming/.env
     environment:
       ELASTICSEARCH_USERNAME: elastic
       ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
@@ -201,8 +201,8 @@ services:
       - "8080:8080"
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/streaming/src:/usr/src/app/services/streaming/src/
-      - ./services/streaming/package.json:/usr/src/app/services/streaming/package.json
+      - ./services/server/streaming/src:/usr/src/app/services/server/streaming/src/
+      - ./services/server/streaming/package.json:/usr/src/app/services/server/streaming/package.json
     command: pnpm dlx turbo run dev --parallel --filter streaming
     networks:
       - backend
@@ -216,15 +216,15 @@ services:
   profile:
     build:
       context: .
-      dockerfile: services/profile/Dockerfile
+      dockerfile: services/server/profile/Dockerfile
       target: dev
     container_name: ttt-profile
     env_file:
-      - services/profile/.env
+      - services/server/profile/.env
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/profile/src:/usr/src/app/services/profile/src/
-      - ./services/profile/package.json:/usr/src/app/services/profile/package.json
+      - ./services/server/profile/src:/usr/src/app/services/server/profile/src/
+      - ./services/server/profile/package.json:/usr/src/app/services/server/profile/package.json
     depends_on:
       kafka:
         condition: service_healthy
@@ -243,18 +243,18 @@ services:
   engine:
     build:
       context: .
-      dockerfile: services/engine/Dockerfile
+      dockerfile: services/server/engine/Dockerfile
       target: dev
     container_name: ttt-engine
     env_file:
-      - services/engine/.env
+      - services/server/engine/.env
     environment:
       ELASTICSEARCH_USERNAME: elastic
       ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/engine/src:/usr/src/app/services/engine/src/
-      - ./services/engine/package.json:/usr/src/app/services/engine/package.json
+      - ./services/server/engine/src:/usr/src/app/services/server/engine/src/
+      - ./services/server/engine/package.json:/usr/src/app/services/server/engine/package.json
     depends_on:
       kafka:
         condition: service_healthy
@@ -275,17 +275,17 @@ services:
   #  service-template:
   #    build:
   #      context: .
-  #      dockerfile: services/service-template/Dockerfile
+  #      dockerfile: services/infra/service-template/Dockerfile
   #      target: dev
   #    container_name: ttt-service-template
   #    env_file:
-  #      - services/service-template/.env
+  #      - services/infra/service-template/.env
   #    environment:
   #      KAFKAJS_NO_PARTITIONER_WARNING: 1
   #    volumes:
   #      - ./shared:/usr/src/app/shared
-  #      - ./services/service-template/src:/usr/src/app/services/service-template/src/
-  #      - ./services/service-template/package.json:/usr/src/app/services/service-template/package.json
+  #      - ./services/infra/service-template/src:/usr/src/app/services/infra/service-template/src/
+  #      - ./services/infra/service-template/package.json:/usr/src/app/services/infra/service-template/package.json
   #    depends_on:
   #      kafka:
   #        condition: service_healthy
