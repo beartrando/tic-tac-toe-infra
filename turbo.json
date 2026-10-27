@@ -13,7 +13,7 @@
       "cache": false,
       "persistent": true,
       "dependsOn": [
-        "^dev"
+        "^build"
       ],
       "env": [
         "*"

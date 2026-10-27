@@ -11,13 +11,14 @@ services:
       - "9090:9090"
     volumes:
       - ./shared:/usr/src/app/shared
+      - ./turbo.json:/usr/src/app/turbo.json:ro
       - ./services/server/gateway/src:/usr/src/app/services/server/gateway/src/
       - ./services/server/gateway/package.json:/usr/src/app/services/server/gateway/package.json
-    command: pnpm dlx turbo run dev --parallel --filter gateway
+    command: pnpm exec turbo run dev --filter gateway
     networks:
       - backend
     healthcheck:
-      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:9090/gateway/livez || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 10
