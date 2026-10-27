@@ -1,3 +1,6 @@
+[submodule "services/front"]
+    path = services/front
+    url = git@github.com:beartrando/tic-tac-toe-front.git
 [submodule "services/server/auth"]
     path = services/server/auth
     url = git@github.com:beartrando/tic-tac-toe-auth.git
@@ -16,9 +19,6 @@
 [submodule "services/server/engine"]
     path = services/server/engine
     url = git@github.com:beartrando/tic-tac-toe-engine.git
-[submodule "services/server/front"]
-    path = services/server/front
-    url = git@github.com:beartrando/tic-tac-toe-front.git
 [submodule "services/server/orchestration"]
     path = services/server/orchestration
     url = git@github.com:beartrando/tic-tac-toe-orchestration.git
