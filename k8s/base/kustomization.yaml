@@ -1,3 +1,6 @@
+# Outdated: paths below (services/*) need update to services/server/* after migration.
+# Manifests were tested and worked; kept as final working build, easily adaptable.
+# See ../README.md.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 

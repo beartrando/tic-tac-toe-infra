@@ -59,7 +59,7 @@ jobs:
 
       - name: Checkout service submodule branch
         run: |
-          cd services/${{ github.event.client_payload.service }}
+          cd services/server/${{ github.event.client_payload.service }}
           git fetch origin ${{ github.event.client_payload.branch }}
           git checkout ${{ github.event.client_payload.branch }}
           git pull origin ${{ github.event.client_payload.branch }}
@@ -70,7 +70,7 @@ jobs:
             --target prod \
             --build-arg VERSION=${{ github.event.client_payload.version }} \
             -t $REGISTRY/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
-            -f services/${{ github.event.client_payload.service }}/Dockerfile .
+            -f services/server/${{ github.event.client_payload.service }}/Dockerfile .
 
           docker tag ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
             ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
@@ -85,7 +85,7 @@ jobs:
             --target predeploy \
             --build-arg VERSION=${{ github.event.client_payload.version }} \
             -t $REGISTRY/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
-            -f services/${{ github.event.client_payload.service }}/Dockerfile .
+            -f services/server/${{ github.event.client_payload.service }}/Dockerfile .
 
           docker tag ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
             ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.branch }}
