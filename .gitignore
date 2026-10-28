@@ -7,3 +7,4 @@ docker-compose*.yml
 .env
 context.md
 .pnpm-store
+.npmrc
