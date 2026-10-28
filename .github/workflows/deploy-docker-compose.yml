@@ -68,7 +68,7 @@ jobs:
 
             docker compose pull "$SERVICE"
 
-            docker compose up -d "$SERVICE" --remove-orphans
+            docker compose up -d "$SERVICE" --remove-orphans --force-recreate
 
             if [ -n "$OLD_IMAGE" ]; then
               docker rmi "$OLD_IMAGE" 2>/dev/null || true

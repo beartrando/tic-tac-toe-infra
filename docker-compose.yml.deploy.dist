@@ -439,6 +439,9 @@ services:
 volumes:
   kafka_data:
   elasticsearch_data:
+  tempo_data:
+  grafana_data:
+  prometheus_data:
 #  mongo_data:
 
 networks:
