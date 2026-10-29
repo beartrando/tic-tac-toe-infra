@@ -12,15 +12,17 @@ INFRA_REPO="${GITHUB_ORG}/${PROJECT_PREFIX}-infra"
 # Discover repositories (gitlinks) under services/server/.
 # Source of truth: monorepo gitlinks (mode 160000), not a hardcoded list.
 # Fallbacks: git submodule status, then directory scan.
-SERVICE_PATHS=()
-while IFS= read -r line; do
-  [[ -z "$line" ]] && continue
-  SERVICE_PATHS+=("$line")
-done < <(
-  git -C "$ROOT" ls-files -s 2>/dev/null \
-    | awk '$1=="160000" && $4 ~ /^services\/server\// {print $4}' \
-    | sort -u
-)
+
+SERVICE_PATHS=("services/server/gateway")
+#SERVICE_PATHS=()
+#while IFS= read -r line; do
+#  [[ -z "$line" ]] && continue
+#  SERVICE_PATHS+=("$line")
+#done < <(
+#  git -C "$ROOT" ls-files -s 2>/dev/null \
+#    | awk '$1=="160000" && $4 ~ /^services\/server\// {print $4}' \
+#    | sort -u
+#)
 
 if [[ ${#SERVICE_PATHS[@]} -eq 0 ]]; then
   while IFS= read -r line; do
