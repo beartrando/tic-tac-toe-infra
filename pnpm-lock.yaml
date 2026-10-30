@@ -632,6 +632,9 @@ importers:
       '@shared/otel':
         specifier: workspace:*
         version: link:../../../shared/otel
+      '@shared/persistent-logger':
+        specifier: workspace:*
+        version: link:../../../shared/persistent-logger
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7
