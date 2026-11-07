@@ -389,36 +389,22 @@ services:
 
   nginx:
     container_name: beartrando-nginx
-    build: ./services/nginx
+    build: ./services/infra/nginx
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./services/certbot/conf:/etc/letsencrypt
-      - ./services/certbot/www:/var/www/certbot
-      - ./services/nginx/config/wiki.conf:/etc/nginx/conf.d/wiki.conf:ro
-      - ./services/nginx/config/vault.conf:/etc/nginx/conf.d/vault.conf:ro
-      - ./services/nginx/config/site.conf:/etc/nginx/conf.d/site.conf:ro
-      - ./services/nginx/config/mail.conf:/etc/nginx/conf.d/mail.conf:ro
-      - ./services/nginx/config/vipp.conf:/etc/nginx/conf.d/vipp.conf:ro
-      - ./services/nginx/config/tiny.conf:/etc/nginx/conf.d/tiny.conf:ro
-      - ./services/nginx/config/tic-tac-toe.conf:/etc/nginx/conf.d/tic-tac-toe.conf:ro
-      - ./services/nginx/config/tic-tac-toe-streaming.conf:/etc/nginx/conf.d/tic-tac-toe-streaming.conf:ro
-      - ./services/nginx/config/tic-tac-toe-grafana.conf:/etc/nginx/conf.d/tic-tac-toe-grafana.conf:ro
-      - ./services/nginx/config/tic-tac-toe-kibana.conf:/etc/nginx/conf.d/tic-tac-toe-kibana.conf:ro
-#      - ./services/nginx/config/lenvora.conf:/etc/nginx/conf.d/lenvora.conf:ro
-#      - ./services/nginx/config/lenvora-streaming.conf:/etc/nginx/conf.d/lenvora-streaming.conf:ro
-      - ./services/nginx/logs:/etc/logs/nginx
-      - ./services/nginx/html:/usr/share/nginx/html
+      - ./services/infra/certbot/conf:/etc/letsencrypt
+      - ./services/infra/certbot/www:/var/www/certbot
+      - ./services/infra/nginx/config/tic-tac-toe.conf:/etc/nginx/conf.d/tic-tac-toe.conf:ro
+      - ./services/infra/nginx/config/tic-tac-toe-streaming.conf:/etc/nginx/conf.d/tic-tac-toe-streaming.conf:ro
+      - ./services/infra/nginx/config/tic-tac-toe-grafana.conf:/etc/nginx/conf.d/tic-tac-toe-grafana.conf:ro
+      - ./services/infra/nginx/config/tic-tac-toe-kibana.conf:/etc/nginx/conf.d/tic-tac-toe-kibana.conf:ro
+      - ./services/infra/nginx/logs:/etc/logs/nginx
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
-    depends_on:
-      - wiki
-      - vault
     networks:
-      - default
-      - tic-tac-toe
-      - lenvora
+      - backend
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:
@@ -433,8 +419,8 @@ services:
     container_name: beartrando-certbot
     restart: unless-stopped
     volumes:
-      - ./services/certbot/conf:/etc/letsencrypt
-      - ./services/certbot/www:/var/www/certbot
+      - ./services/infra/certbot/conf:/etc/letsencrypt
+      - ./services/infra/certbot/www:/var/www/certbot
     entrypoint: >
       sh -c "trap exit TERM;
              while :; do
@@ -442,7 +428,7 @@ services:
                sleep 12h & wait $!;
              done"
     networks:
-      - default
+      - backend
     healthcheck:
       test: ["CMD", "certbot", "--version"]
       interval: 12h

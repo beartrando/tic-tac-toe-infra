@@ -25,8 +25,11 @@ server {
         root /var/www/certbot;
     }
 
+    resolver 127.0.0.11 valid=10s ipv6=off;
+
     location / {
-        proxy_pass http://ttt-gateway:9090;
+        set $gateway_upstream tic-tac-toe-gateway:9090;
+        proxy_pass http://$gateway_upstream;
 
         proxy_http_version 1.1;
 
