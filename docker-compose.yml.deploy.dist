@@ -387,50 +387,68 @@ services:
     networks:
       - backend
 
+  nginx:
+    container_name: beartrando-nginx
+    build: ./services/nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./services/certbot/conf:/etc/letsencrypt
+      - ./services/certbot/www:/var/www/certbot
+      - ./services/nginx/config/wiki.conf:/etc/nginx/conf.d/wiki.conf:ro
+      - ./services/nginx/config/vault.conf:/etc/nginx/conf.d/vault.conf:ro
+      - ./services/nginx/config/site.conf:/etc/nginx/conf.d/site.conf:ro
+      - ./services/nginx/config/mail.conf:/etc/nginx/conf.d/mail.conf:ro
+      - ./services/nginx/config/vipp.conf:/etc/nginx/conf.d/vipp.conf:ro
+      - ./services/nginx/config/tiny.conf:/etc/nginx/conf.d/tiny.conf:ro
+      - ./services/nginx/config/tic-tac-toe.conf:/etc/nginx/conf.d/tic-tac-toe.conf:ro
+      - ./services/nginx/config/tic-tac-toe-streaming.conf:/etc/nginx/conf.d/tic-tac-toe-streaming.conf:ro
+      - ./services/nginx/config/tic-tac-toe-grafana.conf:/etc/nginx/conf.d/tic-tac-toe-grafana.conf:ro
+      - ./services/nginx/config/tic-tac-toe-kibana.conf:/etc/nginx/conf.d/tic-tac-toe-kibana.conf:ro
+#      - ./services/nginx/config/lenvora.conf:/etc/nginx/conf.d/lenvora.conf:ro
+#      - ./services/nginx/config/lenvora-streaming.conf:/etc/nginx/conf.d/lenvora-streaming.conf:ro
+      - ./services/nginx/logs:/etc/logs/nginx
+      - ./services/nginx/html:/usr/share/nginx/html
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+    depends_on:
+      - wiki
+      - vault
+    networks:
+      - default
+      - tic-tac-toe
+      - lenvora
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -kfs --resolve beartrando.org:443:127.0.0.1 https://beartrando.org/ || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
 
-#  mongo:
-#    image: mongo:8
-#    container_name: tic-tac-toe-mongo
-#    restart: unless-stopped
-#    ports:
-#      - "27017:27017"
-#    environment:
-#      MONGO_INITDB_ROOT_USERNAME: mongo
-#      MONGO_INITDB_ROOT_PASSWORD: mongo
-#      MONGO_INITDB_DATABASE: tic-tac-toe
-#    volumes:
-#      - mongo_data:/data/db
-#    networks:
-#      - backend
-#    healthcheck:
-#      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
-#      start_period: 10s
-#
-#  mailpit:
-#    image: axllent/mailpit
-#    container_name: tic-tac-toe-mailpit
-#    restart: unless-stopped
-#    ports:
-#      - 8025:8025cat
-#      - 1025:1025
-#    environment:
-#      MP_WEBROOT : "/mailpit/"
-##      MP_SMTP_AUTH_ACCEPT_ANY: 1
-#      MP_SMTP_AUTH_ALLOW_INSECURE: 1
-#      MP_SMTP_AUTH: "login:pass"
-#      MP_MAX_MESSAGES: 5000
-#    volumes:
-#      - /data
-#    networks:
-#      - backend
-#    healthcheck:
-#      test: ["CMD", "redis-cli", "ping"]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 5
+  certbot:
+    image: certbot/certbot
+    container_name: beartrando-certbot
+    restart: unless-stopped
+    volumes:
+      - ./services/certbot/conf:/etc/letsencrypt
+      - ./services/certbot/www:/var/www/certbot
+    entrypoint: >
+      sh -c "trap exit TERM;
+             while :; do
+               certbot renew --webroot -w /var/www/certbot;
+               sleep 12h & wait $!;
+             done"
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD", "certbot", "--version"]
+      interval: 12h
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   kafka_data:
