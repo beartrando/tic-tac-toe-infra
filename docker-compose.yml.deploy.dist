@@ -1,12 +1,10 @@
 services:
   gateway:
-    container_name: ttt-gateway
+    container_name: tic-tac-toe-gateway
     image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION}
     restart: unless-stopped
     env_file:
       - ./services/.env.gateway
-#    ports:
-#      - "127.0.0.1:9090:9090"
     networks:
       - backend
     healthcheck:
@@ -17,7 +15,7 @@ services:
       start_period: 20s
 
   auth:
-    container_name: ttt-auth
+    container_name: tic-tac-toe-auth
     image: ghcr.io/beartrando/tic-tac-toe-auth/service:${AUTH_VERSION}
     restart: unless-stopped
     env_file:
@@ -39,7 +37,7 @@ services:
       start_period: 20s
 
   orchestration:
-    container_name: ttt-orchestration
+    container_name: tic-tac-toe-orchestration
     image: ghcr.io/beartrando/tic-tac-toe-orchestration/service:${ORCHESTRATION_VERSION}
     restart: unless-stopped
     env_file:
@@ -59,7 +57,7 @@ services:
       start_period: 20s
 
   bot:
-    container_name: ttt-bot
+    container_name: tic-tac-toe-bot
     image: ghcr.io/beartrando/tic-tac-toe-bot/service:${BOT_VERSION}
     restart: unless-stopped
     env_file:
@@ -77,7 +75,7 @@ services:
       start_period: 20s
 
   battle:
-    container_name: ttt-battle
+    container_name: tic-tac-toe-battle
     image: ghcr.io/beartrando/tic-tac-toe-battle/service:${BATTLE_VERSION}
     restart: unless-stopped
     env_file:
@@ -97,7 +95,7 @@ services:
       start_period: 20s
 
   matchmaking:
-    container_name: ttt-matchmaking
+    container_name: tic-tac-toe-matchmaking
     image: ghcr.io/beartrando/tic-tac-toe-matchmaking/service:${MATCHMAKING_VERSION}
     restart: unless-stopped
     env_file:
@@ -117,7 +115,7 @@ services:
       start_period: 20s
 
   streaming:
-    container_name: ttt-streaming
+    container_name: tic-tac-toe-streaming
     image: ghcr.io/beartrando/tic-tac-toe-streaming/service:${STREAMING_VERSION}
     restart: unless-stopped
     env_file:
@@ -127,8 +125,6 @@ services:
         condition: service_healthy
       pgbouncer:
         condition: service_healthy
-#    ports:
-#      - "8080:8080"
     networks:
       - backend
     healthcheck:
@@ -139,7 +135,7 @@ services:
       start_period: 20s
 
   profile:
-    container_name: ttt-profile
+    container_name: tic-tac-toe-profile
     image: ghcr.io/beartrando/tic-tac-toe-profile/service:${PROFILE_VERSION}
     restart: unless-stopped
     env_file:
@@ -159,7 +155,7 @@ services:
       start_period: 20s
 
   engine:
-    container_name: ttt-engine
+    container_name: tic-tac-toe-engine
     image: ghcr.io/beartrando/tic-tac-toe-engine/service:${ENGINE_VERSION}
     restart: unless-stopped
     env_file:
@@ -182,7 +178,7 @@ services:
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
-    container_name: ttt-kafka-ui
+    container_name: tic-tac-toe-kafka-ui
     restart: unless-stopped
     ports:
       - "8081:8080"
@@ -204,7 +200,7 @@ services:
 
   kafka:
     image: apache/kafka:4.1.1
-    container_name: ttt-kafka
+    container_name: tic-tac-toe-kafka
     restart: unless-stopped
 #    ports:
 #      - "9092:9092"
@@ -234,7 +230,7 @@ services:
 
   postgres:
     image: postgres:17.6
-    container_name: ttt-postgres
+    container_name: tic-tac-toe-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
@@ -255,7 +251,7 @@ services:
 
   pgbouncer:
     image: edoburu/pgbouncer
-    container_name: ttt-pgbouncer
+    container_name: tic-tac-toe-pgbouncer
     restart: unless-stopped
     volumes:
       - ./services/infra/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
@@ -277,7 +273,7 @@ services:
 
   redis:
     image: redis:7.2
-    container_name: ttt-redis
+    container_name: tic-tac-toe-redis
     restart: unless-stopped
     networks:
       - backend
@@ -289,7 +285,7 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
-    container_name: ttt-elasticsearch
+    container_name: tic-tac-toe-elasticsearch
     ports:
       - "9200:9200"
     environment:
@@ -312,7 +308,7 @@ services:
 
   kibana-setup:
     image: curlimages/curl:8.10.1
-    container_name: ttt-kibana-setup
+    container_name: tic-tac-toe-kibana-setup
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -329,7 +325,7 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.15.0
-    container_name: ttt-kibana
+    container_name: tic-tac-toe-kibana
     ports:
       - "127.0.0.1:5601:5601"
     environment:
@@ -345,7 +341,7 @@ services:
 
   tempo:
     image: grafana/tempo:2.6.1
-    container_name: ttt-tempo
+    container_name: tic-tac-toe-tempo
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
       - ./services/infra/observability/tempo/tempo.yaml:/etc/tempo.yaml
@@ -359,7 +355,7 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.54.1
-    container_name: ttt-prometheus
+    container_name: tic-tac-toe-prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--web.enable-remote-write-receiver"
@@ -374,7 +370,7 @@ services:
 
   grafana:
     image: grafana/grafana:11.2.0
-    container_name: ttt-grafana
+    container_name: tic-tac-toe-grafana
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
@@ -394,14 +390,14 @@ services:
 
 #  mongo:
 #    image: mongo:8
-#    container_name: ttt-mongo
+#    container_name: tic-tac-toe-mongo
 #    restart: unless-stopped
 #    ports:
 #      - "27017:27017"
 #    environment:
 #      MONGO_INITDB_ROOT_USERNAME: mongo
 #      MONGO_INITDB_ROOT_PASSWORD: mongo
-#      MONGO_INITDB_DATABASE: ttt
+#      MONGO_INITDB_DATABASE: tic-tac-toe
 #    volumes:
 #      - mongo_data:/data/db
 #    networks:
@@ -415,7 +411,7 @@ services:
 #
 #  mailpit:
 #    image: axllent/mailpit
-#    container_name: ttt-mailpit
+#    container_name: tic-tac-toe-mailpit
 #    restart: unless-stopped
 #    ports:
 #      - 8025:8025cat

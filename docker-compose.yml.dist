@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: services/server/gateway/Dockerfile
       target: dev
-    container_name: ttt-gateway
+    container_name: tic-tac-toe-gateway
     env_file:
       - services/server/gateway/.env
     ports:
@@ -29,7 +29,7 @@ services:
       context: .
       dockerfile: services/server/auth/Dockerfile
       target: dev
-    container_name: ttt-auth
+    container_name: tic-tac-toe-auth
     env_file:
       - services/server/auth/.env
     environment:
@@ -58,7 +58,7 @@ services:
       context: .
       dockerfile: services/server/orchestration/Dockerfile
       target: dev
-    container_name: ttt-orchestration
+    container_name: tic-tac-toe-orchestration
     env_file:
       - services/server/orchestration/.env
     volumes:
@@ -85,7 +85,7 @@ services:
       context: .
       dockerfile: services/server/bot/Dockerfile
       target: dev
-    container_name: ttt-bot
+    container_name: tic-tac-toe-bot
     env_file:
       - services/server/bot/.env
     environment:
@@ -114,7 +114,7 @@ services:
       context: .
       dockerfile: services/server/battle/Dockerfile
       target: dev
-    container_name: ttt-battle
+    container_name: tic-tac-toe-battle
     env_file:
       - services/server/battle/.env
     volumes:
@@ -141,7 +141,7 @@ services:
       context: .
       dockerfile: services/server/matchmaking/Dockerfile
       target: dev
-    container_name: ttt-matchmaking
+    container_name: tic-tac-toe-matchmaking
     env_file:
       - services/server/matchmaking/.env
     volumes:
@@ -163,7 +163,7 @@ services:
       context: .
       dockerfile: services/infra/devorc/Dockerfile
       target: dev
-    container_name: ttt-devorc
+    container_name: tic-tac-toe-devorc
     user: "1000:1000"
     env_file:
       - services/infra/devorc/.env
@@ -192,7 +192,7 @@ services:
       context: .
       dockerfile: services/server/streaming/Dockerfile
       target: dev
-    container_name: ttt-streaming
+    container_name: tic-tac-toe-streaming
     env_file:
       - services/server/streaming/.env
     environment:
@@ -219,7 +219,7 @@ services:
       context: .
       dockerfile: services/server/profile/Dockerfile
       target: dev
-    container_name: ttt-profile
+    container_name: tic-tac-toe-profile
     env_file:
       - services/server/profile/.env
     volumes:
@@ -246,7 +246,7 @@ services:
       context: .
       dockerfile: services/server/engine/Dockerfile
       target: dev
-    container_name: ttt-engine
+    container_name: tic-tac-toe-engine
     env_file:
       - services/server/engine/.env
     environment:
@@ -278,7 +278,7 @@ services:
   #      context: .
   #      dockerfile: services/infra/service-template/Dockerfile
   #      target: dev
-  #    container_name: ttt-service-template
+  #    container_name: tic-tac-toe-service-template
   #    env_file:
   #      - services/infra/service-template/.env
   #    environment:
@@ -304,7 +304,7 @@ services:
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
-    container_name: ttt-kafka-ui
+    container_name: tic-tac-toe-kafka-ui
     # ports:
     #   - "8081:8080"
     environment:
@@ -321,7 +321,7 @@ services:
 
   kafka:
     image: apache/kafka:4.1.1
-    container_name: ttt-kafka
+    container_name: tic-tac-toe-kafka
     ports:
       - "9092:9092"
     environment:
@@ -350,7 +350,7 @@ services:
 
   postgres:
     image: postgres:17.6
-    container_name: ttt-postgres
+    container_name: tic-tac-toe-postgres
     ports:
       - "5432:5432"
     environment:
@@ -373,7 +373,7 @@ services:
 
   pgbouncer:
     image: edoburu/pgbouncer
-    container_name: ttt-pgbouncer
+    container_name: tic-tac-toe-pgbouncer
     volumes:
       - ./services/infra/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
       - ./services/infra/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
@@ -393,7 +393,7 @@ services:
 
   redis:
     image: redis:7.2
-    container_name: ttt-redis
+    container_name: tic-tac-toe-redis
     restart: always
     networks:
       - backend
@@ -405,7 +405,7 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
-    container_name: ttt-elasticsearch
+    container_name: tic-tac-toe-elasticsearch
     ports:
       - "9200:9200"
     environment:
@@ -428,7 +428,7 @@ services:
 
   kibana-setup:
     image: curlimages/curl:8.10.1
-    container_name: ttt-kibana-setup
+    container_name: tic-tac-toe-kibana-setup
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -445,7 +445,7 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.15.0
-    container_name: ttt-kibana
+    container_name: tic-tac-toe-kibana
     ports:
       - "127.0.0.1:5601:5601"
     environment:
@@ -461,7 +461,7 @@ services:
 
   tempo:
     image: grafana/tempo:2.6.1
-    container_name: ttt-tempo
+    container_name: tic-tac-toe-tempo
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
       - ./services/infra/observability/tempo/tempo.yaml:/etc/tempo.yaml
@@ -475,7 +475,7 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.54.1
-    container_name: ttt-prometheus
+    container_name: tic-tac-toe-prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--web.enable-remote-write-receiver"
@@ -490,7 +490,7 @@ services:
 
   grafana:
     image: grafana/grafana:11.2.0
-    container_name: ttt-grafana
+    container_name: tic-tac-toe-grafana
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
