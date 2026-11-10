@@ -7,6 +7,7 @@ services:
       - ./services/.env.gateway
     networks:
       - backend
+      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -23,12 +24,11 @@ services:
     environment:
       KAFKAJS_NO_PARTITIONER_WARNING: 1
     depends_on:
-      kafka:
-        condition: service_healthy
       pgbouncer:
         condition: service_healthy
     networks:
       - backend
+      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -43,12 +43,11 @@ services:
     env_file:
       - ./services/.env.orchestration
     depends_on:
-      kafka:
-        condition: service_healthy
       pgbouncer:
         condition: service_healthy
     networks:
       - backend
+      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -67,6 +66,7 @@ services:
         condition: service_healthy
     networks:
       - backend
+      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -81,12 +81,11 @@ services:
     env_file:
       - ./services/.env.battle
     depends_on:
-      kafka:
-        condition: service_healthy
       pgbouncer:
         condition: service_healthy
     networks:
       - backend
+      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -101,12 +100,11 @@ services:
     env_file:
       - ./services/.env.matchmaking
     depends_on:
-      kafka:
-        condition: service_healthy
       pgbouncer:
         condition: service_healthy
     networks:
       - backend
+      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -121,12 +119,11 @@ services:
     env_file:
         - ./services/.env.streaming
     depends_on:
-      kafka:
-        condition: service_healthy
       pgbouncer:
         condition: service_healthy
     networks:
       - backend
+      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -141,12 +138,11 @@ services:
     env_file:
       - ./services/.env.profile
     depends_on:
-      kafka:
-        condition: service_healthy
       pgbouncer:
         condition: service_healthy
     networks:
       - backend
+      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -161,68 +157,15 @@ services:
     env_file:
       - ./services/.env.engine
     depends_on:
-      kafka:
-        condition: service_healthy
       pgbouncer:
         condition: service_healthy
       redis:
         condition: service_healthy
     networks:
       - backend
+      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 20s
-
-  kafka-ui:
-    image: provectuslabs/kafka-ui:latest
-    container_name: tic-tac-toe-kafka-ui
-    restart: unless-stopped
-    ports:
-      - "8081:8080"
-    environment:
-      KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
-      AUTH_TYPE: BASIC
-      SPRING_SECURITY_USER_NAME: admin
-      SPRING_SECURITY_USER_PASSWORD: supersecret
-    networks:
-      - backend
-    healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep '\"status\":\"UP\"' || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-
-
-  kafka:
-    image: apache/kafka:4.1.1
-    container_name: tic-tac-toe-kafka
-    restart: unless-stopped
-#    ports:
-#      - "9092:9092"
-    environment:
-      KAFKA_NODE_ID: 1
-      KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
-      KAFKA_CLUSTER_ID: e1aUPLXOTOqTnT0SvYXMIg
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-    volumes:
-      - kafka_data:/var/lib/kafka/data
-    networks:
-      - backend
-    healthcheck:
-      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1 || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -242,6 +185,7 @@ services:
 #      - ./services/infra/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
       - backend
+      - platform_infra
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -263,6 +207,7 @@ services:
         condition: service_healthy
     networks:
       - backend
+      - platform_infra
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -h postgres -p 5432"]
       interval: 10s
@@ -277,173 +222,16 @@ services:
     restart: unless-stopped
     networks:
       - backend
+      - platform_infra
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
-    container_name: tic-tac-toe-elasticsearch
-    ports:
-      - "9200:9200"
-    environment:
-      discovery.type: single-node
-      xpack.security.enabled: "true"
-      xpack.security.http.ssl.enabled: "false"
-      xpack.security.transport.ssl.enabled: "false"
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
-      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
-    volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
-    networks:
-      - backend
-    healthcheck:
-      test: [ "CMD-SHELL", "curl -fsS -u elastic:${ELASTIC_PASSWORD:-changeme} http://localhost:9200/_cluster/health || exit 1" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
-
-  kibana-setup:
-    image: curlimages/curl:8.10.1
-    container_name: tic-tac-toe-kibana-setup
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    environment:
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
-    command: >
-      sh -c '
-        until curl -fsS -u "elastic:${ELASTIC_PASSWORD:-changeme}" http://elasticsearch:9200/_cluster/health >/dev/null 2>&1; do sleep 2; done;
-        curl -fsS -u "elastic:${ELASTIC_PASSWORD:-changeme}" -X POST "http://elasticsearch:9200/_security/user/kibana_system/_password" -H "Content-Type: application/json" -d "{\"password\":\"${ELASTIC_PASSWORD:-changeme}\"}";
-        echo "kibana_system password set";
-      '
-    networks:
-      - backend
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.15.0
-    container_name: tic-tac-toe-kibana
-    ports:
-      - "127.0.0.1:5601:5601"
-    environment:
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
-      ELASTICSEARCH_USERNAME: kibana_system
-      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
-    depends_on:
-      kibana-setup:
-        condition: service_completed_successfully
-    networks:
-      - backend
-
-
-  tempo:
-    image: grafana/tempo:2.6.1
-    container_name: tic-tac-toe-tempo
-    command: [ "-config.file=/etc/tempo.yaml" ]
-    volumes:
-      - ./services/infra/observability/tempo/tempo.yaml:/etc/tempo.yaml
-      - tempo_data:/var/tempo
-#    ports:
-#      - "3200:3200"
-#      - "4317:4317"
-#      - "4318:4318"
-    networks:
-      - backend
-
-  prometheus:
-    image: prom/prometheus:v2.54.1
-    container_name: tic-tac-toe-prometheus
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--web.enable-remote-write-receiver"
-      - "--enable-feature=otlp-write-receiver"
-    volumes:
-      - ./services/infra/observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    ports:
-        - "9093:9090"
-    networks:
-      - backend
-
-  grafana:
-    image: grafana/grafana:11.2.0
-    container_name: tic-tac-toe-grafana
-    environment:
-      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
-      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
-      GF_AUTH_ANONYMOUS_ENABLED: "false"
-      GF_AUTH_BASIC_ENABLED: "true"
-    volumes:
-      - ./services/infra/observability/grafana/provisioning:/etc/grafana/provisioning
-      - grafana_data:/var/lib/grafana
-    ports:
-      - "127.0.0.1:3000:3000"
-    depends_on:
-      - tempo
-      - prometheus
-    networks:
-      - backend
-
-  nginx:
-    container_name: beartrando-nginx
-    build: ./services/infra/nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./services/infra/certbot/conf:/etc/letsencrypt
-      - ./services/infra/certbot/www:/var/www/certbot
-      - ./services/infra/nginx/config/tic-tac-toe.conf:/etc/nginx/conf.d/tic-tac-toe.conf:ro
-      - ./services/infra/nginx/config/tic-tac-toe-streaming.conf:/etc/nginx/conf.d/tic-tac-toe-streaming.conf:ro
-      - ./services/infra/nginx/config/tic-tac-toe-grafana.conf:/etc/nginx/conf.d/tic-tac-toe-grafana.conf:ro
-      - ./services/infra/nginx/config/tic-tac-toe-kibana.conf:/etc/nginx/conf.d/tic-tac-toe-kibana.conf:ro
-      - ./services/infra/nginx/logs:/etc/logs/nginx
-    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
-    networks:
-      - backend
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    healthcheck:
-      test: [ "CMD-SHELL", "curl -kfs --resolve beartrando.org:443:127.0.0.1 https://beartrando.org/ || exit 1" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 20s
-
-  certbot:
-    image: certbot/certbot
-    container_name: beartrando-certbot
-    restart: unless-stopped
-    volumes:
-      - ./services/infra/certbot/conf:/etc/letsencrypt
-      - ./services/infra/certbot/www:/var/www/certbot
-    entrypoint: >
-      sh -c "trap exit TERM;
-             while :; do
-               certbot renew --webroot -w /var/www/certbot;
-               sleep 12h & wait $!;
-             done"
-    networks:
-      - backend
-    healthcheck:
-      test: ["CMD", "certbot", "--version"]
-      interval: 12h
-      timeout: 10s
-      retries: 3
-      start_period: 30s
-
-volumes:
-  kafka_data:
-  elasticsearch_data:
-  tempo_data:
-  grafana_data:
-  prometheus_data:
-#  mongo_data:
-
 networks:
   backend:
     driver: bridge
+  platform_infra:
+    external: true
+    name: platform_infra
