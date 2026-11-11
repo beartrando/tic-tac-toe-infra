@@ -112,7 +112,7 @@ jobs:
 
 
   trigger-deploy:
-    if: ${{ success() && github.event.client_payload.branch == 'prod' }}
+    if: ${{ success() && github.event.client_payload.branch == 'uat' }}
     needs: build-and-push
     environment: ${{ github.event.client_payload.branch }}
     runs-on: ubuntu-latest
