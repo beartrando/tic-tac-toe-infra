@@ -36,10 +36,22 @@ services:
       KAFKAJS_NO_PARTITIONER_WARNING: 1
     volumes:
       - ./shared:/usr/src/app/shared
+      - /usr/src/app/shared/cache-store/node_modules
+      - /usr/src/app/shared/errors/node_modules
+      - /usr/src/app/shared/grpc-client-manager/node_modules
+      - /usr/src/app/shared/kafka-manager/node_modules
+      - /usr/src/app/shared/logger/node_modules
+      - /usr/src/app/shared/otel/node_modules
+      - /usr/src/app/shared/persistent-logger/node_modules
+      - /usr/src/app/shared/pg-boss-manager/node_modules
+      - /usr/src/app/shared/state-store/node_modules
+      - /usr/src/app/shared/timer/node_modules
       - ./services/server/auth/src:/usr/src/app/services/server/auth/src/
       - ./services/server/auth/package.json:/usr/src/app/services/server/auth/package.json
     depends_on:
       pgbouncer:
+        condition: service_healthy
+      kafka:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter auth
     networks:
@@ -61,10 +73,22 @@ services:
       - services/server/orchestration/.env
     volumes:
       - ./shared:/usr/src/app/shared
+      - /usr/src/app/shared/cache-store/node_modules
+      - /usr/src/app/shared/errors/node_modules
+      - /usr/src/app/shared/grpc-client-manager/node_modules
+      - /usr/src/app/shared/kafka-manager/node_modules
+      - /usr/src/app/shared/logger/node_modules
+      - /usr/src/app/shared/otel/node_modules
+      - /usr/src/app/shared/persistent-logger/node_modules
+      - /usr/src/app/shared/pg-boss-manager/node_modules
+      - /usr/src/app/shared/state-store/node_modules
+      - /usr/src/app/shared/timer/node_modules
       - ./services/server/orchestration/src:/usr/src/app/services/server/orchestration/src/
       - ./services/server/orchestration/package.json:/usr/src/app/services/server/orchestration/package.json
     depends_on:
       pgbouncer:
+        condition: service_healthy
+      kafka:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter orchestration
     networks:
@@ -89,11 +113,23 @@ services:
       ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
     volumes:
       - ./shared:/usr/src/app/shared
+      - /usr/src/app/shared/cache-store/node_modules
+      - /usr/src/app/shared/errors/node_modules
+      - /usr/src/app/shared/grpc-client-manager/node_modules
+      - /usr/src/app/shared/kafka-manager/node_modules
+      - /usr/src/app/shared/logger/node_modules
+      - /usr/src/app/shared/otel/node_modules
+      - /usr/src/app/shared/persistent-logger/node_modules
+      - /usr/src/app/shared/pg-boss-manager/node_modules
+      - /usr/src/app/shared/state-store/node_modules
+      - /usr/src/app/shared/timer/node_modules
       - ./services/server/bot/__tests__:/usr/src/app/services/server/bot/__tests__/
       - ./services/server/bot/src:/usr/src/app/services/server/bot/src/
       - ./services/server/bot/package.json:/usr/src/app/services/server/bot/package.json
     depends_on:
       pgbouncer:
+        condition: service_healthy
+      kafka:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter bot
     networks:
@@ -115,10 +151,22 @@ services:
       - services/server/battle/.env
     volumes:
       - ./shared:/usr/src/app/shared
+      - /usr/src/app/shared/cache-store/node_modules
+      - /usr/src/app/shared/errors/node_modules
+      - /usr/src/app/shared/grpc-client-manager/node_modules
+      - /usr/src/app/shared/kafka-manager/node_modules
+      - /usr/src/app/shared/logger/node_modules
+      - /usr/src/app/shared/otel/node_modules
+      - /usr/src/app/shared/persistent-logger/node_modules
+      - /usr/src/app/shared/pg-boss-manager/node_modules
+      - /usr/src/app/shared/state-store/node_modules
+      - /usr/src/app/shared/timer/node_modules
       - ./services/server/battle/src:/usr/src/app/services/server/battle/src/
       - ./services/server/battle/package.json:/usr/src/app/services/server/battle/package.json
     depends_on:
       pgbouncer:
+        condition: service_healthy
+      kafka:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter battle
     networks:
@@ -140,9 +188,22 @@ services:
       - services/server/matchmaking/.env
     volumes:
       - ./shared:/usr/src/app/shared
+      - /usr/src/app/shared/cache-store/node_modules
+      - /usr/src/app/shared/errors/node_modules
+      - /usr/src/app/shared/grpc-client-manager/node_modules
+      - /usr/src/app/shared/kafka-manager/node_modules
+      - /usr/src/app/shared/logger/node_modules
+      - /usr/src/app/shared/otel/node_modules
+      - /usr/src/app/shared/persistent-logger/node_modules
+      - /usr/src/app/shared/pg-boss-manager/node_modules
+      - /usr/src/app/shared/state-store/node_modules
+      - /usr/src/app/shared/timer/node_modules
       - ./services/server/matchmaking/src:/usr/src/app/services/server/matchmaking/src/
       - ./services/server/matchmaking/package.json:/usr/src/app/services/server/matchmaking/package.json
     command: pnpm dlx turbo run dev --parallel --filter matchmaking
+    depends_on:
+      kafka:
+        condition: service_healthy
     networks:
       - backend
     healthcheck:
@@ -196,9 +257,22 @@ services:
       - "8080:8080"
     volumes:
       - ./shared:/usr/src/app/shared
+      - /usr/src/app/shared/cache-store/node_modules
+      - /usr/src/app/shared/errors/node_modules
+      - /usr/src/app/shared/grpc-client-manager/node_modules
+      - /usr/src/app/shared/kafka-manager/node_modules
+      - /usr/src/app/shared/logger/node_modules
+      - /usr/src/app/shared/otel/node_modules
+      - /usr/src/app/shared/persistent-logger/node_modules
+      - /usr/src/app/shared/pg-boss-manager/node_modules
+      - /usr/src/app/shared/state-store/node_modules
+      - /usr/src/app/shared/timer/node_modules
       - ./services/server/streaming/src:/usr/src/app/services/server/streaming/src/
       - ./services/server/streaming/package.json:/usr/src/app/services/server/streaming/package.json
     command: pnpm dlx turbo run dev --parallel --filter streaming
+    depends_on:
+      kafka:
+        condition: service_healthy
     networks:
       - backend
     healthcheck:
@@ -218,10 +292,22 @@ services:
       - services/server/profile/.env
     volumes:
       - ./shared:/usr/src/app/shared
+      - /usr/src/app/shared/cache-store/node_modules
+      - /usr/src/app/shared/errors/node_modules
+      - /usr/src/app/shared/grpc-client-manager/node_modules
+      - /usr/src/app/shared/kafka-manager/node_modules
+      - /usr/src/app/shared/logger/node_modules
+      - /usr/src/app/shared/otel/node_modules
+      - /usr/src/app/shared/persistent-logger/node_modules
+      - /usr/src/app/shared/pg-boss-manager/node_modules
+      - /usr/src/app/shared/state-store/node_modules
+      - /usr/src/app/shared/timer/node_modules
       - ./services/server/profile/src:/usr/src/app/services/server/profile/src/
       - ./services/server/profile/package.json:/usr/src/app/services/server/profile/package.json
     depends_on:
       pgbouncer:
+        condition: service_healthy
+      kafka:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter profile
     networks:
@@ -246,10 +332,22 @@ services:
       ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
     volumes:
       - ./shared:/usr/src/app/shared
+      - /usr/src/app/shared/cache-store/node_modules
+      - /usr/src/app/shared/errors/node_modules
+      - /usr/src/app/shared/grpc-client-manager/node_modules
+      - /usr/src/app/shared/kafka-manager/node_modules
+      - /usr/src/app/shared/logger/node_modules
+      - /usr/src/app/shared/otel/node_modules
+      - /usr/src/app/shared/persistent-logger/node_modules
+      - /usr/src/app/shared/pg-boss-manager/node_modules
+      - /usr/src/app/shared/state-store/node_modules
+      - /usr/src/app/shared/timer/node_modules
       - ./services/server/engine/src:/usr/src/app/services/server/engine/src/
       - ./services/server/engine/package.json:/usr/src/app/services/server/engine/package.json
     depends_on:
       pgbouncer:
+        condition: service_healthy
+      kafka:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -291,6 +389,55 @@ services:
   #      timeout: 5s
   #      retries: 10
   #      start_period: 20s
+
+  opentelemetry-collector:
+    image: otel/opentelemetry-collector-contrib:0.112.0
+    container_name: tic-tac-toe-tempo
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./services/observability/otel-collector/config.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "4318:4318"
+    networks:
+      backend:
+        aliases:services/observability/otel-collector/config.yaml:
+          - tempo
+          - prometheus
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:4318 || exit 0"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  kafka:
+    image: apache/kafka:4.1.1
+    container_name: tic-tac-toe-kafka
+    restart: unless-stopped
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CLUSTER_ID: e1aUPLXOTOqTnT0SvYXMIg
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
   postgres:
     image: postgres:17.6
@@ -350,6 +497,7 @@ services:
 
 
 volumes:
+  kafka_data:
   postgres_data:
 
 networks:
