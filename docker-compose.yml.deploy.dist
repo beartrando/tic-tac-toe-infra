@@ -7,7 +7,6 @@ services:
       - ./services/.env.gateway
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -28,7 +27,6 @@ services:
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -47,7 +45,6 @@ services:
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -66,7 +63,6 @@ services:
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -85,7 +81,6 @@ services:
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -104,7 +99,6 @@ services:
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -123,7 +117,6 @@ services:
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -142,7 +135,6 @@ services:
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -163,7 +155,6 @@ services:
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -185,7 +176,6 @@ services:
 #      - ./services/infra/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -207,7 +197,6 @@ services:
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -h postgres -p 5432"]
       interval: 10s
@@ -222,7 +211,6 @@ services:
     restart: unless-stopped
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -232,6 +220,3 @@ services:
 networks:
   backend:
     driver: bridge
-  platform_infra:
-    external: true
-    name: platform_infra
