@@ -51,8 +51,6 @@ services:
     depends_on:
       pgbouncer:
         condition: service_healthy
-      kafka:
-        condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter auth
     networks:
       - backend
@@ -87,8 +85,6 @@ services:
       - ./services/server/orchestration/package.json:/usr/src/app/services/server/orchestration/package.json
     depends_on:
       pgbouncer:
-        condition: service_healthy
-      kafka:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter orchestration
     networks:
@@ -129,8 +125,6 @@ services:
     depends_on:
       pgbouncer:
         condition: service_healthy
-      kafka:
-        condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter bot
     networks:
       - backend
@@ -166,8 +160,6 @@ services:
     depends_on:
       pgbouncer:
         condition: service_healthy
-      kafka:
-        condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter battle
     networks:
       - backend
@@ -201,9 +193,6 @@ services:
       - ./services/server/matchmaking/src:/usr/src/app/services/server/matchmaking/src/
       - ./services/server/matchmaking/package.json:/usr/src/app/services/server/matchmaking/package.json
     command: pnpm dlx turbo run dev --parallel --filter matchmaking
-    depends_on:
-      kafka:
-        condition: service_healthy
     networks:
       - backend
     healthcheck:
@@ -270,9 +259,6 @@ services:
       - ./services/server/streaming/src:/usr/src/app/services/server/streaming/src/
       - ./services/server/streaming/package.json:/usr/src/app/services/server/streaming/package.json
     command: pnpm dlx turbo run dev --parallel --filter streaming
-    depends_on:
-      kafka:
-        condition: service_healthy
     networks:
       - backend
     healthcheck:
@@ -306,8 +292,6 @@ services:
       - ./services/server/profile/package.json:/usr/src/app/services/server/profile/package.json
     depends_on:
       pgbouncer:
-        condition: service_healthy
-      kafka:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter profile
     networks:
@@ -347,8 +331,6 @@ services:
     depends_on:
       pgbouncer:
         condition: service_healthy
-      kafka:
-        condition: service_healthy
       redis:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter engine
@@ -376,8 +358,6 @@ services:
   #      - ./services/infra/service-template/src:/usr/src/app/services/infra/service-template/src/
   #      - ./services/infra/service-template/package.json:/usr/src/app/services/infra/service-template/package.json
   #    depends_on:
-  #      kafka:
-  #        condition: service_healthy
   #      pgbouncer:
   #        condition: service_healthy
   #    command: pnpm dlx turbo run dev --parallel --filter service-template
@@ -409,35 +389,6 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
-
-  kafka:
-    image: apache/kafka:4.1.1
-    container_name: tic-tac-toe-kafka
-    restart: unless-stopped
-    environment:
-      KAFKA_NODE_ID: 1
-      KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
-      KAFKA_CLUSTER_ID: e1aUPLXOTOqTnT0SvYXMIg
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-    volumes:
-      - kafka_data:/var/lib/kafka/data
-    networks:
-      - backend
-    healthcheck:
-      test: [ "CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1 || exit 1" ]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 20s
 
   postgres:
     image: postgres:17.6
@@ -497,7 +448,6 @@ services:
 
 
 volumes:
-  kafka_data:
   postgres_data:
 
 networks:
