@@ -372,7 +372,7 @@ services:
 
   opentelemetry-collector:
     image: otel/opentelemetry-collector-contrib:0.112.0
-    container_name: tic-tac-toe-tempo
+    container_name: tic-tac-toe-opentelemetry-collector
     command: ["--config=/etc/otel-collector-config.yaml"]
     volumes:
       - ./services/observability/otel-collector/config.yaml:/etc/otel-collector-config.yaml:ro

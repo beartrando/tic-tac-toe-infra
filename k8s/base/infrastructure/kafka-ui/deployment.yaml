@@ -27,7 +27,7 @@ spec:
               value: "local"
 
             - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
-              value: "kafka:9092"
+              value: "10.100.0.1:9092"
 
           livenessProbe:
             httpGet:

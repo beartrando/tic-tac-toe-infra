@@ -13,7 +13,7 @@ data:
   DATABASE_URL: "postgresql://postgres:postgres@pgbouncer:6432/bot"
   DATABASE_DIRECT_URL: "postgresql://postgres:postgres@postgres:5432/bot"
 
-  KAFKA_BROKERS: "kafka:9092"
+  KAFKA_BROKERS: "10.100.0.1:9092"
   KAFKA_CLIENT_ID: "bot-client"
   MESSAGE_CONSUMER_TOPIC_AI_CONNECTING_REQUEST: "bot.connecting-request"
 

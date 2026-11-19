@@ -5,13 +5,15 @@ services:
     restart: unless-stopped
     env_file:
       - ./services/.env.gateway
+    ports:
+      - "9090:9090"
     networks:
       - backend
     healthcheck:
-      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:9090/gateway/livez || exit 1" ]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
       start_period: 20s
 
   auth:
@@ -58,6 +60,9 @@ services:
     restart: unless-stopped
     env_file:
       - ./services/.env.bot
+    environment:
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
     depends_on:
       pgbouncer:
         condition: service_healthy
@@ -94,9 +99,6 @@ services:
     restart: unless-stopped
     env_file:
       - ./services/.env.matchmaking
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
     networks:
       - backend
     healthcheck:
@@ -111,10 +113,9 @@ services:
     image: ghcr.io/beartrando/tic-tac-toe-streaming/service:${STREAMING_VERSION}
     restart: unless-stopped
     env_file:
-        - ./services/.env.streaming
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
+      - ./services/.env.streaming
+    ports:
+      - "8080:8080"
     networks:
       - backend
     healthcheck:
@@ -148,6 +149,9 @@ services:
     restart: unless-stopped
     env_file:
       - ./services/.env.engine
+    environment:
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
     depends_on:
       pgbouncer:
         condition: service_healthy
@@ -162,6 +166,27 @@ services:
       retries: 10
       start_period: 20s
 
+  opentelemetry-collector:
+    image: otel/opentelemetry-collector-contrib:0.112.0
+    container_name: tic-tac-toe-opentelemetry-collector
+    restart: unless-stopped
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./services/observability/otel-collector/config.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "4318:4318"
+    networks:
+      backend:
+        aliases:
+          - tempo
+          - prometheus
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:4318 || exit 0"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
   postgres:
     image: postgres:17.6
     container_name: tic-tac-toe-postgres
@@ -173,7 +198,6 @@ services:
       POSTGRES_INITDB_ARGS: "--auth-host=md5"
     volumes:
       - ./services/infra/postgres/data:/var/lib/postgresql/data
-#      - ./services/infra/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
       - backend
     healthcheck:
@@ -204,7 +228,6 @@ services:
       retries: 5
       start_period: 10s
 
-
   redis:
     image: redis:7.2
     container_name: tic-tac-toe-redis
@@ -216,6 +239,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+volumes:
+  postgres_data:
 
 networks:
   backend:
