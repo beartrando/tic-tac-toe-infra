@@ -121,29 +121,14 @@ jobs:
       - name: Push image
         run: |
           echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          
-          echo "PUSH: service:${{ github.event.client_payload.version }}"
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }}
-          
-          echo "PUSH: service:${{ github.event.client_payload.branch }}"
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
-          
-          echo "PUSH: service:${{ github.event.client_payload.sha }}"
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.sha }}
-          
-          echo "PUSH: service:latest"
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:latest
-          
-          echo "PUSH: predeploy:${{ github.event.client_payload.version }}"
+
           docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}
-          
-          echo "PUSH: predeploy:${{ github.event.client_payload.branch }}"
           docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.branch }}
-          
-          echo "PUSH: predeploy:${{ github.event.client_payload.sha }}"
           docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.sha }}
-          
-          echo "PUSH: predeploy:latest"
           docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:latest
 
 
