@@ -381,6 +381,10 @@ services:
     environment:
       KAFKAJS_NO_PARTITIONER_WARNING: 1
       PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN: "false"
+    extra_hosts:
+      - "elasticsearch:10.100.0.1"
+      - "prometheus:10.100.0.1"
+      - "tempo:10.100.0.1"
     volumes:
       - ./shared:/usr/src/app/shared
       - ./services/infra/infrastructure-telemetry-mcp/src:/usr/src/app/services/infra/infrastructure-telemetry-mcp/src/
@@ -388,7 +392,7 @@ services:
     depends_on:
       pgbouncer:
         condition: service_healthy
-    command: pnpm dlx turbo run dev --parallel --filter infrastructure-telemetry-mcp
+    command: pnpm --filter infrastructure-telemetry-mcp dev
     networks:
       - backend
     healthcheck:

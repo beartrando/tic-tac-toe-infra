@@ -1,7 +1,7 @@
 services:
   gateway:
     container_name: tic-tac-toe-gateway
-image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAULT_VERSION}}
+    image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAULT_VERSION}}
     restart: unless-stopped
     env_file:
       - ./services/.env.gateway
@@ -9,7 +9,6 @@ image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAU
       - "9090:9090"
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:9090/gateway/livez || exit 1" ]
       interval: 10s
@@ -30,7 +29,6 @@ image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAU
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -49,7 +47,6 @@ image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAU
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -71,7 +68,6 @@ image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAU
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -90,7 +86,6 @@ image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAU
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -109,7 +104,6 @@ image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAU
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -130,7 +124,6 @@ image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAU
       - "8080:8080"
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -149,7 +142,6 @@ image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAU
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -173,7 +165,6 @@ image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAU
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -187,12 +178,10 @@ image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAU
     restart: unless-stopped
     env_file:
       - ./services/.env.infrastructure-telemetry-mcp
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
+    environment:
+      PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN: "false"
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:3000/health || exit 1" ]
       interval: 10s
@@ -234,7 +223,6 @@ image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAU
       - ./services/infra/postgres/data:/var/lib/postgresql/data
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -256,7 +244,6 @@ image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAU
         condition: service_healthy
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -h postgres -p 5432"]
       interval: 10s
@@ -270,7 +257,6 @@ image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAU
     restart: unless-stopped
     networks:
       - backend
-      - platform_infra
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -280,6 +266,3 @@ image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAU
 networks:
   backend:
     driver: bridge
-  platform_infra:
-    external: true
-    name: platform_infra
