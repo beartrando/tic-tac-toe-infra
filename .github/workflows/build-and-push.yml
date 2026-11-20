@@ -59,10 +59,23 @@ jobs:
 
       - name: Checkout service submodule branch
         run: |
-          cd services/server/${{ github.event.client_payload.service }}
-          git fetch origin ${{ github.event.client_payload.branch }}
-          git checkout ${{ github.event.client_payload.branch }}
-          git pull origin ${{ github.event.client_payload.branch }}
+          SERVICE="${{ github.event.client_payload.service }}"
+          BRANCH="${{ github.event.client_payload.branch }}"
+          
+          PATH_TO_SUBMODULE=$(git config -f .gitmodules --get-regexp '^submodule\..*\.path$' \
+            | awk -v service="$SERVICE" '$2 ~ ("/" service "$") { print $2; exit }')
+          
+          if [ -z "$PATH_TO_SUBMODULE" ]; then
+            echo "Submodule not found: $SERVICE"
+            exit 1
+          fi
+          
+          echo "Submodule path: $PATH_TO_SUBMODULE"
+          
+          cd "$PATH_TO_SUBMODULE"
+          git fetch origin "$BRANCH"
+          git checkout "$BRANCH"
+          git pull origin "$BRANCH"
 
       - name: Build Docker image
         run: |
