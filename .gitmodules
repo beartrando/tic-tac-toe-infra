@@ -18,7 +18,7 @@
     url = git@github.com:beartrando/tic-tac-toe-streaming.git
 [submodule "services/infra/infrastructure-telemetry-mcp"]
     path = services/infra/infrastructure-telemetry-mcp
-    url = git@github.com:beartrando/infrastructure-telemetry-mcp.git
+    url = git@github.com:beartrando/tic-tac-toe-infrastructure-telemetry-mcp.git
 
 
 [submodule "services/server/engine"]
