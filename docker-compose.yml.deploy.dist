@@ -181,6 +181,25 @@ services:
       retries: 10
       start_period: 20s
 
+  infrastructure-telemetry-mcp:
+    container_name: tic-tac-toe-infrastructure-telemetry-mcp
+    image: ghcr.io/beartrando/infrastructure-telemetry-mcp/service:${INFRASTRUCTURE_TELEMETRY_MCP_VERSION}
+    restart: unless-stopped
+    env_file:
+      - ./services/.env.infrastructure-telemetry-mcp
+    depends_on:
+      pgbouncer:
+        condition: service_healthy
+    networks:
+      - backend
+      - platform_infra
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
   opentelemetry-collector:
     image: otel/opentelemetry-collector-contrib:0.112.0
     container_name: tic-tac-toe-opentelemetry-collector

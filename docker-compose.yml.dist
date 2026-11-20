@@ -370,6 +370,33 @@ services:
   #      retries: 10
   #      start_period: 20s
 
+  infrastructure-telemetry-mcp:
+    build:
+      context: .
+      dockerfile: services/infra/infrastructure-telemetry-mcp/Dockerfile
+      target: dev
+    container_name: tic-tac-toe-infrastructure-telemetry-mcp
+    env_file:
+      - services/infra/infrastructure-telemetry-mcp/.env
+    environment:
+      KAFKAJS_NO_PARTITIONER_WARNING: 1
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/infra/infrastructure-telemetry-mcp/src:/usr/src/app/services/infra/infrastructure-telemetry-mcp/src/
+      - ./services/infra/infrastructure-telemetry-mcp/package.json:/usr/src/app/services/infra/infrastructure-telemetry-mcp/package.json
+    depends_on:
+      pgbouncer:
+        condition: service_healthy
+    command: pnpm dlx turbo run dev --parallel --filter infrastructure-telemetry-mcp
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
   opentelemetry-collector:
     image: otel/opentelemetry-collector-contrib:0.112.0
     container_name: tic-tac-toe-opentelemetry-collector
