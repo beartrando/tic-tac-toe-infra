@@ -58,12 +58,19 @@ jobs:
           done
 
       - name: Checkout service submodule branch
+        id: checkout-service
+        env:
+          SERVICE: ${{ github.event.client_payload.service }}
+          BRANCH: ${{ github.event.client_payload.branch }}
         run: |
-          SERVICE="${{ github.event.client_payload.service }}"
-          BRANCH="${{ github.event.client_payload.branch }}"
+          PATH_TO_SUBMODULE=""
           
-          PATH_TO_SUBMODULE=$(git config -f .gitmodules --get-regexp '^submodule\..*\.path$' \
-            | awk -v service="$SERVICE" '$2 ~ ("/" service "$") { print $2; exit }')
+          while read -r key path; do
+            if [ "$(basename "$path")" = "$SERVICE" ]; then
+              PATH_TO_SUBMODULE="$path"
+              break
+            fi
+          done < <(git config -f .gitmodules --get-regexp '^submodule\..*\.path$')
           
           if [ -z "$PATH_TO_SUBMODULE" ]; then
             echo "Submodule not found: $SERVICE"
@@ -71,6 +78,7 @@ jobs:
           fi
           
           echo "Submodule path: $PATH_TO_SUBMODULE"
+          echo "path=$PATH_TO_SUBMODULE" >> "$GITHUB_OUTPUT"
           
           cd "$PATH_TO_SUBMODULE"
           git fetch origin "$BRANCH"
@@ -83,7 +91,7 @@ jobs:
             --target prod \
             --build-arg VERSION=${{ github.event.client_payload.version }} \
             -t $REGISTRY/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
-            -f services/server/${{ github.event.client_payload.service }}/Dockerfile .
+            -f "${{ steps.checkout-service.outputs.path }}/Dockerfile" .
 
           docker tag ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
             ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
@@ -98,7 +106,7 @@ jobs:
             --target predeploy \
             --build-arg VERSION=${{ github.event.client_payload.version }} \
             -t $REGISTRY/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
-            -f services/server/${{ github.event.client_payload.service }}/Dockerfile .
+            -f "${{ steps.checkout-service.outputs.path }}/Dockerfile" .
 
           docker tag ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
             ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.branch }}
