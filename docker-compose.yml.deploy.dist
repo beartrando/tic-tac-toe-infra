@@ -1,7 +1,7 @@
 services:
   gateway:
     container_name: tic-tac-toe-gateway
-    image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION}
+image: ghcr.io/beartrando/tic-tac-toe-gateway/service:${GATEWAY_VERSION:-${DEFAULT_VERSION}}
     restart: unless-stopped
     env_file:
       - ./services/.env.gateway
@@ -19,7 +19,7 @@ services:
 
   auth:
     container_name: tic-tac-toe-auth
-    image: ghcr.io/beartrando/tic-tac-toe-auth/service:${AUTH_VERSION}
+    image: ghcr.io/beartrando/tic-tac-toe-auth/service:${AUTH_VERSION:-${DEFAULT_VERSION}}
     restart: unless-stopped
     env_file:
       - ./services/.env.auth
@@ -40,7 +40,7 @@ services:
 
   orchestration:
     container_name: tic-tac-toe-orchestration
-    image: ghcr.io/beartrando/tic-tac-toe-orchestration/service:${ORCHESTRATION_VERSION}
+    image: ghcr.io/beartrando/tic-tac-toe-orchestration/service:${ORCHESTRATION_VERSION:-${DEFAULT_VERSION}}
     restart: unless-stopped
     env_file:
       - ./services/.env.orchestration
@@ -59,7 +59,7 @@ services:
 
   bot:
     container_name: tic-tac-toe-bot
-    image: ghcr.io/beartrando/tic-tac-toe-bot/service:${BOT_VERSION}
+    image: ghcr.io/beartrando/tic-tac-toe-bot/service:${BOT_VERSION:-${DEFAULT_VERSION}}
     restart: unless-stopped
     env_file:
       - ./services/.env.bot
@@ -81,7 +81,7 @@ services:
 
   battle:
     container_name: tic-tac-toe-battle
-    image: ghcr.io/beartrando/tic-tac-toe-battle/service:${BATTLE_VERSION}
+    image: ghcr.io/beartrando/tic-tac-toe-battle/service:${BATTLE_VERSION:-${DEFAULT_VERSION}}
     restart: unless-stopped
     env_file:
       - ./services/.env.battle
@@ -100,7 +100,7 @@ services:
 
   matchmaking:
     container_name: tic-tac-toe-matchmaking
-    image: ghcr.io/beartrando/tic-tac-toe-matchmaking/service:${MATCHMAKING_VERSION}
+    image: ghcr.io/beartrando/tic-tac-toe-matchmaking/service:${MATCHMAKING_VERSION:-${DEFAULT_VERSION}}
     restart: unless-stopped
     env_file:
       - ./services/.env.matchmaking
@@ -119,7 +119,7 @@ services:
 
   streaming:
     container_name: tic-tac-toe-streaming
-    image: ghcr.io/beartrando/tic-tac-toe-streaming/service:${STREAMING_VERSION}
+    image: ghcr.io/beartrando/tic-tac-toe-streaming/service:${STREAMING_VERSION:-${DEFAULT_VERSION}}
     restart: unless-stopped
     env_file:
       - ./services/.env.streaming
@@ -140,7 +140,7 @@ services:
 
   profile:
     container_name: tic-tac-toe-profile
-    image: ghcr.io/beartrando/tic-tac-toe-profile/service:${PROFILE_VERSION}
+    image: ghcr.io/beartrando/tic-tac-toe-profile/service:${PROFILE_VERSION:-${DEFAULT_VERSION}}
     restart: unless-stopped
     env_file:
       - ./services/.env.profile
@@ -159,7 +159,7 @@ services:
 
   engine:
     container_name: tic-tac-toe-engine
-    image: ghcr.io/beartrando/tic-tac-toe-engine/service:${ENGINE_VERSION}
+    image: ghcr.io/beartrando/tic-tac-toe-engine/service:${ENGINE_VERSION:-${DEFAULT_VERSION}}
     restart: unless-stopped
     env_file:
       - ./services/.env.engine
@@ -183,7 +183,7 @@ services:
 
   infrastructure-telemetry-mcp:
     container_name: tic-tac-toe-infrastructure-telemetry-mcp
-    image: ghcr.io/beartrando/infrastructure-telemetry-mcp/service:${INFRASTRUCTURE_TELEMETRY_MCP_VERSION}
+    image: ghcr.io/beartrando/infrastructure-telemetry-mcp/service:${INFRASTRUCTURE_TELEMETRY_MCP_VERSION:-${DEFAULT_VERSION}}
     restart: unless-stopped
     env_file:
       - ./services/.env.infrastructure-telemetry-mcp
@@ -194,7 +194,7 @@ services:
       - backend
       - platform_infra
     healthcheck:
-      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
+      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:3000/health || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 10
