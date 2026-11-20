@@ -380,11 +380,11 @@ services:
       - "4318:4318"
     networks:
       backend:
-        aliases:services/observability/otel-collector/config.yaml:
+        aliases:
           - tempo
           - prometheus
     healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:4318 || exit 0"]
+      test: ["CMD", "/otelcol-contrib", "validate", "--config=/etc/otel-collector-config.yaml"]
       interval: 10s
       timeout: 5s
       retries: 3
