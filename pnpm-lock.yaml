@@ -130,6 +130,103 @@ importers:
         specifier: ^6.0.2
         version: 6.0.3
 
+  services/infra/infrastructure-telemetry-mcp:
+    dependencies:
+      '@bufbuild/protobuf':
+        specifier: ^2.11.0
+        version: 2.16.0
+      '@grpc/grpc-js':
+        specifier: ^1.14.3
+        version: 1.14.6
+      '@prisma/client':
+        specifier: ^6.19.3
+        version: 6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3)
+      '@shared/errors':
+        specifier: workspace:*
+        version: link:../../../shared/errors
+      '@shared/grpc-client-manager':
+        specifier: workspace:*
+        version: link:../../../shared/grpc-client-manager
+      '@shared/kafka-manager':
+        specifier: workspace:*
+        version: link:../../../shared/kafka-manager
+      '@shared/logger':
+        specifier: workspace:*
+        version: link:../../../shared/logger
+      '@shared/otel':
+        specifier: workspace:*
+        version: link:../../../shared/otel
+      '@shared/pg-boss-manager':
+        specifier: workspace:*
+        version: link:../../../shared/pg-boss-manager
+      bcrypt:
+        specifier: ^6.0.0
+        version: 6.0.0
+      ioredis:
+        specifier: ^5.10.1
+        version: 5.11.1
+      jsonwebtoken:
+        specifier: ^9.0.3
+        version: 9.0.3
+      kafkajs:
+        specifier: ^2.2.4
+        version: 2.2.4
+      pg-boss:
+        specifier: ^12.15.0
+        version: 12.38.0(@opentelemetry/api@1.10.0)
+    devDependencies:
+      '@types/amqplib':
+        specifier: ^0.10.8
+        version: 0.10.8
+      '@types/bcrypt':
+        specifier: ^6.0.0
+        version: 6.0.0
+      '@types/ioredis':
+        specifier: ^5.0.0
+        version: 5.0.0
+      '@types/jest':
+        specifier: ^30.0.0
+        version: 30.0.0
+      '@types/jsonwebtoken':
+        specifier: ^9.0.10
+        version: 9.0.10
+      '@types/supertest':
+        specifier: ^7.2.0
+        version: 7.2.1
+      fast-glob:
+        specifier: ^3.3.3
+        version: 3.3.3
+      jest:
+        specifier: ^30.3.0
+        version: 30.5.2(@types/node@26.6.5)(ts-node@10.9.2(@types/node@26.6.5)(typescript@6.0.3))
+      nodemon:
+        specifier: ^3.1.14
+        version: 3.1.14
+      prisma:
+        specifier: ^6.19.3
+        version: 6.19.3(typescript@6.0.3)
+      supertest:
+        specifier: ^7.2.2
+        version: 7.3.1(supports-color@5.5.0)
+      ts-jest:
+        specifier: ^29.4.9
+        version: 29.4.15(@babel/core@7.29.7)(@jest/transform@30.5.2)(@jest/types@30.5.1)(babel-jest@30.5.2(@babel/core@7.29.7))(jest-util@30.5.1)(jest@30.5.2(@types/node@26.6.5)(ts-node@10.9.2(@types/node@26.6.5)(typescript@6.0.3)))(typescript@6.0.3)
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@26.6.5)(typescript@6.0.3)
+      ts-node-dev:
+        specifier: ^2.0.0
+        version: 2.0.0(@types/node@26.6.5)(typescript@6.0.3)
+      ts-proto:
+        specifier: ^2.11.6
+        version: 2.18.3
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+
   services/infra/service-template:
     dependencies:
       '@bufbuild/protobuf':
