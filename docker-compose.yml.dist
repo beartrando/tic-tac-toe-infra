@@ -17,6 +17,10 @@ services:
     command: pnpm exec turbo run dev --filter gateway
     networks:
       - backend
+    extra_hosts:
+      - "elasticsearch:10.100.0.1"
+      - "prometheus:10.100.0.1"
+      - "tempo:10.100.0.1"
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:9090/gateway/livez || exit 1" ]
       interval: 10s
@@ -128,6 +132,10 @@ services:
     command: pnpm dlx turbo run dev --parallel --filter bot
     networks:
       - backend
+    extra_hosts:
+      - "elasticsearch:10.100.0.1"
+      - "prometheus:10.100.0.1"
+      - "tempo:10.100.0.1"
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -261,6 +269,10 @@ services:
     command: pnpm dlx turbo run dev --parallel --filter streaming
     networks:
       - backend
+    extra_hosts:
+      - "elasticsearch:10.100.0.1"
+      - "prometheus:10.100.0.1"
+      - "tempo:10.100.0.1"
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -336,6 +348,10 @@ services:
     command: pnpm dlx turbo run dev --parallel --filter engine
     networks:
       - backend
+    extra_hosts:
+      - "elasticsearch:10.100.0.1"
+      - "prometheus:10.100.0.1"
+      - "tempo:10.100.0.1"
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
