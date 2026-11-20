@@ -16,6 +16,9 @@
 [submodule "services/server/streaming"]
     path = services/server/streaming
     url = git@github.com:beartrando/tic-tac-toe-streaming.git
+[submodule "services/infra/infrastructure-telemetry-mcp"]
+    path = services/infra/infrastructure-telemetry-mcp
+    url = git@github.com:beartrando/infrastructure-telemetry-mcp.git
 
 
 [submodule "services/server/engine"]
