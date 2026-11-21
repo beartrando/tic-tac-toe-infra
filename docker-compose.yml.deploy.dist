@@ -174,7 +174,7 @@ services:
 
   infrastructure-telemetry-mcp:
     container_name: tic-tac-toe-infrastructure-telemetry-mcp
-    image: ghcr.io/beartrando/infrastructure-telemetry-mcp/service:${INFRASTRUCTURE_TELEMETRY_MCP_VERSION:-${DEFAULT_VERSION}}
+    image: ghcr.io/beartrando/tic-tac-toe-infrastructure-telemetry-mcp/service:${INFRASTRUCTURE_TELEMETRY_MCP_VERSION:-${DEFAULT_VERSION}}
     restart: unless-stopped
     env_file:
       - ./services/.env.infrastructure-telemetry-mcp

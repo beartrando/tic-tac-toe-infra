@@ -83,9 +83,6 @@
 [submodule "docs/context"]
     path = docs/context
     url = git@github.com:beartrando/tic-tac-toe-context.git
-[submodule "docs/wiki"]
-    path = docs/wiki
-    url = git@github.com:beartrando/tic-tac-toe-wiki.git
 [submodule "docs/workflow"]
     path = docs/workflow
     url = git@github.com:beartrando/workflow.git
