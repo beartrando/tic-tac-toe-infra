@@ -49,7 +49,7 @@ jobs:
       - name: Update shared folders
         env:
           BRANCH: ${{ github.event.client_payload.branch }}
-          SHARED_MODULES: "logger errors grpc-client-manager kafka-manager pg-boss-manager timer cache-store state-store"
+          SHARED_MODULES: "cache-store errors grpc-client-manager kafka-manager logger otel persistent-logger pg-boss-manager state-store timer"
         run: |
           for dir in $SHARED_MODULES; do
             git -C "shared/$dir" fetch origin

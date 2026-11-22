@@ -1,0 +1,10 @@
+{
+  "mcp": {
+    "servers": {
+      "plane": {
+        "type": "remote",
+        "url": "https://mcp.plane.so/http/mcp"
+      }
+    }
+  }
+}
