@@ -1,3 +1,12 @@
+x-platform-hosts: &platform-hosts
+  # внешняя платформа (WireGuard wg0): kafka, elastic, observability, postgres
+  - "kafka:10.100.0.1"
+  - "elasticsearch:10.100.0.1"
+  - "prometheus:10.100.0.1"
+  - "tempo:10.100.0.1"
+  - "postgres:10.100.0.1"
+  - "pgbouncer:10.100.0.1"
+
 services:
   gateway:
     container_name: tic-tac-toe-gateway
@@ -7,6 +16,7 @@ services:
       - ./services/.env.gateway
     ports:
       - "9090:9090"
+    extra_hosts: *platform-hosts
     networks:
       - backend
     healthcheck:
@@ -24,9 +34,7 @@ services:
       - ./services/.env.auth
     environment:
       KAFKAJS_NO_PARTITIONER_WARNING: 1
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
+    extra_hosts: *platform-hosts
     networks:
       - backend
     healthcheck:
@@ -42,9 +50,7 @@ services:
     restart: unless-stopped
     env_file:
       - ./services/.env.orchestration
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
+    extra_hosts: *platform-hosts
     networks:
       - backend
     healthcheck:
@@ -63,9 +69,7 @@ services:
     environment:
       ELASTICSEARCH_USERNAME: elastic
       ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
+    extra_hosts: *platform-hosts
     networks:
       - backend
     healthcheck:
@@ -81,9 +85,7 @@ services:
     restart: unless-stopped
     env_file:
       - ./services/.env.battle
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
+    extra_hosts: *platform-hosts
     networks:
       - backend
     healthcheck:
@@ -99,9 +101,7 @@ services:
     restart: unless-stopped
     env_file:
       - ./services/.env.matchmaking
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
+    extra_hosts: *platform-hosts
     networks:
       - backend
     healthcheck:
@@ -117,11 +117,9 @@ services:
     restart: unless-stopped
     env_file:
       - ./services/.env.streaming
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
     ports:
       - "8080:8080"
+    extra_hosts: *platform-hosts
     networks:
       - backend
     healthcheck:
@@ -137,9 +135,7 @@ services:
     restart: unless-stopped
     env_file:
       - ./services/.env.profile
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
+    extra_hosts: *platform-hosts
     networks:
       - backend
     healthcheck:
@@ -159,10 +155,9 @@ services:
       ELASTICSEARCH_USERNAME: elastic
       ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
     depends_on:
-      pgbouncer:
-        condition: service_healthy
       redis:
         condition: service_healthy
+    extra_hosts: *platform-hosts
     networks:
       - backend
     healthcheck:
@@ -180,6 +175,7 @@ services:
       - ./services/.env.infrastructure-telemetry-mcp
     environment:
       PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN: "false"
+    extra_hosts: *platform-hosts
     networks:
       - backend
     healthcheck:
@@ -192,17 +188,17 @@ services:
   opentelemetry-collector:
     image: otel/opentelemetry-collector-contrib:0.112.0
     container_name: tic-tac-toe-opentelemetry-collector
+    user: "0:0"  # distroless-образ (uid 10001) не может писать очередь в volume
     restart: unless-stopped
     command: ["--config=/etc/otel-collector-config.yaml"]
     volumes:
       - ./services/observability/otel-collector/config.yaml:/etc/otel-collector-config.yaml:ro
+      - otel_queue:/var/lib/otelcol
     ports:
       - "4318:4318"
+    extra_hosts: *platform-hosts
     networks:
-      backend:
-        aliases:
-          - tempo
-          - prometheus
+      - backend
     healthcheck:
       disable: true
 
@@ -217,6 +213,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+volumes:
+  otel_queue:
 
 networks:
   backend:

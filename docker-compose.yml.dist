@@ -1,3 +1,12 @@
+x-platform-hosts: &platform-hosts
+  # внешняя платформа (WireGuard wg0): kafka, elastic, observability, postgres
+  - "kafka:10.100.0.1"
+  - "elasticsearch:10.100.0.1"
+  - "prometheus:10.100.0.1"
+  - "tempo:10.100.0.1"
+  - "postgres:10.100.0.1"
+  - "pgbouncer:10.100.0.1"
+
 services:
   gateway:
     build:
@@ -15,12 +24,9 @@ services:
       - ./services/server/gateway/src:/usr/src/app/services/server/gateway/src/
       - ./services/server/gateway/package.json:/usr/src/app/services/server/gateway/package.json
     command: pnpm exec turbo run dev --filter gateway
+    extra_hosts: *platform-hosts
     networks:
       - backend
-    extra_hosts:
-      - "elasticsearch:10.100.0.1"
-      - "prometheus:10.100.0.1"
-      - "tempo:10.100.0.1"
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:9090/gateway/livez || exit 1" ]
       interval: 10s
@@ -52,10 +58,8 @@ services:
       - /usr/src/app/shared/timer/node_modules
       - ./services/server/auth/src:/usr/src/app/services/server/auth/src/
       - ./services/server/auth/package.json:/usr/src/app/services/server/auth/package.json
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter auth
+    extra_hosts: *platform-hosts
     networks:
       - backend
     healthcheck:
@@ -87,10 +91,8 @@ services:
       - /usr/src/app/shared/timer/node_modules
       - ./services/server/orchestration/src:/usr/src/app/services/server/orchestration/src/
       - ./services/server/orchestration/package.json:/usr/src/app/services/server/orchestration/package.json
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter orchestration
+    extra_hosts: *platform-hosts
     networks:
       - backend
     healthcheck:
@@ -126,16 +128,10 @@ services:
       - ./services/server/bot/__tests__:/usr/src/app/services/server/bot/__tests__/
       - ./services/server/bot/src:/usr/src/app/services/server/bot/src/
       - ./services/server/bot/package.json:/usr/src/app/services/server/bot/package.json
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter bot
+    extra_hosts: *platform-hosts
     networks:
       - backend
-    extra_hosts:
-      - "elasticsearch:10.100.0.1"
-      - "prometheus:10.100.0.1"
-      - "tempo:10.100.0.1"
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -165,10 +161,8 @@ services:
       - /usr/src/app/shared/timer/node_modules
       - ./services/server/battle/src:/usr/src/app/services/server/battle/src/
       - ./services/server/battle/package.json:/usr/src/app/services/server/battle/package.json
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter battle
+    extra_hosts: *platform-hosts
     networks:
       - backend
     healthcheck:
@@ -201,6 +195,7 @@ services:
       - ./services/server/matchmaking/src:/usr/src/app/services/server/matchmaking/src/
       - ./services/server/matchmaking/package.json:/usr/src/app/services/server/matchmaking/package.json
     command: pnpm dlx turbo run dev --parallel --filter matchmaking
+    extra_hosts: *platform-hosts
     networks:
       - backend
     healthcheck:
@@ -267,12 +262,9 @@ services:
       - ./services/server/streaming/src:/usr/src/app/services/server/streaming/src/
       - ./services/server/streaming/package.json:/usr/src/app/services/server/streaming/package.json
     command: pnpm dlx turbo run dev --parallel --filter streaming
+    extra_hosts: *platform-hosts
     networks:
       - backend
-    extra_hosts:
-      - "elasticsearch:10.100.0.1"
-      - "prometheus:10.100.0.1"
-      - "tempo:10.100.0.1"
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -302,10 +294,8 @@ services:
       - /usr/src/app/shared/timer/node_modules
       - ./services/server/profile/src:/usr/src/app/services/server/profile/src/
       - ./services/server/profile/package.json:/usr/src/app/services/server/profile/package.json
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter profile
+    extra_hosts: *platform-hosts
     networks:
       - backend
     healthcheck:
@@ -341,17 +331,12 @@ services:
       - ./services/server/engine/src:/usr/src/app/services/server/engine/src/
       - ./services/server/engine/package.json:/usr/src/app/services/server/engine/package.json
     depends_on:
-      pgbouncer:
-        condition: service_healthy
       redis:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel --filter engine
+    extra_hosts: *platform-hosts
     networks:
       - backend
-    extra_hosts:
-      - "elasticsearch:10.100.0.1"
-      - "prometheus:10.100.0.1"
-      - "tempo:10.100.0.1"
     healthcheck:
       test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1:50051 || exit 1" ]
       interval: 10s
@@ -373,10 +358,7 @@ services:
   #      - ./shared:/usr/src/app/shared
   #      - ./services/infra/service-template/src:/usr/src/app/services/infra/service-template/src/
   #      - ./services/infra/service-template/package.json:/usr/src/app/services/infra/service-template/package.json
-  #    depends_on:
-  #      pgbouncer:
-  #        condition: service_healthy
-  #    command: pnpm dlx turbo run dev --parallel --filter service-template
+  #  #    command: pnpm dlx turbo run dev --parallel --filter service-template
   #    networks:
   #      - backend
   #    healthcheck:
@@ -397,18 +379,12 @@ services:
     environment:
       KAFKAJS_NO_PARTITIONER_WARNING: 1
       PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN: "false"
-    extra_hosts:
-      - "elasticsearch:10.100.0.1"
-      - "prometheus:10.100.0.1"
-      - "tempo:10.100.0.1"
     volumes:
       - ./shared:/usr/src/app/shared
       - ./services/infra/infrastructure-telemetry-mcp/src:/usr/src/app/services/infra/infrastructure-telemetry-mcp/src/
       - ./services/infra/infrastructure-telemetry-mcp/package.json:/usr/src/app/services/infra/infrastructure-telemetry-mcp/package.json
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
     command: pnpm --filter infrastructure-telemetry-mcp dev
+    extra_hosts: *platform-hosts
     networks:
       - backend
     healthcheck:
@@ -421,61 +397,18 @@ services:
   opentelemetry-collector:
     image: otel/opentelemetry-collector-contrib:0.112.0
     container_name: tic-tac-toe-opentelemetry-collector
+    user: "0:0"  # distroless-образ (uid 10001) не может писать очередь в volume
     command: ["--config=/etc/otel-collector-config.yaml"]
     volumes:
       - ./services/observability/otel-collector/config.yaml:/etc/otel-collector-config.yaml:ro
+      - otel_queue:/var/lib/otelcol
     ports:
       - "4318:4318"
+    extra_hosts: *platform-hosts
     networks:
-      backend:
-        aliases:
-          - tempo
-          - prometheus
+      - backend
     healthcheck:
       disable: true
-
-  postgres:
-    image: postgres:17.6
-    container_name: tic-tac-toe-postgres
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
-      POSTGRES_INITDB_ARGS: "--auth-host=md5"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    # - ./services/infra/postgres/data:/var/lib/postgresql/data
-    restart: always
-    networks:
-      - backend
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 10s
-      timeout: 3s
-      retries: 5
-      start_period: 10s
-
-  pgbouncer:
-    image: edoburu/pgbouncer
-    container_name: tic-tac-toe-pgbouncer
-    volumes:
-      - ./services/infra/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
-      - ./services/infra/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
-    tmpfs:
-      - /var/run/pgbouncer:uid=70,gid=70,mode=0755
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - backend
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -h postgres -p 5432" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
 
   redis:
     image: redis:7.2
@@ -489,10 +422,8 @@ services:
       timeout: 5s
       retries: 5
 
-
-
 volumes:
-  postgres_data:
+  otel_queue:
 
 networks:
   backend:

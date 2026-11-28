@@ -1,16 +1,53 @@
+# Локальный буфер телеметрии между приложениями и платформой (Tempo / Prometheus на 10.100.0.1).
+# Приложения шлют OTLP только сюда; если платформа недоступна, данные копятся в очереди на диске
+# (volume otel_queue) и досылаются, когда она вернётся.
+extensions:
+  file_storage:
+    directory: /var/lib/otelcol/queue
+    create_directory: true
+
 receivers:
   otlp:
     protocols:
       http:
         endpoint: 0.0.0.0:4318
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 256
+    spike_limit_mib: 64
+  batch: {}
+
 exporters:
-  debug:
-    verbosity: detailed
+  otlphttp/tempo:
+    endpoint: http://tempo:4318
+    retry_on_failure:
+      enabled: true
+      max_elapsed_time: 0        # ретраить, пока не получится
+    sending_queue:
+      enabled: true
+      storage: file_storage
+      queue_size: 10000
+
+  otlphttp/prometheus:
+    metrics_endpoint: http://prometheus:9090/api/v1/otlp/v1/metrics
+    retry_on_failure:
+      enabled: true
+      max_elapsed_time: 0
+    sending_queue:
+      enabled: true
+      storage: file_storage
+      queue_size: 10000
+
 service:
+  extensions: [file_storage]
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [debug]
+      processors: [memory_limiter, batch]
+      exporters: [otlphttp/tempo]
     metrics:
       receivers: [otlp]
-      exporters: [debug]
+      processors: [memory_limiter, batch]
+      exporters: [otlphttp/prometheus]
