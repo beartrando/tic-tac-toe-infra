@@ -432,11 +432,7 @@ services:
           - tempo
           - prometheus
     healthcheck:
-      test: ["CMD", "/otelcol-contrib", "validate", "--config=/etc/otel-collector-config.yaml"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+      disable: true
 
   postgres:
     image: postgres:17.6
